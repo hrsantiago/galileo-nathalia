@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="logos">
+    <file>galileo.png</file>
+    <file>puc.png</file>
+    <file>ufop.png</file>
+    <file>ulb.png</file>
+  </qresource>
+</RCC>

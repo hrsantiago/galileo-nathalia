@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>I</class>
+ <widget class="QDialog" name="I">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>917</width>
+    <height>638</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>I</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <spacer name="spacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0">
+    <widget class="QFrame" name="frame">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="label_section">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Section</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_geom_w">
+        <property name="text">
+         <string>Web:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_name">
+        <property name="text">
+         <string>Name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="4">
+       <widget class="Line" name="line_geom">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="edit_name"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="push_rebars">
+        <property name="text">
+         <string>Rebars</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QLabel" name="label_geom">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Geometry</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_geom_t">
+        <property name="text">
+         <string>Thickness</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="3">
+       <widget class="QLabel" name="label_mesh">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Mesh</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QLineEdit" name="edit_mesh_wh"/>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLineEdit" name="edit_geom_fw"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="edit_geom_wh"/>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="label_mesh_w">
+        <property name="text">
+         <string>Web:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="2">
+       <widget class="QLineEdit" name="edit_mesh_ft"/>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_geom_f">
+        <property name="text">
+         <string>Flange:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLineEdit" name="edit_geom_ft"/>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLineEdit" name="edit_geom_wt"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="label_geom_d">
+        <property name="text">
+         <string>Width/Height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="3">
+       <widget class="Line" name="line_mesh">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="QLineEdit" name="edit_mesh_fw"/>
+      </item>
+      <item row="12" column="2">
+       <widget class="QLineEdit" name="edit_mesh_wt"/>
+      </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="label_mesh_f">
+        <property name="text">
+         <string>Flange:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QLabel" name="label_mesh_d">
+        <property name="text">
+         <string>Width/Height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="2">
+       <widget class="QLabel" name="label_mesh_t">
+        <property name="text">
+         <string>Thickness</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="4">
+    <widget class="gui::canvas::Section" name="canvas"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>gui::canvas::Section</class>
+   <extends>QOpenGLWidget</extends>
+   <header location="global">Canvas/Section.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>edit_name</tabstop>
+  <tabstop>push_rebars</tabstop>
+  <tabstop>edit_geom_wh</tabstop>
+  <tabstop>edit_geom_wt</tabstop>
+  <tabstop>edit_geom_fw</tabstop>
+  <tabstop>edit_geom_ft</tabstop>
+  <tabstop>edit_mesh_wh</tabstop>
+  <tabstop>edit_mesh_wt</tabstop>
+  <tabstop>edit_mesh_fw</tabstop>
+  <tabstop>edit_mesh_ft</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

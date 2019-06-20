@@ -1,0 +1,10 @@
+#include "Mesh/Sections/Types.h"
+#include "Mesh/Sections/Section.h"
+
+#include "Mesh/Sections/Rectangle.h"
+#include "Mesh/Sections/Circle.h"
+#include "Mesh/Sections/Box.h"
+#include "Mesh/Sections/Ring.h"
+#include "Mesh/Sections/T.h"
+#include "Mesh/Sections/I.h"
+#include "Mesh/Sections/Generic.h"

@@ -1,0 +1,10 @@
+[Desktop Entry]
+
+Name		= Galileo
+Comment		= Nonlinear static and dynamic finite element analysis
+
+Type		= Application
+Exec		= /usr/bin/galileo
+Icon		= /usr/share/icons/galileo.jpg
+
+Categories	= Math;Science;Engineering;NumericalAnalysis;

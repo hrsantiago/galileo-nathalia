@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Galileo</class>
+ <widget class="QMainWindow" name="Galileo">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1202</width>
+    <height>822</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Galileo - Model</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../rsc/galileu.jpg</normaloff>../rsc/galileu.jpg</iconset>
+  </property>
+  <widget class="gui::canvas::Model" name="canvas">
+   <layout class="QHBoxLayout" name="horizontalLayout"/>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1202</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_model">
+    <property name="title">
+     <string>Model</string>
+    </property>
+    <widget class="QMenu" name="menu_model_recent">
+     <property name="title">
+      <string>Recent</string>
+     </property>
+    </widget>
+    <addaction name="action_model_new"/>
+    <addaction name="action_model_save"/>
+    <addaction name="action_model_open"/>
+    <addaction name="menu_model_recent"/>
+    <addaction name="separator"/>
+    <addaction name="action_model_plot"/>
+    <addaction name="action_model_print"/>
+    <addaction name="separator"/>
+    <addaction name="action_model_close"/>
+   </widget>
+   <widget class="QMenu" name="menu_topology">
+    <property name="title">
+     <string>Topology</string>
+    </property>
+    <addaction name="action_topology_points"/>
+    <addaction name="action_topology_curves"/>
+    <addaction name="action_topology_surfaces"/>
+   </widget>
+   <widget class="QMenu" name="menu_mesh">
+    <property name="title">
+     <string>Mesh</string>
+    </property>
+    <addaction name="action_mesh_nodes"/>
+    <addaction name="action_mesh_cells"/>
+    <addaction name="action_mesh_joints"/>
+    <addaction name="action_mesh_sections"/>
+    <addaction name="action_mesh_materials"/>
+    <addaction name="action_mesh_elements"/>
+   </widget>
+   <widget class="QMenu" name="menu_boundary">
+    <property name="title">
+     <string>Boundary</string>
+    </property>
+    <addaction name="action_boundary_initials"/>
+    <addaction name="action_boundary_supports"/>
+    <addaction name="action_boundary_load_cases"/>
+    <addaction name="action_boundary_constraints"/>
+    <addaction name="action_boundary_dependencies"/>
+   </widget>
+   <widget class="QMenu" name="menu_analysis">
+    <property name="title">
+     <string>Analysis</string>
+    </property>
+    <addaction name="action_analysis_solver"/>
+   </widget>
+   <widget class="QMenu" name="menu_results">
+    <property name="title">
+     <string>Results</string>
+    </property>
+    <addaction name="action_results_nodes"/>
+    <addaction name="action_results_elements"/>
+    <addaction name="action_results_deformed"/>
+    <addaction name="action_results_equilibrium_path"/>
+   </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_help_index"/>
+    <addaction name="action_help_about"/>
+   </widget>
+   <addaction name="menu_model"/>
+   <addaction name="menu_topology"/>
+   <addaction name="menu_mesh"/>
+   <addaction name="menu_boundary"/>
+   <addaction name="menu_analysis"/>
+   <addaction name="menu_results"/>
+   <addaction name="menu_help"/>
+  </widget>
+  <widget class="QStatusBar" name="status"/>
+  <action name="action_model_new">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="action_model_save">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="action_model_open">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="action_model_close">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="action_topology_points">
+   <property name="text">
+    <string>Points</string>
+   </property>
+  </action>
+  <action name="action_topology_curves">
+   <property name="text">
+    <string>Curves</string>
+   </property>
+  </action>
+  <action name="action_topology_surfaces">
+   <property name="text">
+    <string>Surfaces</string>
+   </property>
+  </action>
+  <action name="action_mesh_nodes">
+   <property name="text">
+    <string>Nodes</string>
+   </property>
+  </action>
+  <action name="action_mesh_cells">
+   <property name="text">
+    <string>Cells</string>
+   </property>
+  </action>
+  <action name="action_mesh_materials">
+   <property name="text">
+    <string>Materials</string>
+   </property>
+  </action>
+  <action name="action_mesh_sections">
+   <property name="text">
+    <string>Sections</string>
+   </property>
+  </action>
+  <action name="action_mesh_elements">
+   <property name="text">
+    <string>Elements</string>
+   </property>
+  </action>
+  <action name="action_mesh_joints">
+   <property name="text">
+    <string>Joints</string>
+   </property>
+  </action>
+  <action name="action_boundary_initials">
+   <property name="text">
+    <string>Initials</string>
+   </property>
+  </action>
+  <action name="action_boundary_supports">
+   <property name="text">
+    <string>Supports</string>
+   </property>
+  </action>
+  <action name="action_boundary_load_cases">
+   <property name="text">
+    <string>Load Cases</string>
+   </property>
+  </action>
+  <action name="action_boundary_dependencies">
+   <property name="text">
+    <string>Dependencies</string>
+   </property>
+  </action>
+  <action name="action_boundary_constraints">
+   <property name="text">
+    <string>Constraints</string>
+   </property>
+  </action>
+  <action name="action_analysis_solver">
+   <property name="text">
+    <string>Solver</string>
+   </property>
+  </action>
+  <action name="action_results_nodes">
+   <property name="text">
+    <string>Nodes</string>
+   </property>
+  </action>
+  <action name="action_results_points">
+   <property name="text">
+    <string>Points</string>
+   </property>
+  </action>
+  <action name="action_results_elements">
+   <property name="text">
+    <string>Elements</string>
+   </property>
+  </action>
+  <action name="action_results_deformed">
+   <property name="text">
+    <string>Deformed</string>
+   </property>
+  </action>
+  <action name="action_results_time_response">
+   <property name="text">
+    <string>Time Response</string>
+   </property>
+  </action>
+  <action name="action_results_equilibrium_path">
+   <property name="text">
+    <string>Equilibrium Path</string>
+   </property>
+  </action>
+  <action name="action_help_index">
+   <property name="text">
+    <string>Index</string>
+   </property>
+  </action>
+  <action name="action_help_about">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="action_model_plot">
+   <property name="text">
+    <string>Plot</string>
+   </property>
+  </action>
+  <action name="action_results_buckling">
+   <property name="text">
+    <string>Buckling</string>
+   </property>
+  </action>
+  <action name="action_model_print">
+   <property name="text">
+    <string>Print</string>
+   </property>
+  </action>
+  <action name="action_model_recent_00">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_01">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_02">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_03">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_04">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_05">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_06">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_07">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_08">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_09">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_10">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_11">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_12">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_13">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_model_recent_14">
+   <property name="text">
+    <string>(none)</string>
+   </property>
+  </action>
+  <action name="action_results_joints">
+   <property name="text">
+    <string>Joints</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>gui::canvas::Model</class>
+   <extends>QWidget</extends>
+   <header location="global">Canvas/Model.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
