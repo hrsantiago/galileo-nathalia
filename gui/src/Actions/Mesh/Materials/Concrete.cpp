@@ -11,7 +11,7 @@
 #include "Actions/Mesh/Materials/Concrete.h"
 
 //ui
-#include "uic/Mesh/Materials/Concrete.h"
+#include "ui_Concrete.h"
 
 namespace gui
 {

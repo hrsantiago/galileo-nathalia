@@ -1,5 +1,7 @@
 //std
 #include <cmath>
+#include <QIntValidator>
+#include <QDoubleValidator>
 
 //fea
 #include "Mesh/Mesh.h"
@@ -10,7 +12,7 @@
 #include "Actions/Mesh/Sections/Rectangle.h"
 
 //ui
-#include "uic/Mesh/Sections/Rectangle.h"
+#include "ui_Rectangle.h"
 
 namespace gui
 {

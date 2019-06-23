@@ -2,7 +2,7 @@
 #include "Actions/Results/Limits.h"
 
 //ui
-#include "uic/Results/Limits.h"
+#include "ui_Limits.h"
 
 namespace gui
 {

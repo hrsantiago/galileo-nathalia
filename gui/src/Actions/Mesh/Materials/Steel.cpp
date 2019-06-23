@@ -11,7 +11,7 @@
 #include "Actions/Mesh/Materials/Steel.h"
 
 //ui
-#include "uic/Mesh/Materials/Steel.h"
+#include "ui_Steel.h"
 
 namespace gui
 {

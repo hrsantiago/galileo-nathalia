@@ -5,11 +5,11 @@
 #include "Mesh/Nodes/Node.h"
 
 //gui
-#include "Canvas/Model.h"
+#include "Canvas/ModelCanvas.h"
 #include "Actions/Mesh/Nodes/Nodes.h"
 
 //ui
-#include "uic/Mesh/Nodes/Nodes.h"
+#include "ui_Nodes.h"
 
 namespace gui
 {

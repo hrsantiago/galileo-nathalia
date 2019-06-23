@@ -5,7 +5,7 @@
 #include "Actions/Results/Plots.h"
 
 //ui
-#include "uic/Results/Plots.h"
+#include "ui_Plots.h"
 
 namespace gui
 {

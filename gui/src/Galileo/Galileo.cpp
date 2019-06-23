@@ -43,7 +43,7 @@
 #include "Actions/Help/Index.h"
 
 //ui
-#include "uic/Galileo/Galileo.h"
+#include "ui_Galileo.h"
 
 namespace gui
 {

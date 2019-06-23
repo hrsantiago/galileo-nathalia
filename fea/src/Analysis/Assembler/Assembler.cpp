@@ -2,7 +2,7 @@
 #include <limits>
 
 //suitesparse
-#include <suitesparse/umfpack.h>
+#include <umfpack.h>
 
 //boost
 #include <boost/filesystem/operations.hpp>

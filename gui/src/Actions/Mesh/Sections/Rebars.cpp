@@ -13,7 +13,7 @@
 #include "Actions/Mesh/Sections/Rebars.h"
 
 //ui
-#include "uic/Mesh/Sections/Rebars.h"
+#include "ui_Rebars.h"
 
 namespace gui
 {

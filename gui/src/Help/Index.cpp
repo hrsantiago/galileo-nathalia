@@ -2,7 +2,7 @@
 #include "Actions/Help/Index.h"
 
 //ui
-#include "uic/Help/Index.h"
+#include "ui_Index.h"
 
 namespace gui
 {

@@ -545,7 +545,7 @@
   <customwidget>
    <class>gui::canvas::Nodal</class>
    <extends>QWidget</extends>
-   <header location="global">Canvas/Nodal.h</header>
+   <header location="global">Canvas/NodalCanvas.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

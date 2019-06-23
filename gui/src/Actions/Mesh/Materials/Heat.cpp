@@ -11,7 +11,7 @@
 #include "Actions/Mesh/Materials/Heat.h"
 
 //ui
-#include "uic/Mesh/Materials/Heat.h"
+#include "ui_Heat.h"
 
 namespace gui
 {

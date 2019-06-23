@@ -16,7 +16,7 @@
 #include "Actions/Mesh/Sections/Rectangle.h"
 
 //ui
-#include "uic/Mesh/Sections/Sections.h"
+#include "ui_Sections.h"
 
 namespace gui
 {

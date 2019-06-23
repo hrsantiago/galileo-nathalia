@@ -25,7 +25,7 @@
 #include "Actions/Model/Model.h"
 
 //ui
-#include "uic/Model/Model.h"
+#include "ui_Model.h"
 
 namespace gui
 {

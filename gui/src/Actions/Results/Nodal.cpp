@@ -27,8 +27,8 @@
 #include "Actions/Results/Nodal.h"
 
 //ui
-#include "uic/Results/Nodal.h"
-#include "uic/Results/Data_Nodal.h"
+#include "ui_Nodal.h"
+#include "ui_Data_Nodal.h"
 
 namespace gui
 {

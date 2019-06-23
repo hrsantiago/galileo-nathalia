@@ -1,3 +1,6 @@
+//std
+#include <cmath>
+
 //qt
 #include <QStatusBar>
 #include <QMainWindow>
@@ -16,74 +19,58 @@
 #include "Plot/Colors.h"
 
 #include "Mesh/Mesh.h"
-#include "Mesh/Nodes/Node.h"
 #include "Mesh/Nodes/Dofs.h"
+#include "Mesh/Nodes/Node.h"
+
+#include "Analysis/Analysis.h"
+#include "Analysis/Solvers/Solver.h"
+#include "Analysis/Solvers/Watch_Dof.h"
 
 //gui
-#include "Canvas/Nodal.h"
+#include "Canvas/DeformedCanvas.h".h"
 
-#include "Actions/Results/Nodal.h"
+#include "Actions/Results/Deformed.h"
 
 namespace gui
 {
 	namespace canvas
 	{
 		//constructors
-		Nodal::Nodal(QWidget* parent) : Model(parent), m_dofs(0), m_steps(0), 
-		m_results(nullptr), 
-		m_parameter(nullptr), 
-		m_positions(nullptr), 
-		m_step{nullptr, nullptr},
-		m_node{nullptr, nullptr},
-		m_limits{nullptr, nullptr}
+		Deformed::Deformed(QWidget* parent) : Model(parent), m_steps(0), m_dof(nullptr), m_parameter(nullptr), m_positions(nullptr)
 		{
 			return;
 		}
 	
 		//destructor
-		Nodal::~Nodal(void)
+		Deformed::~Deformed(void)
 		{
 			//sizes
 			const unsigned ns = m_steps;
 			const unsigned nn = m_model->mesh()->nodes();
-			const unsigned nd = mat::bit_find(m_dofs, unsigned(fea::mesh::nodes::dof::last));
 			//delete
 			for(unsigned i = 0; i < ns; i++)
 			{
-				for(unsigned j = 0; j < nd; j++)
-				{
-					delete[] m_results[i][j];
-				}
 				for(unsigned j = 0; j < nn; j++)
 				{
 					delete[] m_positions[i][j];
 				}
-				delete[] m_results[i];
 				delete[] m_positions[i];
 			}
-			delete[] m_step[0];
-			delete[] m_step[1];
-			delete[] m_node[0];
-			delete[] m_node[1];
-			delete[] m_results;
-			delete[] m_limits[0];
-			delete[] m_limits[1];
+			delete[] m_dof;
 			delete[] m_parameter;
 			delete[] m_positions;
 		}
 		
 		//draw
-		void Nodal::paintGL(void) 
+		void Deformed::paintGL(void) 
 		{
 			//bound
 			m_bound.apply();
 			//clear
 			resizeGL(width(), height());
 			glClear(GL_COLOR_BUFFER_BIT);
-			//dof
-			const unsigned j = ((results::Nodal*) parent())->dof();
 			//step
-			const unsigned s = ((results::Nodal*) parent())->step();
+			const unsigned s = ((results::Deformed*) parent())->step();
 			//paths
 			glColor4dv(m_model->plot()->colors()->paths());
 			for(const unsigned i : m_paths)
@@ -98,29 +85,24 @@ namespace gui
 			//plots
 			for(const unsigned i : m_plots)
 			{
-				m_model->plot(m_bound.size() / m_bound.zoom(), (const double**) m_positions[i], m_results[i][j], nullptr);
+				m_model->plot(m_bound.size() / m_bound.zoom(), (const double**) m_positions[i]);
 			}
 			//plot
 			if(std::find(m_plots.begin(), m_plots.end(), s) == m_plots.end())
 			{
-				m_model->plot(m_bound.size() / m_bound.zoom(), (const double**) m_positions[s], m_results[s][j], nullptr);
+				m_model->plot(m_bound.size() / m_bound.zoom(), (const double**) m_positions[s]);
 			}
-			//axes
+			//axis
 			if(m_model->plot()->what()->axes())
 			{
 				draw_axes();
-			}
-			//scale
-			if(m_model->plot()->what()->scale())
-			{
-				draw_scale();
 			}
 			//update
 			update();
 		}
 		
 		//data
-		void Nodal::allocate(void)
+		void Deformed::allocate(void)
 		{
 			//solver
 			const std::string path_load = m_model->path() + "/" + m_model->name() + "/Solver/Load.txt";
@@ -131,11 +113,6 @@ namespace gui
 				boost::filesystem::exists(path_load) ? path_load : 
 				boost::filesystem::exists(path_time) ? path_time : 
 				boost::filesystem::exists(path_stif) ? path_stif : path_freq;
-			//dofs
-			for(unsigned i = 0; i < m_model->mesh()->nodes(); i++)
-			{
-				m_dofs |= m_model->mesh()->node(i)->dof_types();
-			}
 			//steps
 			const unsigned& ns = m_steps = 0;
 			FILE* file = fopen(path_parm.c_str(), "r");
@@ -147,41 +124,30 @@ namespace gui
 				}
 			}
 			fclose(file);
-			//sizes
+			//nodes
 			const unsigned nn = m_model->mesh()->nodes();
-			const unsigned nd = mat::bit_find(m_dofs, unsigned(fea::mesh::nodes::dof::last));
 			//allocate
-			m_step[0] = new unsigned[nd];
-			m_step[1] = new unsigned[nd];
-			m_node[0] = new unsigned[nd];
-			m_node[1] = new unsigned[nd];
-			m_limits[0] = new double[nd];
-			m_limits[1] = new double[nd];
+			m_dof = new double[ns];
 			m_parameter = new double[ns];
-			m_results = new double**[ns];
 			m_positions = new double**[ns];
 			for(unsigned i = 0; i < ns; i++)
 			{
-				m_results[i] = new double*[nd];
 				m_positions[i] = new double*[nn];
-				for(unsigned j = 0; j < nd; j++)
-				{
-					m_results[i][j] = new double[nn];
-				}
 				for(unsigned j = 0; j < nn; j++)
 				{
 					m_positions[i][j] = new double[6];
 				}
 			}
 		}
-		void Nodal::get_data(void)
+		void Deformed::get_data(void)
 		{
 			//sizes
 			double u;
 			const unsigned ns = m_steps;
 			const unsigned nn = m_model->mesh()->nodes();
+			const unsigned nw = m_model->analysis()->solver()->watch_dof()->m_node;
 			const unsigned nd = mat::log2(unsigned(fea::mesh::nodes::dof::last)) + 1;
-			const unsigned np = mat::bit_find(m_dofs, unsigned(fea::mesh::nodes::dof::last));
+			const unsigned dw = (unsigned) m_model->analysis()->solver()->watch_dof()->m_dof;
 			//status
 			QStatusBar* status = ((QMainWindow*) parent()->parent())->statusBar();
 			//solver
@@ -232,56 +198,23 @@ namespace gui
 						{
 							m_positions[j][i][k] = (k < 3 ? x[k] : 0) + (1 << k & dt ? u : 0);
 						}
-						if(1 << k & m_dofs)
+						if(i == nw && 1 << k == dw)
 						{
-							m_results[j][mat::bit_find(m_dofs, 1 << k)][i] = 1 << k & dt ? u : 0;
+							m_dof[j] = (dt & dw) ? u : 0;
 						}
 					}
 				}
 				//close file
 				fclose(file);
-				sprintf(msg, "Nodal: Loading Nodes (%5.2lf\%)", 100 * double(i) / nn);
+				sprintf(msg, "Deformed: Loading Node (%5.2lf\%)", 100 * double(i) / nn);
 				status->showMessage(msg);
 			}
-			//scale
-			for(unsigned i = 0; i < np; i++)
-			{
-				m_step[0][i] = m_step[1][i] = 0;
-				m_node[0][i] = m_node[1][i] = 0;
-				double& vi = m_limits[0][i] = m_results[0][i][0];
-				double& vj = m_limits[1][i] = m_results[0][i][0];
-				for(unsigned j = 0; j < ns; j++)
-				{
-					for(unsigned k = 0; k < nn; k++)
-					{
-						if(vi > m_results[j][i][k])
-						{
-							m_step[0][i] = j;
-							m_node[0][i] = k;
-							vi = m_results[j][i][k];
-						}
-						if(vj < m_results[j][i][k])
-						{
-							m_step[1][i] = j;
-							m_node[1][i] = k;
-							vj = m_results[j][i][k];
-						}
-					}
-				}
-				for(unsigned j = 0; j < ns; j++)
-				{
-					for(unsigned k = 0; k < nn; k++)
-					{
-						m_results[j][i][k] = vi == vj ? 0.50 : (m_results[j][i][k] - vi) / (vj - vi);
-					}
-				}
-			}
 			//print
-			status->showMessage("Nodal: Loading Complete!", 5000);
+			status->showMessage("Deformed: Loading Complete!", 5000);
 		}
 			
 		//update
-		void Nodal::update_model(fea::models::Model* model)
+		void Deformed::update_model(fea::models::Model* model)
 		{
 			//model
 			m_model = model;
@@ -293,12 +226,41 @@ namespace gui
 		}
 		
 		//events
-		void Nodal::mousePressEvent(QMouseEvent* event)
+		void Deformed::mousePressEvent(QMouseEvent* event)
 		{
 			//base call
 			Model::mousePressEvent(event);
 			//set focus
 			((QWidget*) parent())->setFocus(Qt::MouseFocusReason);
+		}
+		
+		//slots
+		void Deformed::slot_center(void)
+		{
+			//step
+			const unsigned s = ((results::Deformed*) parent())->step();
+			//local limits
+			double xi[3], xj[3], xc[3], xp[3];
+			memcpy(xi, m_positions[s][0], 3 * sizeof(double));
+			memcpy(xj, m_positions[s][0], 3 * sizeof(double));
+			for(unsigned i = 1; i < m_model->mesh()->nodes(); i++)
+			{
+				for(unsigned j = 0; j < 3; j++)
+				{
+					xi[j] = std::min(xi[j], m_positions[s][i][j]);
+					xj[j] = std::max(xj[j], m_positions[s][i][j]);
+				}
+			}
+			//pan
+			double d = 0;
+			m_bound.center(xc);
+			for(unsigned i = 0; i < 3; i++)
+			{
+				d += pow(xj[i] - xi[i], 2);
+				xp[i] = xc[i] - (xj[i] + xi[i]) / 2;
+			}
+			m_bound.pan(xp);
+			m_bound.zoom(m_bound.size() / sqrt(d));
 		}
 	}
 }

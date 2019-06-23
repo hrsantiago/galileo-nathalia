@@ -23,7 +23,7 @@
 #include "Plot/Gradient.h"
 
 //gui
-#include "Canvas/Model.h"
+#include "Canvas/ModelCanvas.h"
 #include "Galileo/Galileo.h"
 
 namespace gui

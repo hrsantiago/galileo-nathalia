@@ -5,7 +5,7 @@
 #include "Actions/Results/Paths.h"
 
 //ui
-#include "uic/Results/Paths.h"
+#include "ui_Paths.h"
 
 namespace gui
 {

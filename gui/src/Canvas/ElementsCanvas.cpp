@@ -22,7 +22,7 @@
 #include "Mesh/Elements/Element.h"
 
 //gui
-#include "Canvas/Elements.h"
+#include "Canvas/ElementsCanvas.h"
 
 #include "Actions/Results/Elements.h"
 

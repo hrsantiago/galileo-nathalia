@@ -1,30 +1,30 @@
 #pragma once
 
-#include "Canvas/Model.h"
+#include "Canvas/ModelCanvas.h"
 
 namespace gui
 {
 	//forward declarations
 	namespace results
 	{
-		class Elements;
+		class Deformed;
 	}
 	
 	namespace canvas
 	{
-		class Elements : public Model
+		class Deformed : public Model
 		{
 			Q_OBJECT
 		
 			//friends
-			friend class results::Elements;
+			friend class results::Deformed;
 		
 			public:
 				//construtors
-				Elements(QWidget* = nullptr);
+				Deformed(QWidget* = nullptr);
 		
 				//destructor
-				virtual ~Elements(void);
+				virtual ~Deformed(void);
 
 			protected:
 				//draw
@@ -40,19 +40,18 @@ namespace gui
 				//events
 				virtual void mousePressEvent(QMouseEvent*) override;
 			
+			protected slots:
+				//slots
+				virtual void slot_center(void);
+			
 			private:
 				//attributes
 				unsigned m_steps;
-				unsigned m_states;
 				
-				double* m_limits[2];
+				double* m_dof;
 				double* m_parameter;
-				double**** m_results;
-				double*** m_positions;
 				
-				unsigned* m_step[2];
-				unsigned* m_node[2];
-				unsigned* m_element[2];
+				double*** m_positions;
 				
 				std::vector<unsigned> m_paths;
 				std::vector<unsigned> m_plots;

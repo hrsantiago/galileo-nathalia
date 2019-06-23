@@ -6,7 +6,7 @@
 #include "Actions/Help/About.h"
 
 //ui
-#include "uic/Help/About.h"
+#include "ui_About.h"
 
 namespace gui
 {

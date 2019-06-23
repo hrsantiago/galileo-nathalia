@@ -27,8 +27,8 @@
 #include "Actions/Results/Elements.h"
 
 //ui
-#include "uic/Results/Elements.h"
-#include "uic/Results/Data_Elements.h"
+#include "ui_Elements.h"
+#include "ui_Data_Elements.h"
 
 namespace gui
 {

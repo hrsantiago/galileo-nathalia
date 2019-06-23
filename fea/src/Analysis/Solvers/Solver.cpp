@@ -2,7 +2,7 @@
 #include <cfloat>
 
 //suitesparse
-#include <suitesparse/umfpack.h>
+#include <umfpack.h>
 
 //fea
 #include "Models/Model.h"

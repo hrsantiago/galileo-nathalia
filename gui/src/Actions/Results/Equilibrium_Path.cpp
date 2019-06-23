@@ -38,7 +38,7 @@
 #include "Actions/Results/Equilibrium_Path.h"
 
 //ui
-#include "uic/Results/Equilibrium_Path.h"
+#include "ui_Equilibrium_Path.h"
 
 namespace gui
 {

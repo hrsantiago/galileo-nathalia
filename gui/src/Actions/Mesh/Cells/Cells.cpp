@@ -8,11 +8,11 @@
 #include "Mesh/Cells/Cells.h"
 
 //gui
-#include "Canvas/Model.h"
+#include "Canvas/ModelCanvas.h"
 #include "Actions/Mesh/Cells/Cells.h"
 
 //ui
-#include "uic/Mesh/Cells/Cells.h"
+#include "ui_Cells.h"
 
 namespace gui
 {

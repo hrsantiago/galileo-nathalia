@@ -343,7 +343,7 @@
   <customwidget>
    <class>gui::canvas::Model</class>
    <extends>QWidget</extends>
-   <header location="global">Canvas/Model.h</header>
+   <header location="global">Canvas/ModelCanvas.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

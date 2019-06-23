@@ -20,7 +20,7 @@
 #include "Actions/Mesh/Materials/Materials.h"
 
 //ui
-#include "uic/Mesh/Materials/Materials.h"
+#include "ui_Materials.h"
 
 namespace gui
 {

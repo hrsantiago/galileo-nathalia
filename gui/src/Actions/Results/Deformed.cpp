@@ -28,7 +28,7 @@
 #include "Actions/Results/Deformed.h"
 
 //ui
-#include "uic/Results/Deformed.h"
+#include "ui_Deformed.h"
 
 namespace gui
 {
