@@ -6,7 +6,7 @@
 #include "misc/defs.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"

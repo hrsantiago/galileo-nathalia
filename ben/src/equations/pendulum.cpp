@@ -68,7 +68,7 @@ void equations::pendulum::single_2D::newmark(void)
 		iteration = 0;
 	}
 	//save to file
-	FILE* file = fopen("models/equations/pendulum/single 2D/newmark.txt", "w");
+	FILE* file = fopen("../models/equations/pendulum/single 2D/newmark.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }
@@ -123,7 +123,7 @@ void equations::pendulum::single_2D::runge_kutta(void)
 		results += formatter;
 		step++;
 	}
-	FILE* file = fopen("models/equations/pendulum/single 2D/runge kutta.txt", "w");
+	FILE* file = fopen("../models/equations/pendulum/single 2D/runge kutta.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }
@@ -191,7 +191,7 @@ void equations::pendulum::single_3D::newmark(void)
 		iteration = 0;
 	}
 	//save to file
-	FILE* file = fopen("models/equations/pendulum/single 3D/newmark.txt", "w");
+	FILE* file = fopen("../models/equations/pendulum/single 3D/newmark.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }
@@ -255,7 +255,7 @@ void equations::pendulum::single_3D::runge_kutta(void)
 		step++;
 	}
 	//save to file
-	FILE* file = fopen("models/equations/pendulum/single 3D/runge kutta.txt", "w");
+	FILE* file = fopen("../models/equations/pendulum/single 3D/runge kutta.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }
@@ -381,7 +381,7 @@ void equations::pendulum::double_2D::newmark(void)
 		iteration = 0;
 	}
 	//save in file
-	FILE* file = fopen("models/equations/pendulum/double 2D/newmark.txt", "w");
+	FILE* file = fopen("../models/equations/pendulum/double 2D/newmark.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }
@@ -452,7 +452,7 @@ void equations::pendulum::double_2D::runge_kutta(void)
 		step++;
 	}
 	//save in file
-	FILE* file = fopen("models/equations/pendulum/double 2D/runge kutta.txt", "w");
+	FILE* file = fopen("../models/equations/pendulum/double 2D/runge kutta.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }

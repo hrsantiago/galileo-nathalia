@@ -49,7 +49,7 @@ static double h, l, A, pr, pl, wn, dp, dw, mn, cn, dt;
 static double f[nb], a_old[nb], a_new[nb], ep_new[nb], ep_old[nb];
 static double t, x[3], v[3], a[3], x_old[3], v_old[3], dx[3], dv[3];
 static double w, Pe[3], Pd[3], Fe[3], Fi[3], data[ns][6], eb[ns][nb], sb[ns][nb];
-const static char path[] = "models/benchmarks/bar/static/nonlinear/tent unit";
+const static char path[] = "../models/benchmarks/bar/static/nonlinear/tent unit";
 
 //misc
 static int sign(double a)
@@ -193,7 +193,7 @@ static void record_stress(const char* name)
 }
 static void flush_map(const char* name, double q)
 {
-	char value[200], alpha[200];
+	char value[20], alpha[20];
 	sprintf(alpha, "_%02d", unsigned(10 * q));
 	sprintf(value, "_%02d", unsigned(100 * Pe[dof] / pr));
 	sprintf(formatter, "%s/data/dynamic/%s_%c%c%s%s.txt", path, name, strain ? 'l' : 'q', plastic ? 'p' : 'e', alpha, load ? "" : value);

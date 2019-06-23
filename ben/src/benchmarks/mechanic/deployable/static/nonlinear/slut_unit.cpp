@@ -7,7 +7,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
@@ -46,7 +46,7 @@ const static double h = 0.50e+00;
 const static double H = 0.40e+00;
 
 const static double r = 5.00e-02;
-const static double s = 1.00e-03;
+const static double s = 1.00e-02;
 
 //joint
 const static double mp = 5.00e+00;

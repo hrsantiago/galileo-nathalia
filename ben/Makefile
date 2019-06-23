@@ -1,7 +1,8 @@
 #compiler
 DEFS = 
 INCS = -I inc/ -I ../mat/inc/ -I ../fea/inc/
-CXXFLAGS = -m64 -std=c++11 -pipe -pthread -fopenmp -Wformat=0 -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS)
+WARS = -Wall -Wno-unused-variable -Wno-unused-variable -Wno-format-security -Wno-return-type -Wno-unused-function -Wformat-overflow=0
+CXXFLAGS = -m64 -std=c++11 -pipe -pthread -fopenmp -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS) $(WARS)
 
 #mode
 ifneq ($(m), r)
@@ -10,7 +11,7 @@ ifneq ($(m), r)
 	CXXFLAGS += -ggdb3
 else
 	CONF = release
-	CXXFLAGS += -Ofast -Wno-unused-result
+	CXXFLAGS += -Ofast
 endif
 
 #platform

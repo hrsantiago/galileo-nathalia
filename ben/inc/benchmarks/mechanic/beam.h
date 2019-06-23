@@ -36,6 +36,7 @@ namespace tests
 				void frame_portal(void);
 				void frame_roof(void);
 				void frame_square(void);
+				void frame_buckling(void);
 				void arc_circle(void);
 				void arc_asymmetric(void);
 				void arc_shallow_pinned(void);

@@ -10,7 +10,7 @@
 //ben
 #include "equations/electromag.h"
 
-static int step = 0;
+static unsigned step = 0;
 static char formatter[200];
 static std::string results;
 static double t, d, dt, x[3], v[3], a[3];
@@ -139,7 +139,7 @@ void equations::electromag::solve(void)
 		printf("step: %05d time: %+.2e distance: %+.2e\n", step, t, d);
 	}
 	//results
-	std::FILE* file = fopen("models/equations/electromag/orbity.txt", "w");
+	std::FILE* file = fopen("../models/equations/electromag/orbity.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }

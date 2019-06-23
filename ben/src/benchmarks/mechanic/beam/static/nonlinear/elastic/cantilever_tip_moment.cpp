@@ -2,7 +2,7 @@
 #include <cmath>
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
@@ -30,8 +30,8 @@ void tests::beam::static_nonlinear::elastic::cantilever_tip_moment(void)
 	/*
 	Cantilever beam subjected to a tip moment
 	Analytic:
-		q = ML / EI
 		t = q / L
+		q = M L / EI
 		x = L sin(q x0 / L) / q
 		y = L (1 - cos(q x0 / L)) / q
 	 */
@@ -64,11 +64,10 @@ void tests::beam::static_nonlinear::elastic::cantilever_tip_moment(void)
 	((fea::mesh::sections::Rectangle*) model.mesh()->section(0))->height(h);
 
 	//elements
-	fea::mesh::elements::Mechanic::geometric(true);
-	model.mesh()->add_element(fea::mesh::elements::type::beam3, {0, 1});
+	model.mesh()->add_element(fea::mesh::elements::type::beam2, {0, 1});
 
 	//refine
-	fea::mesh::cells::Line::refine(0, 20);
+	fea::mesh::cells::Line::refine(0, 10);
 
 	//supports
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_x);
@@ -82,12 +81,13 @@ void tests::beam::static_nonlinear::elastic::cantilever_tip_moment(void)
 	model.boundary()->add_load_case(1, fea::mesh::nodes::dof::rotation_z, M);
 
 	//solver
+	fea::mesh::elements::Mechanic::geometric(true);
 	model.analysis()->solver(fea::analysis::solvers::type::static_nonlinear);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->step_max(1000);
-	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_max(25.0);
-	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_predictor(0.025);
+	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_max(50.0);
+	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_predictor(0.05);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->watch_dof(1, fea::mesh::nodes::dof::rotation_z);
-	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->strategy(fea::analysis::strategies::type::arc_length_cylindric);
+	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->strategy(fea::analysis::strategies::type::control_load);
 
 	//solve
 	model.analysis()->solve();

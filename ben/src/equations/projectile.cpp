@@ -44,7 +44,7 @@ void equations::projectile::trajectory(void)
 		results += formatter;
 	}
 	//save
-	std::FILE* file = fopen("models/Projectile/trajectory.txt", "w");
+	std::FILE* file = fopen("../models/Projectile/trajectory.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 }

@@ -5,15 +5,15 @@
 #include "misc/defs.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Cells/Types.h"
+#include "Mesh/Sections/Ring.h"
 #include "Mesh/Sections/Types.h"
 #include "Mesh/Elements/Types.h"
 #include "Mesh/Materials/Types.h"
-#include "Mesh/Sections/Circle.h"
 #include "Mesh/Elements/Mechanic/Mechanic.h"
 #include "Mesh/Materials/Mechanic/Associative/Steel.h"
 
@@ -41,9 +41,10 @@ void tests::bar::dynamic_nonlinear::single_pendulum_3D(void)
 	//parameters
 	const double g = 9.81e+0;
 	const double d = 1.00e-1;
+	const double t = 1.00e-2;
 	const double l = 1.00e+0;
 	const double m = 1.00e+0;
-	const double E = 2.00e+7;
+	const double E = 2.00e+9;
 	
 	const double v0 = 0;
 	const double f0 = 00 * M_PI / 180;
@@ -74,8 +75,9 @@ void tests::bar::dynamic_nonlinear::single_pendulum_3D(void)
 	((fea::mesh::materials::Steel*) model.mesh()->material(0))->elastic_modulus(E);
 
 	//sections
-	model.mesh()->add_section(fea::mesh::sections::type::circle);
-	((fea::mesh::sections::Circle*) model.mesh()->section(0))->diameter(d);
+	model.mesh()->add_section(fea::mesh::sections::type::ring);
+	((fea::mesh::sections::Ring*) model.mesh()->section(0))->diameter(d);
+	((fea::mesh::sections::Ring*) model.mesh()->section(0))->thickness(t);
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);
@@ -90,9 +92,9 @@ void tests::bar::dynamic_nonlinear::single_pendulum_3D(void)
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_z);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_x, m, 0, 0);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_y, m, 0, 0);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_z, m, 0, 0);
+	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_x, 0, 0, m);
+	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_y, 0, 0, m);
+	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_z, 0, 0, m);
 
 	//loads
 	model.boundary()->add_load_case(1, fea::mesh::nodes::dof::translation_z, -m * g);

@@ -207,7 +207,7 @@ void equations::gravity::orbity_newmark(const double* m, const double* x0, const
 		save(x, v, t, n, results);
 	}
 	//results
-	std::FILE* file = fopen("models/equations/gravity/orbity.txt", "w");
+	std::FILE* file = fopen("../models/equations/gravity/orbity.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 	//delete
@@ -274,7 +274,7 @@ void equations::gravity::orbity_runge_kutta(const double* m, const double* x0, c
 		step++;
 	}
 	//results
-	std::FILE* file = fopen("models/equations/gravity/orbity.txt", "w");
+	std::FILE* file = fopen("../models/equations/gravity/orbity.txt", "w");
 	fprintf(file, results.c_str());
 	fclose(file);
 	//delete

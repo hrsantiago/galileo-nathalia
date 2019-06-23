@@ -5,7 +5,7 @@
 #include "misc/defs.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
@@ -51,7 +51,7 @@ void tests::bar::dynamic_nonlinear::double_pendulum_2D(void)
 	const double u2 = l1 * sin(t1) + l2 * sin(t2);
 	const double v2 = l1 * (1 - cos(t1)) + l2 * (1 - cos(t2));
 	
-	const unsigned n = 2;
+	const unsigned n = 20;
 
 	//nodes
 	model.mesh()->add_node(0,   0, 0);
@@ -99,7 +99,7 @@ void tests::bar::dynamic_nonlinear::double_pendulum_2D(void)
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::dynamic_nonlinear);
-	dynamic_cast<fea::analysis::solvers::Dynamic_Nonlinear*> (model.analysis()->solver())->step_max(1000);
+	dynamic_cast<fea::analysis::solvers::Dynamic_Nonlinear*> (model.analysis()->solver())->step_max(10000);
 	dynamic_cast<fea::analysis::solvers::Dynamic_Nonlinear*> (model.analysis()->solver())->time_max(2 * M_PI * n * sqrt(lt / g));
 	dynamic_cast<fea::analysis::solvers::Dynamic_Nonlinear*> (model.analysis()->solver())->watch_dof(2, fea::mesh::nodes::dof::translation_y);
 	dynamic_cast<fea::analysis::solvers::Dynamic_Nonlinear*> (model.analysis()->solver())->integration(fea::analysis::solvers::integration::newmark);

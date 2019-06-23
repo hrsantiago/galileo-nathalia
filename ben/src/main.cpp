@@ -2,12 +2,14 @@
 #include <ctime>
 #include <cstdio>
 #include <string>
+#include <vector>
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
 
 #include "linear/dense.h"
 #include "linear/linear.h"
+#include "misc/rotation.h"
 
 #include "equations/equations.h"
 #include "benchmarks/benchmarks.h"
@@ -22,12 +24,17 @@ int main(int, char*[])
 
 //	tests::bar::static_nonlinear::tent_unit();
 //	tests::bar::static_nonlinear::tent_roof();
+	tests::bar::static_nonlinear::dome_star();
 //	tests::bar::dynamic_nonlinear::tent_roof();
+//	tests::bar::dynamic_nonlinear::single_pendulum_2D();
+//	tests::bar::dynamic_nonlinear::single_pendulum_3D();
 //	tests::bar::dynamic_nonlinear::double_pendulum_2D();
 
 //	tests::beam::static_nonlinear::elastic::frame_lee();
 //	tests::beam::static_nonlinear::elastic::hockling_cable();
+//	tests::beam::static_nonlinear::elastic::frame_buckling();
 //	tests::beam::static_nonlinear::elastic::column_buckling();
+//	tests::beam::static_nonlinear::elastic::cantilever_tip_moment();
 
 //	tests::beam::static_nonlinear::inelastic::steel::point_test_3();
 //	tests::beam::static_nonlinear::inelastic::steel::point_test_4();
@@ -64,7 +71,7 @@ int main(int, char*[])
 //	tests::deployable::static_nonlinear::arch_polar();
 //	tests::deployable::static_nonlinear::arch_trans();
 
-	tests::tensegrity::static_nonlinear::pentagon();
+//	tests::tensegrity::static_nonlinear::pentagon();
 
 //	tests::solid::static_linear::axial();
 //	tests::solid::static_linear::hinge();
