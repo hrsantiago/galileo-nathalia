@@ -1,5 +1,6 @@
 //std
 #include <cmath>
+#include <algorithm>
 
 //gl
 #include <GL/gl.h>
@@ -8,7 +9,7 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"
@@ -270,7 +271,7 @@ namespace fea
 			const double xi = limit(0, false);
 			const double yi = limit(1, false);
 			const double zi = limit(2, false);
-			return sqrt(pow(xj - xi, 2) + pow(yj - yi, 2) + pow(yj - yi, 2));
+			return sqrt(pow(xj - xi, 2) + pow(yj - yi, 2) + pow(zj - zi, 2));
 		}
 		double Mesh::limit(unsigned d, bool t) const
 		{

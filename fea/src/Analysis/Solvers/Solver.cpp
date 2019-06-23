@@ -5,7 +5,7 @@
 #include <umfpack.h>
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
@@ -210,6 +210,7 @@ namespace fea
 			{
 				m_watch_dof->m_dof = dof;
 				m_watch_dof->m_node = node;
+				return m_watch_dof;
 			}
 
 			//name
@@ -479,6 +480,10 @@ namespace fea
 				if(umfpack_di_symbolic(n, n, c, r, K, &m_sym, nullptr, nullptr) == UMFPACK_OK)
 				{
 					return umfpack_di_numeric(c, r, K, m_sym, &m_num, nullptr, nullptr) == UMFPACK_OK;
+				}
+				else
+				{
+					return false;
 				}
 			}
 			bool Solver::linsub(double* x, const double* K, const double* f)

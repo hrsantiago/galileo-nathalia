@@ -182,8 +182,12 @@ namespace fea
 			{
 				switch(load->type())
 				{
-					case boundary::loads::type::plane_edge: return load_edge(f, (const boundary::loads::Plane_Edge*) load);
-					case boundary::loads::type::plane_face: return load_face(f, (const boundary::loads::Plane_Face*) load);
+					case boundary::loads::type::plane_edge: 
+						return load_edge(f, (const boundary::loads::Plane_Edge*) load);
+					case boundary::loads::type::plane_face: 
+						return load_face(f, (const boundary::loads::Plane_Face*) load);
+					default:
+						return nullptr;
 				}
 			}
 			double* Plane::load_edge(double* f, const boundary::loads::Plane_Edge* load) const

@@ -7,7 +7,7 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
@@ -171,32 +171,20 @@ namespace fea
 		//data
 		double Support::state(double t) const
 		{
-			//node
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
-			//solver
-			const analysis::solvers::Solver* solver = m_boundary->model()->analysis()->solver();
-			//state
+			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
 			return m_fix ? m_state(t) : m_boundary->model()->mesh()->node(m_node)->m_state_new[p];
 		}
 		double Support::velocity(double t) const
 		{
-			//node
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
-			//solver
-			const analysis::solvers::Solver* solver = m_boundary->model()->analysis()->solver();
-			//velocity
+			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
 			return m_fix ? m_velocity(t) : m_boundary->model()->mesh()->node(m_node)->m_velocity_new[p];
 		}
 		double Support::acceleration(double t) const
 		{
-			//node
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
-			//solver
-			const analysis::solvers::Solver* solver = m_boundary->model()->analysis()->solver();
-			//acceleration
+			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
 			return m_fix ? m_acceleration(t) : m_boundary->model()->mesh()->node(m_node)->m_acceleration_new[p];
 		}
 
@@ -219,7 +207,7 @@ namespace fea
 				//state set
 				const unsigned ss = solver->state_set();
 				//apply
-				const char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+				const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
 				if(ss & (unsigned) analysis::solvers::state::u)
 				{
 					node->m_state_new[p] = m_state(t);

@@ -1,3 +1,6 @@
+//std
+#include <algorithm>
+
 //mat
 #include "misc/util.h"
 
@@ -10,7 +13,7 @@
 #include "Mesh/Elements/States.h"
 #include "Mesh/Elements/Elements.h"
 
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 namespace fea
 {
@@ -99,10 +102,17 @@ namespace fea
 					case elements::type::solid:
 						element = base ? new Solid(*(Solid*) base) : new Solid;
 						break;
+					default:
+						element = nullptr;
 				}
 			}
 
 			//data
+			Mesh* Element::mesh(void)
+			{
+				return m_mesh;
+			}
+			
 			cells::Cell* Element::cell(void) const
 			{
 				return m_mesh->cell(m_cell);
@@ -111,6 +121,7 @@ namespace fea
 			{
 				return m_mesh->cell(m_cell = cell);
 			}
+			
 			nodes::Node* Element::node(unsigned index) const
 			{
 				return m_mesh->node(m_nodes[index]);
@@ -119,6 +130,7 @@ namespace fea
 			{
 				return m_mesh->node(m_nodes[index] = node);
 			}
+			
 			materials::Material* Element::material(void) const
 			{
 				return m_mesh->material(m_material);
@@ -150,21 +162,29 @@ namespace fea
 				switch(type)
 				{
 					case elements::type::bar:
-						return "bar";
+						return "Bar";
 					case elements::type::rope:
-						return "rope";
+						return "Rope";
 					case elements::type::heat:
-						return "heat";
+						return "Heat";
 					case elements::type::cable:
-						return "cable";
+						return "Cable";
 					case elements::type::beam2:
-						return "beam2";
+						return "Beam2";
 					case elements::type::beam3:
-						return "beam3";
+						return "Beam3";
 					case elements::type::plane:
-						return "plane";
+						return "Plane";
+					case elements::type::plate:
+						return "Plate";
+					case elements::type::shell:
+						return "Shell";
 					case elements::type::solid:
-						return "solid";
+						return "Solid";
+					case elements::type::membrane:
+						return "Membrane";
+					default:
+						return "";
 				}
 			}
 
@@ -201,14 +221,7 @@ namespace fea
 			//index
 			unsigned Element::index(void) const
 			{
-				for(unsigned i = 0; i < m_mesh->elements(); i++)
-				{
-					if(m_mesh->element(i) == this)
-					{
-						return i;
-					}
-				}
-				return 0;
+				return distance(m_mesh->m_elements.begin(), find(m_mesh->m_elements.begin(), m_mesh->m_elements.end(), this));
 			}
 			unsigned Element::index_cell(void) const
 			{

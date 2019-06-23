@@ -7,7 +7,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/Gradient.h"
@@ -53,6 +53,12 @@ namespace fea
 			sections::Section* Line::section(unsigned section)
 			{
 				return m_mesh->section(m_section = section);
+			}
+			
+			//index
+			unsigned Line::index_section(void) const
+			{
+				return m_section;
 			}
 
 			//topology
@@ -121,8 +127,6 @@ namespace fea
 				const unsigned ne = m_mesh->elements();
 				//element
 				elements::Element* element = m_mesh->element(index);
-				//type
-				const elements::type type = element->type();
 				//coordinates
 				const double* xi = element->node(0)->coordinates();
 				const double* xj = element->node(1)->coordinates();

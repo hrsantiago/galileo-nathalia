@@ -61,7 +61,6 @@ namespace fea
 				const unsigned nu = m_analysis->assembler()->dof_unknow();
 				//data
 				double a = 0, b = 0, c = 0, s = 0;
-				const double dl = solver->load_increment();
 				const double* du = solver->state_increment();
 				const double* ddur = solver->state_corrector_residue();
 				const double* ddut = solver->state_corrector_tangent();

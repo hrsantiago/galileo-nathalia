@@ -53,11 +53,13 @@ namespace fea
 				friend class mesh::Mesh;
 				friend class mesh::joints::Joint;
 				friend class mesh::elements::Element;
+				
 				friend class boundary::Initial;
 				friend class boundary::Support;
 				friend class boundary::Constraint;
 				friend class boundary::Dependency;
 				friend class boundary::loads::Node;
+				
 				friend class analysis::Assembler;
 				friend class analysis::solvers::Solver;
 
@@ -74,6 +76,8 @@ namespace fea
 
 			public:
 				//data
+				static Mesh* mesh(void);
+				
 				const double* coordinates(void) const;
 				const double* coordinates(const double*);
 				const double* coordinates(double, unsigned);

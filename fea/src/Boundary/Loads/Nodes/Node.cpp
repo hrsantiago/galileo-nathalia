@@ -7,7 +7,7 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"

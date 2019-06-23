@@ -8,7 +8,7 @@ namespace fea
 		namespace materials
 		{
 			//constructors
-			Heat::Heat(void) : m_condutivity(1), m_capacity(1)
+			Heat::Heat(void) : m_capacity(1), m_condutivity(1)
 			{
 				return;
 			}
@@ -44,7 +44,7 @@ namespace fea
 			}
 			double Heat::capacity(double capacity)
 			{
-				m_capacity = capacity;
+				return m_capacity = capacity;
 			}
 			double Heat::condutivity(void) const
 			{
@@ -52,7 +52,7 @@ namespace fea
 			}
 			double Heat::condutivity(double condutivity)
 			{
-				m_condutivity = condutivity;
+				return m_condutivity = condutivity;
 			}
 			
 		}

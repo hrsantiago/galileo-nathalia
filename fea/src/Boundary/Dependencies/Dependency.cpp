@@ -2,6 +2,8 @@
 #include "misc/util.h"
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Nodes/Node.h"
@@ -14,19 +16,17 @@
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Solver.h"
 
-#include "Models/Model.h"
-
 namespace fea
 {
 	namespace boundary
 	{
 		//constructors
 		Dependency::Dependency(void) :
-		m_state([] (double* d) { return d[0]; }), 
-		m_gradient([] (double*, unsigned) { return 1; }), 
-		m_hessian([] (double*, unsigned, unsigned) { return 0; }),
-		m_slave_node(0), m_slave_dof_index(0), m_slave_dof(mesh::nodes::dof::translation_x),
-		m_masters_node({ 0 }), m_masters_dof_index({ 0 }), m_masters_dof({ mesh::nodes::dof::translation_y })
+			m_state([] (double* d) { return d[0]; }), 
+			m_gradient([] (double*, unsigned) { return 1; }), 
+			m_hessian([] (double*, unsigned, unsigned) { return 0; }),
+			m_slave_node(0), m_slave_dof_index(0), m_slave_dof(mesh::nodes::dof::translation_x),
+			m_masters_node({ 0 }), m_masters_dof_index({ 0 }), m_masters_dof({ mesh::nodes::dof::translation_y })
 		{
 			return;
 		}
@@ -282,8 +282,8 @@ namespace fea
 		{
 			//slave data
 			const mesh::nodes::Node* ns = slave_node();
-			const char ps = mat::bit_find(ns->m_dof_types, (unsigned) m_slave_dof);
 			double* nd[] = {ns->m_state_new, ns->m_velocity_new, ns->m_acceleration_new};
+			const unsigned char ps = mat::bit_find(ns->m_dof_types, (unsigned) m_slave_dof);
 			//master data
 			const unsigned n = m_masters_dof.size();
 			//solver set

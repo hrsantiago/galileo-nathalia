@@ -47,12 +47,17 @@ namespace fea
 			public:
 				//type
 				virtual cells::type type(void) const = 0;
+				
+				//index
+				unsigned index(void) const;
 
 				//name
 				static const char* name(cells::type);
 				virtual const char* name(void) const;
 
 				//data
+				static Mesh* mesh(void);
+				
 				unsigned rule(void) const;
 				unsigned rule(unsigned);
 				

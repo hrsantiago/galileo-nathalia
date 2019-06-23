@@ -131,6 +131,7 @@ namespace fea
 							case 1: return j == 0 ? 0 : j == 1 ? -y[2] : +y[1];
 							case 2: return j == 1 ? 0 : j == 2 ? -y[0] : +y[2];
 							case 3: return j == 2 ? 0 : j == 0 ? -y[1] : +y[0];
+							default: return (double) 0;
 						}
 					};
 					dux->gradient([gu] (double* d, unsigned i) { return gu(d, i, 0); });

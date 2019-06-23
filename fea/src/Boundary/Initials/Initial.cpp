@@ -2,7 +2,7 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
@@ -120,7 +120,7 @@ namespace fea
 		{
 			//node
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
 			//solver
 			analysis::solvers::Solver* solver = m_boundary->model()->analysis()->solver();
 			const unsigned solver_set = solver->state_set();

@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstring>
 #include <GL/gl.h>
+#include <algorithm>
 
 //fea
 #include "Mesh/Mesh.h"
@@ -72,6 +73,8 @@ namespace fea
 						return section = base ? new T(*(T*) base) : new T;
 					case sections::type::I:
 						return section = base ? new I(*(I*) base) : new I;
+					default:
+						return section = nullptr;
 				}
 			}
 			
@@ -98,10 +101,17 @@ namespace fea
 						return "T";
 					case sections::type::I:
 						return "I";
+					default:
+						return "";
 				}
 			}
 			
 			//data
+			Mesh* Section::mesh(void)
+			{
+				return m_mesh;
+			}
+			
 			Rebar& Section::rebar(unsigned index)
 			{
 				return m_rebars[index];
@@ -134,14 +144,7 @@ namespace fea
 			//index
 			unsigned Section::index(void) const
 			{
-				for(unsigned i = 0; i < m_mesh->sections(); i++)
-				{
-					if(m_mesh->section(i) == this)
-					{
-						return i;
-					}
-				}
-				return 0;
+				return distance(m_mesh->m_sections.begin(), find(m_mesh->m_sections.begin(), m_mesh->m_sections.end(), this));
 			}
 
 			//analysis

@@ -7,7 +7,7 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"
@@ -337,6 +337,19 @@ namespace fea
 			return add_self_weight(label, s[p < 3 ? p : 2], g);
 		}
 		
+		Dependency* Boundary::add_dependency(unsigned ns, mesh::nodes::dof ds, unsigned nm, mesh::nodes::dof dm, double a, double b)
+		{
+			Dependency* dependency = new Dependency;
+			dependency->m_slave_dof = ds;
+			dependency->m_slave_node = ns;
+			dependency->m_masters_dof = { dm };
+			dependency->m_masters_node = { nm };
+			dependency->m_state = [a, b] (double* d) { return a * d[0] + b; };
+			dependency->m_gradient = [a] (double*, unsigned) { return a; };
+			dependency->m_hessian = [] (double*, unsigned, unsigned) { return 0; };
+			m_dependencies.push_back(dependency);
+			return dependency;
+		}
 		Dependency* Boundary::add_dependency(unsigned ns, mesh::nodes::dof ds, std::vector<unsigned> nm, std::vector<mesh::nodes::dof> dm)
 		{
 			Dependency* dependency = new Dependency;

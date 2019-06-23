@@ -1,5 +1,5 @@
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Time.h"
@@ -31,7 +31,7 @@ namespace fea
 			}
 			
 			//constructors
-			Time::Time(void) : m_time_adjust(false), m_euller(1), m_damping((unsigned) solvers::damping::formulation)
+			Time::Time(void) : m_time_adjust(false), m_damping((unsigned) solvers::damping::formulation), m_euller(1)
 			{
 				return;
 			}

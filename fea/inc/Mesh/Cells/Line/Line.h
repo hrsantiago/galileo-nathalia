@@ -34,6 +34,9 @@ namespace fea
 				//data
 				sections::Section* section(void) const;
 				sections::Section* section(unsigned);
+				
+				//index
+				unsigned index_section(void) const;
 
 				//topology
 				virtual unsigned faces(void) const override;

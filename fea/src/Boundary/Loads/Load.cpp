@@ -35,7 +35,7 @@ namespace fea
 			}
 			double Load::value(double value)
 			{
-				m_value = value;
+				return m_value = value;
 			}
 			std::function<double(double)> Load::function(void) const
 			{
@@ -43,7 +43,7 @@ namespace fea
 			}
 			std::function<double(double)> Load::function(std::function<double(double)> function)
 			{
-				m_function = function;
+				return m_function = function;
 			}
 
 			//static attributes

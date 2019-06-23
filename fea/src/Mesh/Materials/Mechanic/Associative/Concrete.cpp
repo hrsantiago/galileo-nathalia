@@ -19,7 +19,7 @@ namespace fea
 			//constructors
 			Concrete::Concrete(void) :
 			m_softening(50), m_break_strain(9e-3), m_elastic_modulus(26.1e9), 
-			m_yield_stress_compression(30e6), m_yield_stress_biaxial(50e6), m_yield_stress_tension(3e6)
+			m_yield_stress_tension(3e6), m_yield_stress_biaxial(50e6), m_yield_stress_compression(30e6)
 			{
 				m_specific_mass = 2.5e3;
 			}
@@ -40,7 +40,8 @@ namespace fea
 					&m_elastic_modulus,
 					&m_yield_stress_tension,
 					&m_yield_stress_biaxial,
-					&m_yield_stress_compression);
+					&m_yield_stress_compression
+				);
 			}
 			void Concrete::save(FILE* file) const
 			{
@@ -51,7 +52,8 @@ namespace fea
 					m_elastic_modulus,
 					m_yield_stress_tension,
 					m_yield_stress_biaxial,
-					m_yield_stress_compression);
+					m_yield_stress_compression
+				);
 			}
 
 			//type

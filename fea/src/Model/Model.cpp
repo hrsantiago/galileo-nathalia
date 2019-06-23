@@ -8,7 +8,7 @@
 #include <boost/filesystem/operations.hpp>
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/Colors.h"
@@ -27,10 +27,10 @@ namespace fea
 	namespace models
 	{
 		//constructors
-		Model::Model(std::string name, std::string path) :
+		Model::Model(std::string name, std::string path, plot::Plot* plot) :
 		m_name(name),
+		m_plot(plot),
 		m_saved(true),
-		m_plot(nullptr),
 		m_mesh(new mesh::Mesh),
 		m_boundary(new boundary::Boundary),
 		m_topology(new topology::Topology),
@@ -44,7 +44,7 @@ namespace fea
 			//locale
 			std::setlocale(LC_ALL, "en_US.UTF-8");
 			//set path
-			m_path = boost::filesystem::current_path().string() + "/models" + (path.empty() ? "" : ("/" + path));
+			m_path = boost::filesystem::current_path().string() + "/../models" + (path.empty() ? "" : ("/" + path));
 			//print header
 			Model::header();
 		}
@@ -74,7 +74,7 @@ namespace fea
 			//check
 			if(!file)
 			{
-				printf("\tUnable to open file for load!\n");
+				printf("\tUnable to open load file!\n");
 				printf("*******************************************************************************\n");
 				return false;
 			}
@@ -108,7 +108,7 @@ namespace fea
 			//check
 			if(!file)
 			{
-				printf("\tUnable of open file for save!\n");
+				printf("\tUnable of open save file!\n");
 				printf("*******************************************************************************\n");
 				return false;
 			}
@@ -130,6 +130,10 @@ namespace fea
 		}
 
 		//data
+		void Model::mark(void)
+		{
+			m_saved = false;
+		}
 		bool Model::saved(void) const
 		{
 			return m_saved;
@@ -208,13 +212,11 @@ namespace fea
 		{
 			//time
 			time_t t = time(0);
-			//local time
 			tm* c = localtime(&t);
 			//header
 			printf("*********************************   GALILEO   *********************************\n");
 			printf("Description:\n");
-			printf("\tGALILEO is a finite element software for the static and dynamic\n");
-			printf("\tnonlinear analysis of structures\n");
+			printf("\tGALILEO: static and dynamic nonlinear finite element software\n");
 			printf("Version:\n");
 			printf("\t 0.01 \"Ferris Bueller's day off\"\n");
 			printf("Date:\n");
@@ -224,13 +226,9 @@ namespace fea
 			printf("Path:\n");
 			printf("\t%s\n", m_path.c_str());
 			printf("Author:\n");
-			printf("\tMurillo Vinicius Bento Santana\t\t(DEC - PUC - Rio)\n");
-			printf("Colaborators:\n");
-			printf("\tPeter Zoltan Berke\t\t\t(BATir - ULB)\n");
-			printf("\tPaulo Batista Goncalves\t\t\t(DEC - PUC - Rio)\n");
-			printf("\tRicardo Azoubel da Mota Silveira\t(DECIV - EM - UFOP)\n");
+			printf("\tMurillo Vinicius Bento Santana\n");
 			printf("Contact:\n");
-			printf("\tmurillobento@yahoo.com.br\n");
+			printf("\tmvbentosantana@gmail.com\n");
 			printf("*******************************************************************************\n");
 		}
 		void Model::quiter(void) const

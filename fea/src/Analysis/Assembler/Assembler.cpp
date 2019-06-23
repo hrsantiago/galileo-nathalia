@@ -13,7 +13,7 @@
 #include "linear/sparse.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
@@ -110,7 +110,7 @@ namespace fea
 			//sparse format
 			const unsigned nu = m_dof_unknow;
 			const unsigned nz = m_dof_triplet;
-			const unsigned st = umfpack_di_triplet_to_col(nu, nu, nz, m_row_triplet, m_col_triplet, nullptr, m_col_map, m_row_map, nullptr, nullptr);
+			umfpack_di_triplet_to_col(nu, nu, nz, m_row_triplet, m_col_triplet, nullptr, m_col_map, m_row_map, nullptr, nullptr);
 		}
 		void Assembler::add_dof(unsigned i, unsigned j)
 		{
@@ -693,7 +693,7 @@ namespace fea
 			{
 				const double a = solver->rayleigh().alpha;
 				const double b = solver->rayleigh().beta;
-				for(unsigned i = 0; i < m_col_map[m_dof_unknow]; i++)
+				for(int i = 0; i < m_col_map[m_dof_unknow]; i++)
 				{
 					C[i] += a * M[i] + b * K[i];
 				}
@@ -992,8 +992,6 @@ namespace fea
 		}
 		void Assembler::assembly_dead_force_elements(double* Fu, double* Fk) const
 		{
-			//time
-			const double t = m_analysis->m_solver->time();
 			//load case
 			const boundary::Load_Case* load_case = m_analysis->m_model->m_boundary->m_load_cases[m_analysis->m_solver->m_dead_case];
 			//loads loop
@@ -1011,8 +1009,6 @@ namespace fea
 		
 		void Assembler::assembly_inertial_force_elements(double* Fu, double* Fk) const
 		{
-			//time
-			const double t = m_analysis->m_solver->time();
 			//elements loop
 			for(const mesh::elements::Element* element : m_analysis->m_model->m_mesh->m_elements)
 			{
@@ -1140,8 +1136,6 @@ namespace fea
 		}
 		void Assembler::assembly_reference_force_elements(double* Fu, double* Fk) const
 		{
-			//time
-			const double t = m_analysis->m_solver->time();
 			//load case
 			const boundary::Load_Case* load_case = m_analysis->m_model->m_boundary->m_load_cases[m_analysis->m_solver->m_load_case];
 			//loads loop
@@ -1159,8 +1153,6 @@ namespace fea
 		
 		void Assembler::assembly_inertia_elements(double* M) const
 		{
-			//time
-			const double t = m_analysis->m_solver->time();
 			//elements loop
 			for(const mesh::elements::Element* element : m_analysis->m_model->m_mesh->m_elements)
 			{
@@ -1185,8 +1177,6 @@ namespace fea
 		
 		void Assembler::assembly_damping_elements(double* C) const
 		{
-			//time
-			const double t = m_analysis->m_solver->time();
 			//elements loop
 			for(const mesh::elements::Element* element : m_analysis->m_model->m_mesh->m_elements)
 			{
@@ -1223,8 +1213,6 @@ namespace fea
 		}
 		void Assembler::assembly_stiffness_elements(double* K) const
 		{
-			//time
-			const double t = m_analysis->m_solver->time();
 			//elements loop
 			for(const mesh::elements::Element* element : m_analysis->m_model->m_mesh->m_elements)
 			{

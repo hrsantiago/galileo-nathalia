@@ -1,19 +1,17 @@
+//std
 #include <cstring>
 
+//fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
-
-#include "Mesh/Cells/Line/Line.h"
-
-#include "Mesh/Sections/Section.h"
-
-#include "Mesh/Elements/Mechanic/Frame/Frame.h"
-
 #include "Mesh/Points/Types.h"
+#include "Mesh/Cells/Line/Line.h"
+#include "Mesh/Sections/Section.h"
 #include "Mesh/Points/Mechanic/Fiber.h"
 #include "Mesh/Points/Mechanic/Section.h"
 #include "Mesh/Points/Mechanic/Mechanic.h"
-
-#include "Models/Model.h"
+#include "Mesh/Elements/Mechanic/Frame/Frame.h"
 
 namespace fea
 {

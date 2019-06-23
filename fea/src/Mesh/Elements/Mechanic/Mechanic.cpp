@@ -27,7 +27,7 @@ namespace fea
 			}
 			bool Mechanic::geometric(bool geometric)
 			{
-				m_geometric = geometric;
+				return m_geometric = geometric;
 			}
 			bool Mechanic::inelastic(void)
 			{
@@ -35,7 +35,7 @@ namespace fea
 			}
 			bool Mechanic::inelastic(bool inelastic)
 			{
-				m_inelastic = inelastic;
+				return m_inelastic = inelastic;
 			}
 
 			//type

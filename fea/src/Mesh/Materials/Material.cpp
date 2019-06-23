@@ -1,5 +1,8 @@
+//std
 #include <cstring>
+#include <algorithm>
 
+//fea
 #include "Mesh/Mesh.h"
 #include "Mesh/Materials/Materials.h"
 
@@ -49,10 +52,17 @@ namespace fea
 						return material = base ? new Steel(*(Steel*) base) : new Steel;
 					case materials::type::concrete:
 						return material = base ? new Concrete(*(Concrete*) base) : new Concrete;
+					default:
+						return material = nullptr;
 				}
 			}
 
 			//data
+			Mesh* Material::mesh(void)
+			{
+				return m_mesh;
+			}
+			
 			const char* Material::label(void) const
 			{
 				return m_label;
@@ -86,20 +96,15 @@ namespace fea
 						return "Steel";
 					case materials::type::concrete:
 						return "Concrete";
+					default:
+						return "";
 				}
 			}
 
 			//index
 			unsigned Material::index(void) const
 			{
-				for(unsigned i = 0; i < m_mesh->materials(); i++)
-				{
-					if(m_mesh->material(i) == this)
-					{
-						return i;
-					}
-				}
-				return 0;
+				return distance(m_mesh->m_materials.begin(), find(m_mesh->m_materials.begin(), m_mesh->m_materials.end(), this));
 			}
 
 			//analysis

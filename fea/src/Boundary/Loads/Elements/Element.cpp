@@ -1,4 +1,5 @@
-#include "Models/Model.h"
+//fea
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Elements/Element.h"
@@ -92,6 +93,8 @@ namespace fea
 						break;
 					case loads::type::heat_source:
 						break;
+					default:
+						load = nullptr;
 				}
 			}
 

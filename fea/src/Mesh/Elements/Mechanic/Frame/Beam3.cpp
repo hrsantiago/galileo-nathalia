@@ -75,7 +75,7 @@ namespace fea
 			}
 			bool Beam3::shear(bool shear)
 			{
-				m_shear = shear;
+				return m_shear = shear;
 			}
 			bool Beam3::mixed(void)
 			{
@@ -83,7 +83,7 @@ namespace fea
 			}
 			bool Beam3::mixed(bool mixed)
 			{
-				m_mixed = mixed;
+				return m_mixed = mixed;
 			}
 			
 			const double* Beam3::orientation(void) const
@@ -428,10 +428,16 @@ namespace fea
 			{
 				switch(load->type())
 				{
-					case boundary::loads::type::axial: return load_axial(f, (const boundary::loads::Axial*) load);
-					case boundary::loads::type::shear: return load_shear(f, (const boundary::loads::Shear*) load);
-					case boundary::loads::type::torsion: return load_torsion(f, (const boundary::loads::Torsion*) load);
-					case boundary::loads::type::bending: return load_bending(f, (const boundary::loads::Bending*) load);
+					case boundary::loads::type::axial: 
+						return load_axial(f, (const boundary::loads::Axial*) load);
+					case boundary::loads::type::shear: 
+						return load_shear(f, (const boundary::loads::Shear*) load);
+					case boundary::loads::type::torsion: 
+						return load_torsion(f, (const boundary::loads::Torsion*) load);
+					case boundary::loads::type::bending: 
+						return load_bending(f, (const boundary::loads::Bending*) load);
+					default:
+						return nullptr;
 				}
 			}
 			

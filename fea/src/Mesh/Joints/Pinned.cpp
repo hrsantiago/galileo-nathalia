@@ -28,7 +28,7 @@ namespace fea
 			//constructor
 			Pinned::Pinned(void) :  
 				m_fixed(false), m_clearance(1e-3), m_orientation(0), m_moment_yield(DBL_MAX),
-				m_plastic_modulus(0), m_hardening_old(0), m_hardening_new(0), m_plastic_rotation_old(0), m_plastic_rotation_new(0)
+				m_hardening_old(0), m_hardening_new(0), m_plastic_modulus(0), m_plastic_rotation_old(0), m_plastic_rotation_new(0)
 			{
 				m_stiffness[2] = 0;
 				m_stiffness[0] = 1e10;

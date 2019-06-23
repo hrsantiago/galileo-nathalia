@@ -57,6 +57,8 @@ namespace fea
 				static const char* name(sections::type);
 				
 				//data
+				static Mesh* mesh(void);
+				
 				virtual Rebar& rebar(unsigned);
 				
 				virtual const char* label(void) const;

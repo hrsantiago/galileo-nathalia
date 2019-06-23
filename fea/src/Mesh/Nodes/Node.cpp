@@ -1,6 +1,7 @@
 //std
 #include <cstring>
 #include <GL/gl.h>
+#include <algorithm>
 
 //mat
 #include "misc/util.h"
@@ -8,7 +9,7 @@
 #include "misc/rotation.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
@@ -25,9 +26,10 @@ namespace fea
 		namespace nodes
 		{
 			//constructors
-			Node::Node(void) : m_dof_types(0),
-			m_state_old(nullptr), m_velocity_old(nullptr), m_acceleration_old(nullptr),
-			m_state_new(nullptr), m_velocity_new(nullptr), m_acceleration_new(nullptr)
+			Node::Node(void) : 
+				m_dof_types(0),
+				m_state_old(nullptr), m_velocity_old(nullptr), m_acceleration_old(nullptr),
+				m_state_new(nullptr), m_velocity_new(nullptr), m_acceleration_new(nullptr)
 			{
 				memset(m_coordinates, 0, 3 * sizeof(double));
 				memset(m_rotation_old, 0, 9 * sizeof(double));
@@ -59,6 +61,11 @@ namespace fea
 			}
 
 			//data
+			Mesh* Node::mesh(void)
+			{
+				return m_mesh;
+			}
+			
 			const double* Node::coordinates(void) const
 			{
 				return m_coordinates;
@@ -83,14 +90,7 @@ namespace fea
 			//index
 			unsigned Node::index(void) const
 			{
-				for(unsigned i = 0; i < m_mesh->nodes(); i++)
-				{
-					if(m_mesh->node(i) == this)
-					{
-						return i;
-					}
-				}
-				return 0;
+				return distance(m_mesh->m_nodes.begin(), find(m_mesh->m_nodes.begin(), m_mesh->m_nodes.end(), this));
 			}
 
 			//moviment
@@ -136,7 +136,7 @@ namespace fea
 			//state
 			double Node::state(dof type, unsigned c) const
 			{
-				char p = mat::bit_find(m_dof_types, unsigned(type));
+				const unsigned char p = mat::bit_find(m_dof_types, unsigned(type));
 				if(m_state_new && m_dof_types & unsigned(type))
 				{
 					switch(c)
@@ -150,7 +150,7 @@ namespace fea
 			}
 			double Node::velocity(dof type, unsigned c) const
 			{
-				char p = mat::bit_find(m_dof_types, unsigned(type));
+				const unsigned char p = mat::bit_find(m_dof_types, unsigned(type));
 				if(m_velocity_new && m_dof_types & unsigned(type))
 				{
 					switch(c)
@@ -164,7 +164,7 @@ namespace fea
 			}
 			double Node::acceleration(dof type, unsigned c) const
 			{
-				char p = mat::bit_find(m_dof_types, unsigned(type));
+				const unsigned char p = mat::bit_find(m_dof_types, unsigned(type));
 				if(m_acceleration_new && m_dof_types & unsigned(type))
 				{
 					switch(c)

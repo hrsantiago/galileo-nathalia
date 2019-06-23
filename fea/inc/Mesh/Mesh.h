@@ -57,6 +57,13 @@ namespace fea
 		{
 		public:
 			//friends
+			friend class nodes::Node;
+			friend class cells::Cell;
+			friend class joints::Joint;
+			friend class sections::Section;
+			friend class elements::Element;
+			friend class materials::Material;
+			
 			friend class models::Model;
 			friend class boundary::Boundary;
 			friend class analysis::Assembler;
@@ -96,7 +103,7 @@ namespace fea
 			sections::Section* section(unsigned) const;
 			elements::Element* element(unsigned) const;
 			materials::Material* material(unsigned) const;
-
+			
 			//bound
 			double size(void) const;
 			double limit(unsigned, bool) const;

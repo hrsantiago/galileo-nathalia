@@ -239,9 +239,14 @@ namespace fea
 			{
 				switch(load->type())
 				{
-					case boundary::loads::type::solid_edge: return edge_force(f, (const boundary::loads::Solid_Edge*) load);
-					case boundary::loads::type::solid_face: return face_force(f, (const boundary::loads::Solid_Face*) load);
-					case boundary::loads::type::solid_body: return body_force(f, (const boundary::loads::Solid_Body*) load);
+					case boundary::loads::type::solid_edge: 
+						return edge_force(f, (const boundary::loads::Solid_Edge*) load);
+					case boundary::loads::type::solid_face: 
+						return face_force(f, (const boundary::loads::Solid_Face*) load);
+					case boundary::loads::type::solid_body: 
+						return body_force(f, (const boundary::loads::Solid_Body*) load);
+					default:
+						return nullptr;
 				}
 			}
 			double* Solid::edge_force(double* f, const boundary::loads::Solid_Edge* load) const

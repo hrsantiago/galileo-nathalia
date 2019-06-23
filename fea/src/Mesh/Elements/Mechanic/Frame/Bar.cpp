@@ -221,7 +221,10 @@ namespace fea
 			{
 				switch(load->type())
 				{
-					case boundary::loads::type::axial: return load_axial(f, (const boundary::loads::Axial*) load);
+					case boundary::loads::type::axial: 
+						return load_axial(f, (const boundary::loads::Axial*) load);
+					default:
+						return nullptr;
 				}
 			}
 			

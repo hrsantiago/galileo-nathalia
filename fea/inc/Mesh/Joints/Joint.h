@@ -58,8 +58,11 @@ namespace fea
 
 			public:
 				//data
+				static Mesh* mesh(void);
+				
 				double mass(void) const;
 				double mass(double);
+				
 				nodes::Node* node(unsigned) const;
 				nodes::Node* node(unsigned, unsigned);
 

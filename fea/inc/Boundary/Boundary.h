@@ -93,6 +93,7 @@ namespace fea
 			Load_Case* add_self_weight(const char*, const double*, double = 9.81);
 			Load_Case* add_self_weight(const char*, mesh::nodes::dof, double = 9.81);
 			
+			Dependency* add_dependency(unsigned, mesh::nodes::dof, unsigned, mesh::nodes::dof, double = 1, double = 0);
 			Dependency* add_dependency(unsigned, mesh::nodes::dof, std::vector<unsigned>, std::vector<mesh::nodes::dof>);
 
 			//remove

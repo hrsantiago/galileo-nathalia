@@ -2,7 +2,7 @@
 #include <cmath>
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Types.h"
@@ -16,7 +16,7 @@ namespace fea
 		namespace solvers
 		{
 			//static data
-			static int n;
+			static unsigned n;
 			static Assembler* assembler;
 			
 			//constructors
@@ -117,21 +117,21 @@ namespace fea
 			
 			void Minimum::compute_residue(void)
 			{
-				double f, df, d2f;
+//				double f, df;
 				n = assembler->dof_unknow();
-				for(unsigned i = 0; i < n; i++)
-				{
-					m_r[i] = m_Fiu[i] + 2 * m_penalty * f * df;
-				}
+//				for(unsigned i = 0; i < n; i++)
+//				{
+//					m_r[i] = m_Fiu[i] + 2 * m_penalty * f * df;
+//				}
 			}
 			void Minimum::compute_corrector(void)
 			{
-				double f, df, d2f;
-				n = assembler->dof_unknow();
-				for(unsigned i = 0; i < n; i++)
-				{
-					m_r[i] = m_Fiu[i] + 2 * m_penalty * f * df;
-				}
+//				double f, df;
+//				n = assembler->dof_unknow();
+//				for(unsigned i = 0; i < n; i++)
+//				{
+//					m_r[i] = m_Fiu[i] + 2 * m_penalty * f * df;
+//				}
 			}
 		}
 	}

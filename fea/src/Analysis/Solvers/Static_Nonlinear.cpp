@@ -7,7 +7,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Types.h"
@@ -23,17 +23,17 @@ namespace fea
 		namespace solvers
 		{
 			//static data
-			static int n;
+			static unsigned n;
 			static Assembler* assembler;
 			
 			//constructors
 			Static_Nonlinear::Static_Nonlinear(void) :
-			m_frequencies(false), m_branch_switch(false), m_bifurcation_count(0U), m_bifurcation_track(1U),
-			m_load_adjust(false), m_load_factor(1), m_load_min(-DBL_MAX), m_load_max(+DBL_MAX),
-			m_load_increment_min(0), m_load_increment_max(DBL_MAX),
-			m_state_increment_min(0), m_state_increment_max(1e100),
-			m_strategy(new strategies::Arc_Length_Cylindric),
-			m_mode_injection(1e2)
+				m_frequencies(false), m_load_adjust(false), m_branch_switch(false), 
+				m_load_min(-DBL_MAX), m_load_max(+DBL_MAX), m_load_factor(1), m_mode_injection(1e2), 
+				m_load_increment_min(0), m_load_increment_max(DBL_MAX),
+				m_state_increment_min(0), m_state_increment_max(1e100),
+				m_bifurcation_count(0U), m_bifurcation_track(1U),
+				m_strategy(new strategies::Arc_Length_Cylindric)
 			{
 				return;
 			}

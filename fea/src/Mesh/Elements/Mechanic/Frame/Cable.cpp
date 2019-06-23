@@ -107,12 +107,12 @@ namespace fea
 			void Cable::apply(void)
 			{
 				//length
-				double L = 0, l = 0;
 				double pi[3], pj[3];
+				double L = 0, l = 0;
 				for(unsigned i = 1; i < m_nodes.size(); i++)
 				{
 					const double* xi = node(i - 1)->position(pi);
-					const double* xj = node(i + 0)->position(pi);
+					const double* xj = node(i + 0)->position(pj);
 					const double* Xi = node(i - 1)->coordinates();
 					const double* Xj = node(i + 0)->coordinates();
 					for(unsigned j = 0; j < 3; j++)

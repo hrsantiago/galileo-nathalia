@@ -49,6 +49,8 @@ namespace fea
 					case strategies::type::orthogonal_residue:
 						strategy = new Orthogonal_Residue;
 						break;
+					default:
+						strategy = nullptr;
 				}
 			}
 

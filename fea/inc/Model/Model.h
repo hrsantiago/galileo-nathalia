@@ -36,7 +36,7 @@ namespace fea
 			friend class analysis::Assembler;
 
 			//constructors
-			Model(std::string = "Model", std::string = "");
+			Model(std::string = "Model", std::string = "", plot::Plot* = nullptr);
 
 			//destructor
 			virtual ~Model(void);
@@ -46,6 +46,7 @@ namespace fea
 			bool save(std::string = "");
 
 			//data
+			void mark(void);
 			bool saved(void) const;
 			
 			std::string path(void) const;

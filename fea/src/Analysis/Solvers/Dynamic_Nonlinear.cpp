@@ -5,7 +5,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Types.h"
@@ -19,7 +19,7 @@ namespace fea
 		namespace solvers
 		{
 			//static data
-			static int n;
+			static unsigned n;
 			static double b, g;
 			static double *un, *vn;
 			static Assembler* assembler;
@@ -63,7 +63,7 @@ namespace fea
 			}
 			bool Dynamic_Nonlinear::frequencies(bool frequencies)
 			{
-				m_frequencies = frequencies;
+				return m_frequencies = frequencies;
 			}
 			solvers::integration Dynamic_Nonlinear::integration(void) const
 			{
@@ -71,7 +71,7 @@ namespace fea
 			}
 			solvers::integration Dynamic_Nonlinear::integration(solvers::integration integration)
 			{
-				m_integration = integration;
+				return m_integration = integration;
 			}
 			
 			//type

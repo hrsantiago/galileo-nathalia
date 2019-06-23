@@ -247,6 +247,8 @@ namespace fea
 						return load_shear(f, (const boundary::loads::Shear*) load);
 					case boundary::loads::type::bending:
 						return load_bending(f, (const boundary::loads::Bending*) load);
+					default:
+						return nullptr;
 				}
 			}
 			double* Beam2::load_axial(double* f, const boundary::loads::Axial* load) const
@@ -420,6 +422,8 @@ namespace fea
 				m_k[4] = m_k[8] = k1;
 				m_k[5] = m_k[7] = k2;
 				m_k[1] = m_k[2] = m_k[3] = m_k[6] = 0;
+				//return
+				return m_f;
 			}
 			double* Beam2::local_inter(const double* u, double L, double A, double I, double w, double m)
 			{
@@ -460,76 +464,80 @@ namespace fea
 						Km += L * p * a / 2 * mat::mix(Bm, Cm, false);
 					}
 				}
+				//return
+				return m_f;
 			}
 			double* Beam2::local_mixed(const double* u, double L, double A, double I)
 			{
-				//data
-				bool test = true;
-				const unsigned q = 10;
-				const unsigned n = m_shear ? 2 : 1;
-				const unsigned m = m_shear ? 3 : 2;
-				double x, r[3], C[4], h[6], sp[2], ep[2], sr[2];
-				double b[9], F[9], e[3 * q], s[3 * q], k[9 * q], f[9 * q];
-				//matrices
-				mat::vector um(u, 3), fm(m_f, 3), em(ep, n), sm(sp, n);
-				mat::matrix hm(h, n, m), Fm(F, 3, 3), Km(m_k, 3, 3);
-				//loop
-				while(true)
-				{
-					memset(r, 0, 3 * sizeof(double));
-					memset(F, 0, 9 * sizeof(double));
-					memset(e, 0, 3 * q * sizeof(double));
-					memset(s, 0, 3 * q * sizeof(double));
-					memset(k, 0, 9 * q * sizeof(double));
-					for(unsigned i = 0; i < cell()->rule(); i++)
-					{
-						mat::matrix km(k + 9 * i, 3, 3);
-						const double p = cell()->point(&x, i);
-						b[0] = 1;	b[3] = 0;			b[6] = 0;
-						b[1] = 0;	b[4] = (x - 1) / 2;	b[7] = -1 / L;
-						b[2] = 0;	b[5] = (x + 1) / 2;	b[8] = -1 / L;
-						for(points::Fiber& fiber : ((points::Section*) m_points[i])->m_fibers)
-						{
-							//fiber data
-							const double a = fiber.m_area;
-							const double y = fiber.m_position_y;
-							h[0] = 1;	h[2] = -y;	h[4] = 0;
-							h[1] = 0;	h[3] = 0;	h[5] = 1;
-							//strain
-							ep[1] = e[3 * i + 2];
-							ep[0] = e[3 * i + 0] - y * e[3 * i + 1];
-							//residual stress
-							sr[1] = -2 * m_ma / L / A;
-							sr[0] = m_nr / A - (m_mr + m_ma * x) * y / I;
-							//return mapping
-							((materials::Mechanic*) material())->return_mapping(sp, C, ep, sr, fiber.m_point);	
+//				//data
+//				bool test = true;
+//				const unsigned q = 10;
+//				const unsigned n = m_shear ? 2 : 1;
+//				const unsigned m = m_shear ? 3 : 2;
+//				double x, r[3], C[4], h[6], sp[2], ep[2], sr[2];
+//				double b[9], F[9], e[3 * q], s[3 * q], k[9 * q], f[9 * q];
+//				//matrices
+//				mat::vector um(u, 3), fm(m_f, 3), em(ep, n), sm(sp, n);
+//				mat::matrix hm(h, n, m), Fm(F, 3, 3), Km(m_k, 3, 3);
+//				//loop
+//				while(true)
+//				{
+//					memset(r, 0, 3 * sizeof(double));
+//					memset(F, 0, 9 * sizeof(double));
+//					memset(e, 0, 3 * q * sizeof(double));
+//					memset(s, 0, 3 * q * sizeof(double));
+//					memset(k, 0, 9 * q * sizeof(double));
+//					for(unsigned i = 0; i < cell()->rule(); i++)
+//					{
+//						mat::matrix km(k + 9 * i, 3, 3);
+//						const double p = cell()->point(&x, i);
+//						b[0] = 1;	b[3] = 0;			b[6] = 0;
+//						b[1] = 0;	b[4] = (x - 1) / 2;	b[7] = -1 / L;
+//						b[2] = 0;	b[5] = (x + 1) / 2;	b[8] = -1 / L;
+//						for(points::Fiber& fiber : ((points::Section*) m_points[i])->m_fibers)
+//						{
+//							//fiber data
+//							const double a = fiber.m_area;
+//							const double y = fiber.m_position_y;
+//							h[0] = 1;	h[2] = -y;	h[4] = 0;
+//							h[1] = 0;	h[3] = 0;	h[5] = 1;
+//							//strain
+//							ep[1] = e[3 * i + 2];
+//							ep[0] = e[3 * i + 0] - y * e[3 * i + 1];
+//							//residual stress
+//							sr[1] = -2 * m_ma / L / A;
+//							sr[0] = m_nr / A - (m_mr + m_ma * x) * y / I;
+//							//return mapping
+//							((materials::Mechanic*) material())->return_mapping(sp, C, ep, sr, fiber.m_point);	
 //							sm += A * f * hm.t() * sp;
 //							km += A * f * hm.t() * Cm * hm;
-						}
+//						}
 //						fm = arma::inv(km);
 //						Fm += 0.5 * L * p * bm * fm * bm.t();
 //						rm += 0.5 * L * p * bm * (fm * sm - em);
-					}
-					test = true;
+//					}
+//					test = true;
 //					Kt = arma::inv(Fm);
 //					Fi = Kt * (ul + rm);
-					memset(r, 0, 3 * sizeof(double));
-					for(unsigned i = 0; i < cell()->rule(); i++)
-					{
-						points::Section* point = ((points::Section*) m_points[i]);
-						const double p = cell()->point(&x, i);
-						b[0] = 1;	b[3] = 0;								b[6] = 0;
-						b[1] = 0;	b[4] = m_shear ? -1 / L : x / L - 1;	b[7] = x / L - 1;
-						b[2] = 0;	b[5] = m_shear ? -1 / L : x / L;		b[8] = x / L;
+//					memset(r, 0, 3 * sizeof(double));
+//					for(unsigned i = 0; i < cell()->rule(); i++)
+//					{
+//						points::Section* point = ((points::Section*) m_points[i]);
+//						const double p = cell()->point(&x, i);
+//						b[0] = 1;	b[3] = 0;								b[6] = 0;
+//						b[1] = 0;	b[4] = m_shear ? -1 / L : x / L - 1;	b[7] = x / L - 1;
+//						b[2] = 0;	b[5] = m_shear ? -1 / L : x / L;		b[8] = x / L;
 //						em += fm * (bm.t() * Fi - sm);
 //						rm += L * p * bm * em / 2;
 //						test = test && arma::norm(sm - bm.t() * Fi) <= 1e-5 * arma::norm(sm);
-					}
-					if(test && mat::norm(u, r, 3) <= 1e-5 * mat::norm(u, 3))
-					{
-						break;
-					}
-				}
+//					}
+//					if(test && mat::norm(u, r, 3) <= 1e-5 * mat::norm(u, 3))
+//					{
+//						break;
+//					}
+//				}
+				//return
+				return m_f;
 			}
 
 			//static attributes

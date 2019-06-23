@@ -153,7 +153,6 @@ namespace fea
 			{
 				const double w = m_width;
 				const double h = m_height;
-				const double t = m_thickness;
 				const double n = w / h;
 				const double d1 = 12 + 72 * n + 150 * pow(n, 2) + 90 * pow(n, 3);
 				const double d2 = 11 + 66 * n + 135 * pow(n, 2) + 90 * pow(n, 3);
@@ -163,7 +162,6 @@ namespace fea
 			double Box::shear_coefficient_z(double v) const
 			{
 				const double w = m_width;
-				const double t = m_thickness;
 				const double h = m_height;
 				const double n = w / h;
 				const double d1 = 12 + 72 * n + 150 * pow(n, 2) + 90 * pow(n, 3);

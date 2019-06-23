@@ -41,6 +41,8 @@ namespace fea
 
 			public:
 				//data
+				static Mesh* mesh(void);
+				
 				virtual const char* label(void) const;
 				virtual const char* label(const char*);
 				

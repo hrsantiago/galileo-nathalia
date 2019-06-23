@@ -30,23 +30,23 @@ namespace fea
 			{
 				Material::load(file);
 				fscanf(file, "%lf %lf %lf %lf %lf",
-							&m_elastic_modulus,
-							&m_poisson_ratio,
-							&m_yield_stress,
-							&m_break_stress,
-							&m_break_strain
-							);
+					&m_elastic_modulus,
+					&m_poisson_ratio,
+					&m_yield_stress,
+					&m_break_stress,
+					&m_break_strain
+				);
 			}
 			void Steel::save(FILE* file) const
 			{
 				Material::save(file);
 				fprintf(file, "%+.6e %+.6e %+.6e %+.6e %+.6e ",
-							 m_elastic_modulus,
-							 m_poisson_ratio,
-							 m_yield_stress,
-							 m_break_stress,
-							 m_break_strain
-							 );
+					m_elastic_modulus,
+					m_poisson_ratio,
+					m_yield_stress,
+					m_break_stress,
+					m_break_strain
+				);
 			}
 
 			//type
@@ -62,7 +62,7 @@ namespace fea
 			}
 			double Steel::yield_stress(double sy)
 			{
-				m_yield_stress = sy;
+				return m_yield_stress = sy;
 			}
 			double Steel::break_strain(void) const
 			{
@@ -70,7 +70,7 @@ namespace fea
 			}
 			double Steel::break_strain(double eu)
 			{
-				m_break_strain = eu;
+				return m_break_strain = eu;
 			}
 			double Steel::break_stress(void) const
 			{
@@ -78,7 +78,7 @@ namespace fea
 			}
 			double Steel::break_stress(double su)
 			{
-				m_break_stress = su;
+				return m_break_stress = su;
 			}
 			double Steel::poisson_ratio(void) const
 			{
@@ -86,7 +86,7 @@ namespace fea
 			}
 			double Steel::poisson_ratio(double n)
 			{
-				m_poisson_ratio = n;
+				return m_poisson_ratio = n;
 			}
 			double Steel::elastic_modulus(void) const
 			{
@@ -94,7 +94,7 @@ namespace fea
 			}
 			double Steel::elastic_modulus(double E)
 			{
-				m_elastic_modulus = E;
+				return m_elastic_modulus = E;
 			}
 			double Steel::plastic_modulus(void) const
 			{
@@ -110,6 +110,7 @@ namespace fea
 				const double eu = m_break_strain;
 				const double E = m_elastic_modulus;
 				m_break_stress = sy + K / (E + K) * (E * eu - sy);
+				return K;
 			}
 			double Steel::reference_stress(void) const
 			{

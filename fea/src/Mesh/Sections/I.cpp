@@ -169,12 +169,11 @@ namespace fea
 				//web
 				const double hw = m_web_height;
 				const double tw = m_web_thickness;
-				const double Aw = tw*hw;
 				const double Iw = tw * pow(hw, 3) / 12;
 				//flange
 				const double wf = m_flange_width;
 				const double tf = m_flange_thickness;
-				const double Af = tf*wf;
+				const double Af = tf * wf;
 				const double If = wf * pow(tf, 3) / 12 + Af * pow((hw + tf) / 2, 2);
 				//inercia
 				return Iw + 2 * If;

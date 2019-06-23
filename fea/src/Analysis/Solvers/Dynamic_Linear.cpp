@@ -1,5 +1,5 @@
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Types.h"
@@ -13,7 +13,7 @@ namespace fea
 		namespace solvers
 		{
 			//static data
-			static int n;
+			static unsigned n;
 			static double b, g;
 			static Assembler* assembler;
 			

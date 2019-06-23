@@ -47,6 +47,7 @@ namespace fea
 					case  9: return { 5, 6 };
 					case 10: return { 6, 7 };
 					case 11: return { 7, 4 };
+					default: return {};
 				}
 			}
 			std::vector<unsigned> Brick8::face(unsigned f) const
@@ -59,6 +60,7 @@ namespace fea
 					case 3: return { 2, 6, 7, 3 };
 					case 4: return { 3, 7, 4, 0 };
 					case 5: return { 4, 7, 6, 5 };
+					default: return {};
 				}
 			}
 

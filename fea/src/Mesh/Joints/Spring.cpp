@@ -17,7 +17,7 @@ namespace fea
 		namespace joints
 		{
 			//constructors
-			Spring::Spring(void) : m_stiffness(0), m_damping(0)
+			Spring::Spring(void) : m_damping(0), m_stiffness(0)
 			{
 				m_axis[0] = 0;
 				m_axis[1] = 0;

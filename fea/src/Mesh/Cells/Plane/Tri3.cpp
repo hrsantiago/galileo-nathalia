@@ -38,6 +38,7 @@ namespace fea
 					case 0: return { 0, 1 };
 					case 1: return { 1, 2 };
 					case 2: return { 2, 0 };
+					default: return {};
 				}
 			}
 			std::vector<unsigned> Tri3::face(unsigned) const

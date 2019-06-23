@@ -1,11 +1,13 @@
 //std
 #include <cstring>
+#include <algorithm>
 
 //mat
 #include "linear/dense.h"
 #include "linear/linear.h"
 
 //fea
+#include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
 #include "Mesh/Cells/Cells.h"
 #include "Mesh/Sections/Section.h"
@@ -77,7 +79,15 @@ namespace fea
 					case cells::type::brick27:
 						cell = base ? new Brick27(*(Brick27*) base) : new Brick27;
 						break;
+					default:
+						cell = nullptr;
 				}
+			}
+			
+			//index
+			unsigned Cell::index(void) const
+			{
+				return distance(m_mesh->m_cells.begin(), find(m_mesh->m_cells.begin(), m_mesh->m_cells.end(), this));
 			}
 			
 			//name
@@ -86,29 +96,31 @@ namespace fea
 				switch(type)
 				{
 					case cells::type::bar:
-						return "bar";
+						return "Bar";
 					case cells::type::beam:
-						return "beam";
+						return "Beam";
 					case cells::type::tri3:
-						return "tri3";
+						return "Tri3";
 					case cells::type::tri6:
-						return "tri6";
+						return "Tri6";
 					case cells::type::quad4:
-						return "quad4";
+						return "Quad4";
 					case cells::type::quad8:
-						return "quad8";
+						return "Quad8";
 					case cells::type::quad9:
-						return "quad9";
+						return "Quad9";
 					case cells::type::tetra4:
-						return "tetra4";
+						return "Tetra4";
 					case cells::type::brick8:
-						return "brick8";
+						return "Brick8";
 					case cells::type::tetra10:
-						return "tetra10";
+						return "Tetra10";
 					case cells::type::brick20:
-						return "brick20";
+						return "Brick20";
 					case cells::type::brick27:
-						return "brick27";
+						return "Brick27";
+					default:
+						return "";
 				}
 			}
 			const char* Cell::name(void) const
@@ -117,6 +129,11 @@ namespace fea
 			}
 			
 			//data
+			Mesh* Cell::mesh(void)
+			{
+				return m_mesh;
+			}
+			
 			unsigned Cell::rule(void) const
 			{
 				return m_rule;
@@ -168,6 +185,8 @@ namespace fea
 						const double j = jacobian(J, element, p);
 						return 8 * r * j;
 					}
+					default:
+						return 0;
 				}
 			}
 			double Cell::edge(const elements::Element* element, unsigned e) const

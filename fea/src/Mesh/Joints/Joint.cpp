@@ -1,14 +1,17 @@
+//std
+#include <algorithm>
+
 //mat
 #include "misc/util.h"
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Nodes/Node.h"
 #include "Mesh/Joints/States.h"
 #include "Mesh/Joints/Joints.h"
-
-#include "Models/Model.h"
 
 #include "Boundary/Boundary.h"
 #include "Boundary/Dependencies/Dependency.h"
@@ -81,10 +84,17 @@ namespace fea
 					case joints::type::spherical:
 						joint = base ? new Spherical(*(Spherical*) base) : new Spherical;
 						break;
+					default:
+						joint = nullptr;
 				}
 			}
 
 			//data
+			Mesh* Joint::mesh(void)
+			{
+				return m_mesh;
+			}
+			
 			double Joint::mass(void) const
 			{
 				return m_mass;
@@ -93,6 +103,7 @@ namespace fea
 			{
 				return m_mass = mass;
 			}
+			
 			nodes::Node* Joint::node(unsigned index) const
 			{
 				return m_mesh->node(m_nodes[index]);
@@ -137,14 +148,7 @@ namespace fea
 			//index
 			unsigned Joint::index(void) const
 			{
-				for(unsigned i = 0; i < m_mesh->joints(); i++)
-				{
-					if(m_mesh->joint(i) == this)
-					{
-						return i;
-					}
-				}
-				return 0;
+				return distance(m_mesh->m_joints.begin(), find(m_mesh->m_joints.begin(), m_mesh->m_joints.end(), this));
 			}
 			unsigned Joint::index_node(unsigned index) const
 			{
@@ -220,7 +224,6 @@ namespace fea
 			}
 			void Joint::finish(void) const
 			{
-				//save Joint data
 				char path[1000];
 				sprintf(path, "%s/Joints/J%04d.txt", m_mesh->model()->folder().c_str(), index());
 				FILE* file = fopen(path, "w");

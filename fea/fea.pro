@@ -126,7 +126,7 @@ HEADERS = \
     inc/Mesh/Sections/Sections.h \
     inc/Mesh/Sections/T.h \
     inc/Mesh/Sections/Types.h \
-    inc/Models/Model.h \
+    inc/Model/Model.h \
     inc/Plot/Colors.h \
     inc/Plot/Gradient.h \
     inc/Plot/Plot.h \
@@ -245,7 +245,7 @@ SOURCES = \
     src/Mesh/Sections/Ring.cpp \
     src/Mesh/Sections/Section.cpp \
     src/Mesh/Sections/T.cpp \
-    src/Models/Model.cpp \
+    src/Model/Model.cpp \
     src/Plot/Colors.cpp \
     src/Plot/Gradient.cpp \
     src/Plot/Plot.cpp \

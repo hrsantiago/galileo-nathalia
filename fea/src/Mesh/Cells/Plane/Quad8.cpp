@@ -39,6 +39,7 @@ namespace fea
 					case 1: return { 2, 3, 4 };
 					case 2: return { 4, 5, 6 };
 					case 3: return { 6, 7, 0 };
+					default: return {};
 				}
 			}
 			std::vector<unsigned> Quad8::face(unsigned) const

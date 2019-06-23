@@ -2,7 +2,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Time.h"
@@ -17,9 +17,9 @@ namespace fea
 		{
 			//constructors
 			Nonlinear::Nonlinear(void) :
-				m_mode(solvers::mode::full), m_equilibrium(false), m_tolerance(1e-5),
-				m_attempt(0), m_attempt_max(5), m_iteration(0), m_iteration_max(10), m_iteration_desired(5), m_criticals(0),
-				m_convergence((unsigned) solvers::convergence::force)
+				m_equilibrium(false), m_tolerance(1e-5),
+				m_attempt(0), m_attempt_max(5), m_iteration(0), m_iteration_max(10), m_iteration_desired(5),
+				m_convergence((unsigned) solvers::convergence::force), m_criticals(0), m_mode(solvers::mode::full)
 			{
 				return;
 			}

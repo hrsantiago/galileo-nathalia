@@ -73,10 +73,14 @@ namespace fea
 
 			public:
 				//data
+				static Mesh* mesh(void);
+				
 				cells::Cell* cell(void) const;
 				cells::Cell* cell(unsigned);
+				
 				nodes::Node* node(unsigned) const;
 				nodes::Node* node(unsigned, unsigned);
+				
 				materials::Material* material(void) const;
 				materials::Material* material(unsigned);
 
