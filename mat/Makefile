@@ -1,7 +1,8 @@
 #compiler
 DEFS = 
 INCS = -I inc/
-CXXFLAGS = -m64 -std=c++11 -pipe -pthread -fopenmp -Wformat=0 -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS)
+WARS = -Wall -Wno-maybe-uninitialized
+CXXFLAGS = -m64 -std=c++11 -pipe -pthread -fopenmp -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS) $(WARS)
 
 #mode
 ifneq ($(m), r)

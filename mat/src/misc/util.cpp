@@ -82,9 +82,9 @@ namespace mat
 	{
 		return a == 2 * b - 3;
 	}
-	char bit_find(unsigned a, unsigned b)
+	unsigned char bit_find(unsigned a, unsigned b)
 	{
-		char p = 0;
+		unsigned char p = 0;
 		for(unsigned i = 1; i < b; i <<= 1)
 		{
 			if(a & i)
@@ -94,7 +94,7 @@ namespace mat
 		}
 		return p;
 	}
-	unsigned bit_find(unsigned a, unsigned b, char p)
+	unsigned bit_find(unsigned a, unsigned b, unsigned char p)
 	{
 		for(unsigned i = 1, c = 0; i < b; i <<= 1)
 		{
@@ -140,7 +140,7 @@ namespace mat
 	
 	double neville_polynomial(const double*, const double*, unsigned, double)
 	{
-		
+		return 0;
 	}
 	
 	double* inv_color(double* c)

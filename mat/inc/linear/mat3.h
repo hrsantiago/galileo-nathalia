@@ -268,12 +268,14 @@ namespace mat
 		m_ptr[0] = m_ptr[4] = m_ptr[8] = 1;
 		m_ptr[1] = m_ptr[2] = m_ptr[3] = 0;
 		m_ptr[5] = m_ptr[6] = m_ptr[7] = 0;
+		return *this;
 	}
 	inline mat3& mat3::zeros(void)
 	{
 		m_ptr[0] = m_ptr[3] = m_ptr[6] = 0;
 		m_ptr[1] = m_ptr[4] = m_ptr[7] = 0;
 		m_ptr[2] = m_ptr[5] = m_ptr[8] = 0;
+		return *this;
 	}
 	inline mat3& mat3::normalize(void)
 	{
@@ -327,6 +329,7 @@ namespace mat
 				}
 			}
 		}
+		return v;
 	}
 	inline double mat3::max(unsigned* p) const
 	{
@@ -344,6 +347,7 @@ namespace mat
 				}
 			}
 		}
+		return v;
 	}
 	inline double mat3::lode_angle(void) const
 	{

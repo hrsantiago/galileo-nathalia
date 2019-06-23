@@ -129,7 +129,7 @@ namespace mat
 			m_mem = new double[rows * cols];
 		}
 	}
-	inline matrix::matrix(double* ptr, unsigned rows, unsigned cols) : m_own(false), m_rows(rows), m_cols(cols), m_mem(ptr)
+	inline matrix::matrix(double* ptr, unsigned rows, unsigned cols) : m_own(false), m_mem(ptr), m_rows(rows), m_cols(cols)
 	{
 		return;
 	}
@@ -265,6 +265,7 @@ namespace mat
 		{
 			printf("Matrix with incompatible dimensions!\n");
 		}
+		return *this;
 	}
 			
 	inline matrix& matrix::operator+=(const double* p)

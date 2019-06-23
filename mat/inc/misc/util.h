@@ -13,8 +13,8 @@ namespace mat
 	void cyclic(unsigned, unsigned&, unsigned&);
 
 	bool bit_set(unsigned, unsigned);
-	char bit_find(unsigned, unsigned);
-	unsigned bit_find(unsigned, unsigned, char);
+	unsigned char bit_find(unsigned, unsigned);
+	unsigned bit_find(unsigned, unsigned, unsigned char);
 
 	int delta(unsigned, unsigned);
 	int permutation(unsigned, unsigned, unsigned);

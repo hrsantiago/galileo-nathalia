@@ -2,3 +2,8 @@ Desktop-*/
 build*/
 dist*/
 *.pro.user
+*~
+_current
+_gdb_history
+_plot
+_recent

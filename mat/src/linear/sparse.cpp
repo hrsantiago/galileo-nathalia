@@ -94,6 +94,7 @@ namespace mat
 				return k[p];
 			}
 		}
+		return k[0];
 	}
 
 	double* convert(double* m, const double* k, const int* r, const int* c, unsigned n)
@@ -106,6 +107,7 @@ namespace mat
 				m[r[j] + n * i] = k[j];
 			}
 		}
+		return m;
 	}
 	double* convert(double* k, const int* r, const int* c, const double* m, unsigned n)
 	{
@@ -116,5 +118,6 @@ namespace mat
 				k[j] = m[r[j] + n * i];
 			}
 		}
+		return k;
 	}
 }

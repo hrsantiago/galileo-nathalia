@@ -190,24 +190,30 @@ namespace mat
 		return nullptr;
 	}
 
-	double* solve(double* x, double* K, double* f, unsigned n, unsigned m)
+	double* solve(double* x, const double* K, const double* f, unsigned n, unsigned m)
 	{
-		//tolerance
-		const double t = 1e-5 * norm(K, n * n);
-		//factorization
+		//data
 		double d;
 		unsigned i, j, k, p;
+		//copy
+		double a[n * n];
+		double b[n * m];
+		memcpy(a, K, n * n * sizeof(double));
+		memcpy(b, f, n * m * sizeof(double));
+		//tolerance
+		const double t = 1e-5 * norm(a, n * n);
+		//factorization
 		for(i = 0; i < n; i++)
 		{
 			//pivot
 			for(j = i + 1, k = i; j < n; j++)
 			{
-				if(fabs(K[j + n * i]) > fabs(K[k + n * i]))
+				if(fabs(a[j + n * i]) > fabs(a[k + n * i]))
 				{
 					k = j;
 				}
 			}
-			if(fabs(K[k + n * i]) <= t)
+			if(fabs(a[k + n * i]) <= t)
 			{
 				return nullptr;
 			}
@@ -215,29 +221,29 @@ namespace mat
 			{
 				for(j = i; j < n; j++)
 				{
-					swap(K[i + n * j], K[k + n * j]);
+					swap(a[i + n * j], a[k + n * j]);
 				}
 				for(j = 0; j < m; j++)
 				{
-					swap(f[i + n * j], f[k + n * j]);
+					swap(b[i + n * j], b[k + n * j]);
 				}
 			}
 			//decompose
 			for(j = i + 1; j < n; j++)
 			{
-				d = K[j + n * i] / K[i + n * i];
+				d = a[j + n * i] / a[i + n * i];
 				for(k = i + 1; k < n; k++)
 				{
-					K[j + n * k] -= d * K[i + n * k];
+					a[j + n * k] -= d * a[i + n * k];
 				}
 				for(k = 0; k < m; k++)
 				{
-					f[j + n * k] -= d * f[i + n * k];
+					b[j + n * k] -= d * b[i + n * k];
 				}
 			}
 		}
 		//solve
-		memcpy(x, f, n * m * sizeof(double));
+		memcpy(x, b, n * m * sizeof(double));
 		for(i = 0; i < n; i++)
 		{
 			p = n - 1 - i;
@@ -245,9 +251,9 @@ namespace mat
 			{
 				for(j = p + 1; j < n; j++)
 				{
-					x[p + n * k] -= K[p + n * j] * x[j + n * k];
+					x[p + n * k] -= a[p + n * j] * x[j + n * k];
 				}
-				x[p + n * k] /= K[p + n * p];
+				x[p + n * k] /= a[p + n * p];
 			}
 		}
 		//return

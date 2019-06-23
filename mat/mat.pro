@@ -16,6 +16,7 @@ HEADERS = \
     inc/linear/lin3.h \
     inc/solvers/runge_kutta.h \
     inc/solvers/newmark.h \
+    inc/solvers/newton_raphson.h \
 
 
 SOURCES = \
@@ -28,6 +29,7 @@ SOURCES = \
     src/linear/sparse.cpp \
     src/solvers/runge_kutta.cpp \
     src/solvers/newmark.cpp \
+    src/solvers/newton_raphson.cpp \
 
 TARGET = mat
 TEMPLATE = lib

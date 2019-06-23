@@ -148,15 +148,8 @@ namespace mat
 		return stress_vector(dI3, dIc, t);
 	}
 	
-	double* stress_hessian_I2(double* d2I2, const double* s, unsigned t)
+	double* stress_hessian_I2(double* d2I2, const double*, unsigned t)
 	{
-		//stress
-		const double sxx = stress_value(s, t, (unsigned) stress::sxx);
-		const double syy = stress_value(s, t, (unsigned) stress::syy);
-		const double szz = stress_value(s, t, (unsigned) stress::szz);
-		const double sxy = stress_value(s, t, (unsigned) stress::sxy);
-		const double sxz = stress_value(s, t, (unsigned) stress::sxz);
-		const double syz = stress_value(s, t, (unsigned) stress::syz);
 		//I2 hessian
 		double d2Ic[36];
 		d2Ic[6 * 0 + 0] = 0;
@@ -164,7 +157,7 @@ namespace mat
 		d2Ic[6 * 2 + 2] = 0;
 		d2Ic[6 * 3 + 3] = -2;
 		d2Ic[6 * 4 + 4] = -2;
-		d2Ic[6 * 6 + 5] = -2;
+		d2Ic[6 * 5 + 5] = -2;
 		d2Ic[6 * 1 + 0] = d2Ic[6 * 0 + 1] = 1;
 		d2Ic[6 * 2 + 0] = d2Ic[6 * 0 + 2] = 1;
 		d2Ic[6 * 2 + 1] = d2Ic[6 * 1 + 2] = 1;
@@ -296,15 +289,8 @@ namespace mat
 		return stress_vector(dJ3, dJc, t);
 	}
 	
-	double* deviatoric_hessian_J2(double* d2J2, const double* s, unsigned t)
+	double* deviatoric_hessian_J2(double* d2J2, const double*, unsigned t)
 	{
-		//stress
-		const double sxx = stress_value(s, t, (unsigned) stress::sxx);
-		const double syy = stress_value(s, t, (unsigned) stress::syy);
-		const double szz = stress_value(s, t, (unsigned) stress::szz);
-		const double sxy = stress_value(s, t, (unsigned) stress::sxy);
-		const double sxz = stress_value(s, t, (unsigned) stress::sxz);
-		const double syz = stress_value(s, t, (unsigned) stress::syz);
 		//J2 hessian
 		double d2Jc[36];
 		d2Jc[6 * 3 + 3] = 2;
