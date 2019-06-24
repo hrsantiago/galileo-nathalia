@@ -7,7 +7,7 @@
 #include <boost/filesystem.hpp>
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 
@@ -25,6 +25,8 @@
 #include "Analysis/Analysis.h"
 
 //gui
+#include "Util/Recent.h"
+
 #include "Galileo/Galileo.h"
 
 #include "Actions/Model/Model.h"
@@ -32,6 +34,7 @@
 #include "Actions/Mesh/Nodes/Nodes.h"
 #include "Actions/Mesh/Cells/Cells.h"
 #include "Actions/Mesh/Sections/Sections.h"
+#include "Actions/Mesh/Elements/ElementsMesh.h"
 #include "Actions/Mesh/Materials/Materials.h"
 
 #include "Actions/Results/Nodal.h"
@@ -48,16 +51,17 @@
 namespace gui
 {
 	//constructors
-	Galileo::Galileo(QWidget* parent) : QMainWindow(parent), m_ui(new Ui::Galileo), m_plot(new fea::plot::Plot), m_model(new fea::models::Model)
+	Galileo::Galileo(QWidget* parent) : QMainWindow(parent), 
+		m_ui(new Ui::Galileo), m_plot(new fea::plot::Plot), m_model(new fea::models::Model), m_recent(new gui::util::Recent)
 	{
 		//ui
 		m_ui->setupUi(this);
 		m_ui->canvas->update_model(m_model);
 		m_ui->menubar->setNativeMenuBar(false);
-		//plot
+		//data
 		plot(true);
-		//recent
-		recent(nullptr);
+		m_recent->load();
+		m_recent->update(m_ui->menu_model_recent);
 		//maximize
 		showMaximized();
 	}
@@ -65,12 +69,13 @@ namespace gui
 	//destructor
 	Galileo::~Galileo(void)
 	{
-		//save plot
+		//save
 		plot(false);
 		//delete
 		delete m_ui;
 		delete m_plot;
 		delete m_model;
+		delete m_recent;
 	}
 		
 	//slots
@@ -78,7 +83,7 @@ namespace gui
 	{
 		if(!m_model->saved())
 		{
-			const QString question = "Would you like to save the current model first?";
+			const QString question = "Would you like to save the current model?";
 			const QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel;
 			const QMessageBox::StandardButton reply = QMessageBox::warning(nullptr, "Save Model", question, buttons);
 			if(reply == QMessageBox::StandardButton::Yes)
@@ -94,25 +99,7 @@ namespace gui
 	}
 	void Galileo::slot_recent(void)
 	{
-		//check
-		if(!slot_saved())
-		{
-			return;
-		}
-		//load model
-		delete m_model;
-		m_model = new fea::models::Model();
-		const std::string path = ((QAction*) QObject::sender())->text().toStdString();
-		if(!m_model->load(path))
-		{
-			QMessageBox::critical(nullptr, "Error", "Unable to load model!", QMessageBox::Ok);
-		}
-		//update
-		recent(path.c_str());
-		m_model->plot(m_plot);
-		m_ui->canvas->m_model = m_model;
-		m_ui->canvas->m_bound.update(m_model);
-		setWindowTitle("Galileo - " + QString(m_model->name().c_str()));
+		
 	}
 	
 	void Galileo::on_action_model_new_triggered(void)
@@ -132,22 +119,25 @@ namespace gui
 	}
 	void Galileo::on_action_model_save_triggered(void)
 	{
-		//check saved
-		if(m_model->saved())
-		{
-			return;
-		}
-		//create dialog
-		std::string folder_path = QFileDialog::getExistingDirectory(nullptr, "Save Model", QDir::currentPath()).toStdString();
-		if(folder_path.empty())
+		//path
+		char folder[200];
+		current(folder, true);
+		const unsigned options = (unsigned) QFileDialog::ReadOnly | (unsigned) QFileDialog::ShowDirsOnly;
+		std::string path = QFileDialog::getExistingDirectory(nullptr, "Save Model", folder).toStdString();
+		if(path.empty())
 		{
 			return;
 		}
 		//save dialog
-		m_model->path(folder_path);
+		m_model->path(path);
 		if(!m_model->save())
 		{
 			QMessageBox::critical(nullptr, "Error", "Unable to save model!", QMessageBox::Ok);
+		}
+		else
+		{
+			m_recent->add(m_model->folder());
+			m_recent->update(m_ui->menu_model_recent);
 		}
 	}
 	void Galileo::on_action_model_open_triggered(void)
@@ -160,11 +150,7 @@ namespace gui
 		//get model
 		char path[200];
 		current(path, true);
-		const unsigned options = 
-			(unsigned) QFileDialog::ReadOnly |
-			(unsigned) QFileDialog::ShowDirsOnly |
-			(unsigned) QFileDialog::DontUseNativeDialog | 
-			(unsigned) QFileDialog::DontResolveSymlinks;
+		const unsigned options = (unsigned) QFileDialog::ReadOnly | (unsigned) QFileDialog::ShowDirsOnly;
 		strcpy(path, QFileDialog::getExistingDirectory(nullptr, "Open model", path, QFileDialog::Options(options)).toLocal8Bit().data());
 		if(path[0] == '\0')
 		{
@@ -179,7 +165,6 @@ namespace gui
 			QMessageBox::critical(nullptr, "Error", "Unable to load model!", QMessageBox::Ok);
 		}
 		//update
-		recent(path);
 		current(path, false);
 		m_ui->canvas->m_model = m_model;
 		m_ui->canvas->m_bound.update(m_model);
@@ -188,12 +173,9 @@ namespace gui
 	void Galileo::on_action_model_plot_triggered(void)
 	{
 		//create dialog
-		model::Model* dia = new model::Model(m_model, nullptr);
-        dia->exec();
+		model::Model(m_model, nullptr).exec();
         //update title
 		setWindowTitle("Galileo - " + QString(m_model->name().c_str()));
-		//delete dialog
-        delete dia;
 	}
 	void Galileo::on_action_model_print_triggered(void)
 	{
@@ -228,6 +210,10 @@ namespace gui
 	{
 		mesh::sections::Sections(m_model->mesh(), nullptr).exec();
 	}
+	void Galileo::on_action_mesh_elements_triggered(void)
+	{
+		mesh::elements::Elements(m_model->mesh(), nullptr).exec();
+	}
 	void Galileo::on_action_mesh_materials_triggered(void)
 	{
 		mesh::materials::Materials(m_model->mesh(), nullptr).exec();
@@ -240,9 +226,7 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		results::Nodal* dia = new results::Nodal(m_model, this);
-		dia->exec();
-		delete dia;
+		results::Nodal(m_model, this).exec();
 	}
 	void Galileo::on_action_results_elements_triggered(void)
 	{
@@ -251,9 +235,7 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		results::Elements* dia = new results::Elements(m_model, this);
-		dia->exec();
-		delete dia;
+		results::Elements(m_model, this).exec();
 	}
 	void Galileo::on_action_results_deformed_triggered(void)
 	{
@@ -262,9 +244,7 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		results::Deformed* dia = new results::Deformed(m_model, this);
-		dia->exec();
-		delete dia;
+		results::Deformed(m_model, this).exec();
 	}
 	void Galileo::on_action_results_equilibrium_path_triggered(void)
 	{
@@ -279,22 +259,16 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "Solver type does not allow equilibrium path!", QMessageBox::Ok);
 			return;
 		}
-		results::Equilibrium_Path* dia = new results::Equilibrium_Path(m_model, this);
-		dia->exec();
-		delete dia;
+		results::Equilibrium_Path(m_model, this).exec();
 	}
 	
 	void Galileo::on_action_help_index_triggered(void)
 	{
-		help::Index* dia = new help::Index(nullptr);
-		dia->exec();
-		delete dia;
+		help::Index(nullptr).exec();
 	}
 	void Galileo::on_action_help_about_triggered(void)
 	{
-        help::About* dia = new help::About(nullptr);
-		dia->exec();
-		delete dia;
+        help::About(nullptr).exec();
 	}
 	
 	//events
@@ -311,36 +285,6 @@ namespace gui
 		{
 			m_ui->canvas->keyPressEvent(event);
 		}
-		//new
-		if(key == Qt::Key_N)
-		{
-			on_action_model_new_triggered();
-		}
-		//save
-		if(key == Qt::Key_S)
-		{
-			on_action_model_save_triggered();
-		}
-		//load
-		if(key == Qt::Key_O)
-		{
-			on_action_model_open_triggered();
-		}
-		//plot
-		if(key == Qt::Key_W)
-		{
-			on_action_model_plot_triggered();
-		}
-		//print
-		if(key == Qt::Key_P)
-		{
-			on_action_model_print_triggered();
-		}
-		//close
-		if(key == Qt::Key_Q || key == Qt::Key_Escape)
-		{
-			on_action_model_close_triggered();
-		}
 		//deformed
 		if(key == Qt::Key_D)
 		{
@@ -354,9 +298,9 @@ namespace gui
 	}
 	
 	//saved
-	void Galileo::plot(bool flag)
+	void Galileo::plot(bool load)
 	{
-		if(flag)
+		if(load)
 		{
 			m_model->plot(m_plot);
 			FILE* file = fopen(".plot", "r");
@@ -373,71 +317,19 @@ namespace gui
 			fclose(file);
 		}
 	}
-	void Galileo::recent(const char* path)
+	void Galileo::current(char* path, bool load)
 	{
-		unsigned n = 0;
-		unsigned m = 10;
-		unsigned l = 200;
-		char paths[m][l];
-		m_ui->menu_model_recent->clear();
-		FILE* file = fopen(".recent", "r");
-		if(file)
-		{
-			while(fgets(paths[n], l, file))
-			{
-				*strrchr(paths[n++], '\n') = '\0';
-			}
-			fclose(file);
-		}
-		if(path)
-		{
-			for(unsigned i = 0; i < n; i++)
-			{
-				if(!strcmp(paths[i], path))
-				{
-					for(unsigned j = i; j + 1 < n; j++)
-					{
-						strcpy(paths[j], paths[j + 1]);
-					}
-					n--;
-					break;
-				}
-			}
-			n += n < m;
-			for(unsigned i = 1; i < n; i++)
-			{
-				strcpy(paths[n - i], paths[n - i - 1]);
-			}
-			strcpy(paths[0], path);
-			file = fopen(".recent", "w");
-			for(unsigned i = 0; i < n; i++)
-			{
-				fprintf(file, "%s\n", paths[i]);
-			}
-			fclose(file);
-		}
-		if(n == 0)
-		{
-			m_ui->menu_model_recent->addAction("(none)")->setEnabled(false);
-		}
-		else
-		{
-			for(unsigned i = 0; i < n; i++)
-			{
-				QObject::connect(m_ui->menu_model_recent->addAction(paths[i]), SIGNAL(triggered(bool)), this, SLOT(slot_recent(void)));
-			}
-		}
-	}
-	void Galileo::current(char* path, bool flag)
-	{
-		if(flag)
+		if(load)
 		{
 			FILE* file = fopen(".current", "r");
-			strcpy(path, QDir::currentPath().toLocal8Bit().data());
 			if(file)
 			{
 				fgets(path, 200, file);
 				fclose(file);
+			}
+			else
+			{
+				strcpy(path, QDir::currentPath().toLocal8Bit().data());
 			}
 		}
 		else

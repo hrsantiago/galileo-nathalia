@@ -4,7 +4,7 @@
 
 namespace Ui
 {
-	class Elements;
+	class Elemental;
 }
 namespace fea
 {
@@ -65,7 +65,7 @@ namespace gui
 		private:
 			//attributes
 			bool m_play;
-			Ui::Elements* m_ui;
+			Ui::Elemental* m_ui;
 			fea::models::Model* m_model;
 		};
 	}

@@ -11,7 +11,7 @@
 #include "linear/linear.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
@@ -137,13 +137,6 @@ namespace gui
 			const double xc = (m_x_max + m_x_min) / 2;
 			const double yc = (m_y_max + m_y_min) / 2;
 			const double zc = (m_z_max + m_z_min) / 2;
-			//limits
-			const double x_min = xc - s / m_zoom / 2;
-			const double y_min = yc - s / m_zoom / 2;
-			const double z_min = zc - s / m_zoom / 2;
-			const double x_max = xc + s / m_zoom / 2;
-			const double y_max = yc + s / m_zoom / 2;
-			const double z_max = zc + s / m_zoom / 2;
 			//set modelview matrix
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();

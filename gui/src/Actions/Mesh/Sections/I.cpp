@@ -1,9 +1,12 @@
 //std
 #include <cmath>
-#include <QIntValidator>
+
+//qt
 #include <QDoubleValidator>
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/I.h"
 
@@ -26,7 +29,7 @@ namespace gui
 				//set ui
 				m_ui->setupUi(this);
 				m_ui->canvas->section(m_i);
-				setWindowTitle(QString::asprintf("I - Index: %02d - Name: %s", m_i->index(), m_i->label()));
+				setWindowTitle(QString::asprintf("I - Index: %02d - Name: %s", m_i->index() + 1, m_i->label()));
 				//set edit
 				m_ui->edit_name->setText(m_i->label());
 				m_ui->edit_mesh_wh->setText(QString::asprintf("%02d", m_i->mesh_wh()));
@@ -68,6 +71,7 @@ namespace gui
 			//slots
 			void I::slot_name(void)
 			{
+				m_i->mesh()->model()->mark();
 				QString text = m_ui->edit_name->text();
 				m_i->label(text.remove(' ').toStdString().c_str());
 				m_ui->edit_name->setText(text);
@@ -85,6 +89,7 @@ namespace gui
 				const int v = m_ui->edit_mesh_wh->text().toInt();
 				//material
 				m_i->mesh_wh(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_wh->setText(QString::asprintf("%02d", v));
 				//draw
@@ -96,6 +101,7 @@ namespace gui
 				const int v = m_ui->edit_mesh_wt->text().toInt();
 				//material
 				m_i->mesh_wt(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_wt->setText(QString::asprintf("%02d", v));
 				//draw
@@ -107,6 +113,7 @@ namespace gui
 				const int v = m_ui->edit_mesh_fw->text().toInt();
 				//material
 				m_i->mesh_fw(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_fw->setText(QString::asprintf("%02d", v));
 				//draw
@@ -118,6 +125,7 @@ namespace gui
 				const int v = m_ui->edit_mesh_ft->text().toInt();
 				//material
 				m_i->mesh_ft(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_ft->setText(QString::asprintf("%02d", v));
 				//draw
@@ -129,6 +137,7 @@ namespace gui
 				const double v = m_ui->edit_geom_wh->text().toDouble();
 				//material
 				m_i->web_height(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_wh->setText(QString::asprintf("%.2e", v));
 				//draw
@@ -140,6 +149,7 @@ namespace gui
 				const double v = m_ui->edit_geom_wt->text().toDouble();
 				//material
 				m_i->web_thickness(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_wt->setText(QString::asprintf("%.2e", v));
 				//draw
@@ -151,6 +161,7 @@ namespace gui
 				const double v = m_ui->edit_geom_fw->text().toDouble();
 				//material
 				m_i->flange_width(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_fw->setText(QString::asprintf("%.2e", v));
 				//draw
@@ -162,6 +173,7 @@ namespace gui
 				const double v = m_ui->edit_geom_ft->text().toDouble();
 				//material
 				m_i->flange_thickness(v);
+				m_i->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_ft->setText(QString::asprintf("%.2e", v));
 				//draw

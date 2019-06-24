@@ -4,10 +4,14 @@ HEADERS = \
     inc/Actions/Help/About.h \
     inc/Actions/Help/Index.h \
     inc/Actions/Mesh/Cells/Cells.h \
-    inc/Actions/Mesh/Materials/Concrete.h \
-    inc/Actions/Mesh/Materials/Heat.h \
+    inc/Actions/Mesh/Cells/Line.h \
+    inc/Actions/Mesh/Cells/Plane.h \
+    inc/Actions/Mesh/Cells/Volume.h \
+    inc/Actions/Mesh/Elements/ElementsMesh.h \
+    inc/Actions/Mesh/Materials/Heat/Heat.h \
     inc/Actions/Mesh/Materials/Materials.h \
-    inc/Actions/Mesh/Materials/Steel.h \
+    inc/Actions/Mesh/Materials/Mechanic/Concrete.h \
+    inc/Actions/Mesh/Materials/Mechanic/Steel.h \
     inc/Actions/Mesh/Nodes/Nodes.h \
     inc/Actions/Mesh/Sections/Box.h \
     inc/Actions/Mesh/Sections/Circle.h \
@@ -34,15 +38,22 @@ HEADERS = \
     inc/Canvas/Section.h \
     inc/Galileo/Galileo.h \
     inc/Util/Click_Label.h \
+    inc/Util/Recent.h \
     inc/qcustomplot.h \
 
 
 SOURCES = \
+    src/Actions/Help/About.cpp \
+    src/Actions/Help/Index.cpp \
     src/Actions/Mesh/Cells/Cells.cpp \
-    src/Actions/Mesh/Materials/Concrete.cpp \
-    src/Actions/Mesh/Materials/Heat.cpp \
+    src/Actions/Mesh/Cells/Line.cpp \
+    src/Actions/Mesh/Cells/Plane.cpp \
+    src/Actions/Mesh/Cells/Volume.cpp \
+    src/Actions/Mesh/Elements/ElementsMesh.cpp \
+    src/Actions/Mesh/Materials/Heat/Heat.cpp \
     src/Actions/Mesh/Materials/Materials.cpp \
-    src/Actions/Mesh/Materials/Steel.cpp \
+    src/Actions/Mesh/Materials/Mechanic/Concrete.cpp \
+    src/Actions/Mesh/Materials/Mechanic/Steel.cpp \
     src/Actions/Mesh/Nodes/Nodes.cpp \
     src/Actions/Mesh/Sections/Box.cpp \
     src/Actions/Mesh/Sections/Circle.cpp \
@@ -68,9 +79,8 @@ SOURCES = \
     src/Canvas/NodalCanvas.cpp \
     src/Canvas/Section.cpp \
     src/Galileo/Galileo.cpp \
-    src/Help/About.cpp \
-    src/Help/Index.cpp \
     src/Util/Click_Label.cpp \
+    src/Util/Recent.cpp \
     src/main.cpp \
     src/qcustomplot.cpp \
 
@@ -93,10 +103,13 @@ FORMS += \
     ui/Help/Index.ui \
     ui/Mesh/Cells/Cells.ui \
     ui/Mesh/Cells/Line.ui \
-    ui/Mesh/Materials/Concrete.ui \
-    ui/Mesh/Materials/Heat.ui \
+    ui/Mesh/Cells/Plane.ui \
+    ui/Mesh/Cells/Volume.ui \
+    ui/Mesh/Elements/ElementsMesh.ui \
+    ui/Mesh/Materials/Heat/Heat.ui \
     ui/Mesh/Materials/Materials.ui \
-    ui/Mesh/Materials/Steel.ui \
+    ui/Mesh/Materials/Mechanic/Concrete.ui \
+    ui/Mesh/Materials/Mechanic/Steel.ui \
     ui/Mesh/Nodes/Nodes.ui \
     ui/Mesh/Sections/Box.ui \
     ui/Mesh/Sections/Circle.ui \

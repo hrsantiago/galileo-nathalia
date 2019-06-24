@@ -1,9 +1,12 @@
 //std
 #include <cmath>
-#include <QIntValidator>
+
+//qt
 #include <QDoubleValidator>
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/Circle.h"
 
@@ -26,7 +29,7 @@ namespace gui
 				//set ui
 				m_ui->setupUi(this);
 				m_ui->canvas->section(m_circle);
-				setWindowTitle(QString::asprintf("Circle - Index: %02d - Name: %s", m_circle->index(), m_circle->label()));
+				setWindowTitle(QString::asprintf("Circle - Index: %02d - Name: %s", m_circle->index() + 1, m_circle->label()));
 				//set edit
 				m_ui->edit_name->setText(m_circle->label());
 				m_ui->edit_mesh_r->setText(QString::asprintf("%02d", m_circle->mesh_r()));
@@ -53,6 +56,7 @@ namespace gui
 			//slots
 			void Circle::slot_name(void)
 			{
+				m_circle->mesh()->model()->mark();
 				QString text = m_ui->edit_name->text();
 				m_circle->label(text.remove(' ').toStdString().c_str());
 				m_ui->edit_name->setText(text);
@@ -63,6 +67,7 @@ namespace gui
 				const int r = m_ui->edit_mesh_r->text().toInt();
 				//material
 				m_circle->mesh_r(r);
+				m_circle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_r->setText(QString::asprintf("%02d", r));
 				//draw
@@ -74,6 +79,7 @@ namespace gui
 				const int t = m_ui->edit_mesh_t->text().toInt();
 				//material
 				m_circle->mesh_t(t);
+				m_circle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_t->setText(QString::asprintf("%02d", t));
 				//draw
@@ -92,6 +98,7 @@ namespace gui
 				const double d = m_ui->edit_geom_d->text().toDouble();
 				//material
 				m_circle->diameter(d);
+				m_circle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_d->setText(QString::asprintf("%.2e", d));
 				//draw

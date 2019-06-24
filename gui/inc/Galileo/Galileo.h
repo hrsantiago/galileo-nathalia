@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 
-//forward declarations
+//forward
 namespace Ui
 {
 	class Galileo;
@@ -16,6 +16,13 @@ namespace fea
 	namespace models
 	{
 		class Model;
+	}
+}
+namespace gui
+{
+	namespace util
+	{
+		class Recent;
 	}
 }
 
@@ -47,6 +54,7 @@ namespace gui
 		virtual void on_action_mesh_nodes_triggered(void);
 		virtual void on_action_mesh_cells_triggered(void);
 		virtual void on_action_mesh_sections_triggered(void);
+		virtual void on_action_mesh_elements_triggered(void);
 		virtual void on_action_mesh_materials_triggered(void);
 		
 		virtual void on_action_results_nodes_triggered(void);
@@ -63,7 +71,6 @@ namespace gui
 		
 		//saved
 		virtual void plot(bool);
-		virtual void recent(const char*);
 		virtual void current(char*, bool);
 
 	private:
@@ -71,5 +78,6 @@ namespace gui
 		Ui::Galileo* m_ui;
 		fea::plot::Plot* m_plot;
 		fea::models::Model* m_model;
+		gui::util::Recent* m_recent; 
 	};
 }

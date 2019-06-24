@@ -278,8 +278,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -310,8 +309,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -342,8 +340,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -360,8 +357,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -385,8 +381,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -410,8 +405,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -429,8 +423,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -471,8 +464,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -490,8 +482,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -509,8 +500,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -522,9 +512,28 @@
  <tabstops>
   <tabstop>edit_name</tabstop>
   <tabstop>check_nodes</tabstop>
+  <tabstop>check_joints</tabstop>
   <tabstop>check_elements</tabstop>
   <tabstop>check_loads</tabstop>
   <tabstop>check_supports</tabstop>
+  <tabstop>check_axes</tabstop>
+  <tabstop>check_scale</tabstop>
+  <tabstop>combo_case</tabstop>
+  <tabstop>edit_size_joints</tabstop>
+  <tabstop>edit_size_loads</tabstop>
+  <tabstop>edit_size_supports</tabstop>
+  <tabstop>button_nodes</tabstop>
+  <tabstop>button_joints</tabstop>
+  <tabstop>button_elements</tabstop>
+  <tabstop>button_loads</tabstop>
+  <tabstop>button_supports</tabstop>
+  <tabstop>button_back</tabstop>
+  <tabstop>button_paths</tabstop>
+  <tabstop>button_reset</tabstop>
+  <tabstop>button_print</tabstop>
+  <tabstop>button_scale_min</tabstop>
+  <tabstop>button_scale_mean</tabstop>
+  <tabstop>button_scale_max</tabstop>
  </tabstops>
  <resources/>
  <connections/>

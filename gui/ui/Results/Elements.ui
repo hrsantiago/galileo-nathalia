@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Elements</class>
- <widget class="QDialog" name="Elements">
+ <class>Elemental</class>
+ <widget class="QDialog" name="Elemental">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Element Results</string>
+   <string>Elements Results</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -52,8 +52,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-skip-backward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -73,8 +72,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-seek-backward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -127,8 +125,7 @@
         </property>
         <property name="icon">
          <iconset theme="format-indent-less">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -142,8 +139,7 @@
         </property>
         <property name="icon">
          <iconset theme="list-remove">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -163,8 +159,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-pause">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -184,8 +179,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-start">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -205,8 +199,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-seek-forward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -226,8 +219,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-stop">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -247,8 +239,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-skip-forward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -268,8 +259,7 @@
         </property>
         <property name="icon">
          <iconset theme="document-print">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -289,8 +279,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-record">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -310,8 +299,7 @@
         </property>
         <property name="icon">
          <iconset theme="document-properties">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -338,8 +326,7 @@
         </property>
         <property name="icon">
          <iconset theme="list-add">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -426,8 +413,7 @@
         </property>
         <property name="icon">
          <iconset theme="go-home">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -441,8 +427,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -520,8 +505,7 @@
         </property>
         <property name="icon">
          <iconset theme="input-tablet">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -535,8 +519,7 @@
         </property>
         <property name="icon">
          <iconset theme="format-indent-more">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>

@@ -5,9 +5,10 @@ moc = /usr/lib/x86_64-linux-gnu/qt5/bin/moc
 qde = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 
 #compiler
+WARS = -Wno-reorder -Wformat=0  -Wno-return-type
 DEFS = -D QT_CORE_LIB -D QT_GUI_LIB -D QT_WIDGETS_LIB -D QT_SHARED -D QT_OPENGL_LIB -D QT_CONSOLE -D QT_PRINTSUPPORT_LIB
 INCS = -I $(qde) -I $(qin) -I $(qin)/QtCore -I $(qin)/QtGui -I $(qin)/QtWidgets -I $(qin)/QtOpenGL -I inc/ -I build/ -I ../mat/inc/ -I ../fea/inc/
-CXXFLAGS = -m64 -fPIC -std=c++11 -pipe -pthread -fopenmp -Wformat=0 -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS)
+CXXFLAGS = -m64 -fPIC -std=c++11 -pipe -pthread -fopenmp -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS) $(WARS)
 
 #mode
 ifneq ($(m), r)
@@ -105,7 +106,7 @@ clean :
 	@echo 'clean($(PLA) - $(CONF)): complete!'
 
 cleanlib : 
-	@cd ../fea && make -f Makefile m=$m t=$t clean
+	@cd ../fea && make -f Makefile m=$m t=$t cleanall
 
 cleanall : cleanlib clean
 

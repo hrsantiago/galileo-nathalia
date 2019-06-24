@@ -16,7 +16,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
@@ -137,7 +137,6 @@ namespace gui
 		//destructor
 		Equilibrium_Path::~Equilibrium_Path(void)
 		{
-			const unsigned ns = m_steps;
 			const unsigned nn = m_model->mesh()->nodes();
 			const unsigned nj = m_model->mesh()->joints();
 			const unsigned ne = m_model->mesh()->elements();
@@ -269,7 +268,6 @@ namespace gui
 				m_ui->combo_state_node_y, m_ui->combo_velocity_node_y, m_ui->combo_acceleration_node_y
 			};
 			//interface
-			char formatter[200];
 			const unsigned na[] = {nj, ne, nc};
 			const unsigned ss = solver->state_set();
 			const std::string path = m_model->path() + "/" + m_model->name() + "/Solver/Load.txt";
@@ -287,9 +285,8 @@ namespace gui
 				m_ui->tab_y->setTabEnabled(i + 2, ss & 1 << i);
 				for(unsigned j = 0; j < nn; j++)
 				{
-					sprintf(formatter, "%04d", j);
-					cn[i + 0]->addItem(formatter);
-					cn[i + 3]->addItem(formatter);
+					cn[i + 0]->addItem(QString::asprintf("%04d", j));
+					cn[i + 3]->addItem(QString::asprintf("%04d", j));
 				}
 				for(unsigned j = 1; j < unsigned(fea::mesh::nodes::dof::last); j <<= 1)
 				{
@@ -307,9 +304,8 @@ namespace gui
 			//joints
 			for(unsigned i = 0; i < nj; i++)
 			{
-				sprintf(formatter, "%04d", i);
-				m_ui->combo_joint_index_x->addItem(formatter);
-				m_ui->combo_joint_index_y->addItem(formatter);
+				m_ui->combo_joint_index_x->addItem(QString::asprintf("%04d", i));
+				m_ui->combo_joint_index_y->addItem(QString::asprintf("%04d", i));
 			}
 			if(nj != 0)
 			{
@@ -317,9 +313,8 @@ namespace gui
 				const unsigned st = m_model->mesh()->joint(0)->states();
 				for(unsigned i = 0; i < nn; i++)
 				{
-					sprintf(formatter, "%02d (%04d)", i, m_model->mesh()->joint(0)->index_node(i));
-					m_ui->combo_joint_node_x->addItem(formatter);
-					m_ui->combo_joint_node_y->addItem(formatter);
+					m_ui->combo_joint_node_x->addItem(QString::asprintf("%02d (%04d)", i, m_model->mesh()->joint(0)->index_node(i)));
+					m_ui->combo_joint_node_y->addItem(QString::asprintf("%02d (%04d)", i, m_model->mesh()->joint(0)->index_node(i)));
 				}
 				for(unsigned i = 1; i < unsigned(fea::mesh::joints::state::last); i <<= 1)
 				{
@@ -333,9 +328,8 @@ namespace gui
 			//elements
 			for(unsigned i = 0; i < ne; i++)
 			{
-				sprintf(formatter, "%04d", i);
-				m_ui->combo_element_index_x->addItem(formatter);
-				m_ui->combo_element_index_y->addItem(formatter);
+				m_ui->combo_element_index_x->addItem(QString::asprintf("%04d", i));
+				m_ui->combo_element_index_y->addItem(QString::asprintf("%04d", i));
 			}
 			if(ne != 0)
 			{
@@ -343,9 +337,8 @@ namespace gui
 				const unsigned st = m_model->mesh()->element(0)->states();
 				for(unsigned i = 0; i < nn; i++)
 				{
-					sprintf(formatter, "%02d (%04d)", i, m_model->mesh()->element(0)->index_node(i));
-					m_ui->combo_element_node_x->addItem(formatter);
-					m_ui->combo_element_node_y->addItem(formatter);
+					m_ui->combo_element_node_x->addItem(QString::asprintf("%02d (%04d)", i, m_model->mesh()->element(0)->index_node(i)));
+					m_ui->combo_element_node_y->addItem(QString::asprintf("%02d (%04d)", i, m_model->mesh()->element(0)->index_node(i)));
 				}
 				for(unsigned i = 1; i < unsigned(fea::mesh::elements::state::last); i <<= 1)
 				{
@@ -359,18 +352,18 @@ namespace gui
 			//supports
 			for(unsigned i = 0; i < nc; i++)
 			{
-				sprintf(formatter, "%04d", i);
-				m_ui->combo_support_index_x->addItem(formatter);
-				m_ui->combo_support_index_y->addItem(formatter);
+				m_ui->combo_support_index_x->addItem(QString::asprintf("%04d", i));
+				m_ui->combo_support_index_y->addItem(QString::asprintf("%04d", i));
 			}
 			if(nc != 0)
 			{
-				sprintf(formatter, "%04d", m_model->boundary()->support(0)->index_node());
-				const char* s = fea::mesh::nodes::Node::dof_name(m_model->boundary()->support(0)->dof());
-				m_ui->label_support_dof_x->setText(s);
-				m_ui->label_support_dof_y->setText(s);
-				m_ui->label_support_node_x->setText(formatter);
-				m_ui->label_support_node_y->setText(formatter);
+				fea::boundary::Support* support = m_model->boundary()->support(0);
+				m_ui->label_support_type_x->setText(support->fixed() ? "Fixed" : "Flexible");
+				m_ui->label_support_type_y->setText(support->fixed() ? "Fixed" : "Flexible");
+				m_ui->label_support_dof_x->setText(fea::mesh::nodes::Node::dof_name(support->dof()));
+				m_ui->label_support_dof_y->setText(fea::mesh::nodes::Node::dof_name(support->dof()));
+				m_ui->label_support_node_x->setText(QString::asprintf("%04d", support->index_node()));
+				m_ui->label_support_node_y->setText(QString::asprintf("%04d", support->index_node()));
 			}
 			//set canvas
 			m_ui->canvas->xAxis2->setVisible(true);
@@ -502,16 +495,12 @@ namespace gui
 			}
 			fclose(file);
 			//interface
-			char sj[10], li[10], lj[10];
-			sprintf(sj, "%05d", m_steps);
-			sprintf(li, "%+.2e", mat::min(m_parameter, ns));
-			sprintf(lj, "%+.2e", mat::max(m_parameter, ns));
-			m_ui->label_step_max_x->setText(sj);
-			m_ui->label_step_max_y->setText(sj);
-			m_ui->label_parameter_min_x->setText(li);
-			m_ui->label_parameter_min_y->setText(li);
-			m_ui->label_parameter_max_x->setText(lj);
-			m_ui->label_parameter_max_y->setText(lj);
+			m_ui->label_step_max_x->setText(QString::asprintf("%05d", m_steps));
+			m_ui->label_step_max_y->setText(QString::asprintf("%05d", m_steps));
+			m_ui->label_parameter_min_x->setText(QString::asprintf("%+.2e", mat::min(m_parameter, ns)));
+			m_ui->label_parameter_min_y->setText(QString::asprintf("%+.2e", mat::min(m_parameter, ns)));
+			m_ui->label_parameter_max_x->setText(QString::asprintf("%+.2e", mat::max(m_parameter, ns)));
+			m_ui->label_parameter_max_y->setText(QString::asprintf("%+.2e", mat::max(m_parameter, ns)));
 			//load data
 			double*** data[] = {m_state, m_velocity, m_acceleration};
 			const char* name[] = {"State", "Velocity", "Acceleration"};
@@ -522,7 +511,7 @@ namespace gui
 					for(unsigned j = 0; j < nn; j++)
 					{
 						//path
-						char path[200], msg[200];
+						char path[200];
 						const std::string folder = m_model->path() + "/" + m_model->name() + "/" + name[i];
 						sprintf(path, "%s/N%04d.txt", folder.c_str(), j);
 						//file
@@ -535,8 +524,7 @@ namespace gui
 							}
 						}
 						fclose(file);
-						sprintf(msg, "Equilibrium Path: Loading %s (%5.2lf\%)", name[i], 100 * double(j) / nn);
-						status->showMessage(msg);
+						status->showMessage(QString::asprintf("Equilibrium Path: Loading %s (%5.2lf\%)", name[i], 100 * double(j) / nn));
 					}
 				}
 			}
@@ -547,7 +535,7 @@ namespace gui
 				const unsigned ls = unsigned(fea::mesh::joints::state::last);
 				const unsigned nr = mat::bit_find(m_model->mesh()->joint(i)->states(), ls);
 				//file
-				char path[200], msg[200];
+				char path[200];
 				sprintf(path, "%s/%s/Joints/J%04d.txt", m_model->path().c_str(), m_model->name().c_str(), i);
 				FILE* file = fopen(path, "r");
 				for(unsigned p = 0; p < ns; p++)
@@ -561,8 +549,7 @@ namespace gui
 					}
 				}
 				fclose(file);
-				sprintf(msg, "Equilibrium Path: Loading Joints (%5.2lf\%)", 100 * double(i) / nj);
-				status->showMessage(msg);
+				status->showMessage(QString::asprintf("Equilibrium Path: Loading Joints (%5.2lf\%)", 100 * double(i) / nj));
 			}
 			for(unsigned i = 0; i < ne; i++)
 			{
@@ -571,7 +558,7 @@ namespace gui
 				const unsigned ls = unsigned(fea::mesh::elements::state::last);
 				const unsigned nr = mat::bit_find(m_model->mesh()->element(i)->states(), ls);
 				//file
-				char path[200], msg[200];
+				char path[200];
 				sprintf(path, "%s/%s/Elements/E%04d.txt", m_model->path().c_str(), m_model->name().c_str(), i);
 				FILE* file = fopen(path, "r");
 				for(unsigned p = 0; p < ns; p++)
@@ -585,13 +572,12 @@ namespace gui
 					}
 				}
 				fclose(file);
-				sprintf(msg, "Equilibrium Path: Loading Elements (%5.2lf\%)", 100 * double(i) / ne);
-				status->showMessage(msg);
+				status->showMessage(QString::asprintf("Equilibrium Path: Loading Elements (%5.2lf\%)", 100 * double(i) / ne));
 			}
 			for(unsigned i = 0; i < nc; i++)
 			{
 				//path
-				char path[200], msg[200];
+				char path[200];
 				const std::string folder = m_model->path() + "/" + m_model->name() + "/Supports";
 				sprintf(path, "%s/S%04d.txt", folder.c_str(), i);
 				//file
@@ -601,8 +587,7 @@ namespace gui
 					fscanf(file, "%lf", &m_support[i][j]);
 				}
 				fclose(file);
-				sprintf(msg, "Equilibrium Path: Loading Supports (%5.2lf\%)", 100 * double(i) / nc);
-				status->showMessage(msg);
+				status->showMessage(QString::asprintf("Equilibrium Path: Loading Supports (%5.2lf\%)", 100 * double(i) / nc));
 			}
 			status->showMessage("Equilibrium Path: Loading Complete!", 5000);
 		}
@@ -631,7 +616,6 @@ namespace gui
 				index == 0 ? m_ui->combo_support_index_x : m_ui->combo_support_index_y
 			};
 			//name
-			char formatter[200];
 			switch(tab->currentIndex())
 			{
 				case 0:
@@ -646,46 +630,40 @@ namespace gui
 				{
 					const unsigned n = cl[1]->currentIndex();
 					const std::string s = cl[0]->currentText().toStdString();
-					sprintf(formatter, "State - Node: %04d Dof: %s", n, s.c_str());
-					return formatter;
+					return QString::asprintf("State - Node: %04d Dof: %s", n, s.c_str());
 				}
 				case 3:
 				{
 					const unsigned n = cl[2]->currentIndex();
 					const std::string s = cl[3]->currentText().toStdString();
-					sprintf(formatter, "Velocity - Node: %04d Dof: %s", n, s.c_str());
-					return formatter;
+					return QString::asprintf("Velocity - Node: %04d Dof: %s", n, s.c_str());
 				}
 				case 4:
 				{
 					const unsigned n = cl[4]->currentIndex();
 					const std::string s = cl[5]->currentText().toStdString();
-					sprintf(formatter, "Acceleration - Node: %04d Dof: %s", n, s.c_str());
-					return formatter;
+					return QString::asprintf("Acceleration - Node: %04d Dof: %s", n, s.c_str());
 				}
 				case 5:
 				{
 					const std::string j = cl[8]->currentText().toStdString();
 					const std::string s = cl[7]->currentText().toStdString();
 					const std::string n = cl[6]->currentText().toStdString();
-					sprintf(formatter, "Joint: %s State: %s Node: %s", j.c_str(), s.c_str(), n.c_str());
-					return formatter;
+					return QString::asprintf("Joint: %s State: %s Node: %s", j.c_str(), s.c_str(), n.c_str());
 				}
 				case 6:
 				{
 					const std::string e = cl[11]->currentText().toStdString();
 					const std::string s = cl[10]->currentText().toStdString();
 					const std::string n = cl[ 9]->currentText().toStdString();
-					sprintf(formatter, "Element: %s State: %s Node: %s", e.c_str(), s.c_str(), n.c_str());
-					return formatter;
+					return QString::asprintf("Element: %s State: %s Node: %s", e.c_str(), s.c_str(), n.c_str());
 				}
 				case 7:
 				{
 					const std::string n = ll[0]->text().toStdString();
 					const std::string d = ll[1]->text().toStdString();
 					const std::string s = cl[12]->currentText().toStdString();
-					sprintf(formatter, "Support: %s - Node: %s Dof: %s", s.c_str(), n.c_str(), d.c_str());
-					return formatter;
+					return QString::asprintf("Support: %s - Node: %s Dof: %s", s.c_str(), n.c_str(), d.c_str());
 				}
 			}
 		}
@@ -778,7 +756,6 @@ namespace gui
 		void Equilibrium_Path::slot_plot(void) const
 		{
 			//data
-			double* data;
 			double dl[2][2];
 			QVector<double> vl[2];
 			//interface
@@ -1027,7 +1004,7 @@ namespace gui
 			{
 				ce[p + 2]->setCurrentIndex(c);
 			}
-			if(b < ce[p + 1]->count())
+			if(b < (unsigned) ce[p + 1]->count())
 			{
 				ce[p + 1]->setCurrentIndex(b);
 			}
@@ -1070,7 +1047,7 @@ namespace gui
 			{
 				ce[p + 2]->setCurrentIndex(c);
 			}
-			if(b < ce[p + 1]->count())
+			if(b < (unsigned) ce[p + 1]->count())
 			{
 				ce[p + 1]->setCurrentIndex(b);
 			}
@@ -1081,21 +1058,20 @@ namespace gui
 		{
 			//combo
 			QLabel* ls[] = {
-				m_ui->label_support_node_x, m_ui->label_support_dof_x,
-				m_ui->label_support_node_y, m_ui->label_support_dof_y
+				m_ui->label_support_node_x, m_ui->label_support_type_x, m_ui->label_support_dof_x,
+				m_ui->label_support_node_y, m_ui->label_support_type_y, m_ui->label_support_dof_y
 			};
 			QComboBox* cs[] = {
 				m_ui->combo_support_index_x, m_ui->combo_support_index_y
 			};
 			//sender
 			const unsigned p = std::distance(cs, std::find(cs, cs + 2, (QComboBox*) QObject::sender()));
-			//index
-			const unsigned s = cs[p]->currentIndex();
 			//labels
-			char formatter[200];
-			sprintf(formatter, "%04d", m_model->boundary()->support(s)->index_node());
-			ls[2 * p + 0]->setText(formatter);
-			ls[2 * p + 1]->setText(fea::mesh::nodes::Node::dof_name(m_model->boundary()->support(s)->dof()));
+			const unsigned i = cs[p]->currentIndex();
+			fea::boundary::Support* support = m_model->boundary()->support(i);
+			ls[3 * p + 1]->setText(support->fixed() ? "Fixed" : "Flexible");
+			ls[3 * p + 0]->setText(QString::asprintf("%04d", support->index_node()));
+			ls[3 * p + 2]->setText(fea::mesh::nodes::Node::dof_name(support->dof()));
 			//fit
 			slot_fit();
 		}

@@ -1,8 +1,8 @@
 //fea
-#include "Models/Model.h"
-
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
+
+#include "Model/Model.h"
 
 //gui
 #include "Canvas/ModelCanvas.h"
@@ -18,7 +18,8 @@ namespace gui
 		namespace nodes
 		{
 			//constructors
-			Nodes::Nodes(fea::mesh::Mesh* mesh, gui::canvas::Model* canvas, QWidget* parent) : QDialog(parent), m_ui(new Ui::Nodes), m_mesh(mesh), m_canvas(canvas)
+			Nodes::Nodes(fea::mesh::Mesh* mesh, gui::canvas::Model* canvas, QWidget* parent) : 
+				QDialog(parent), m_ui(new Ui::Nodes), m_mesh(mesh), m_canvas(canvas)
 			{
 				//set ui
 				m_ui->setupUi(this);
@@ -35,7 +36,6 @@ namespace gui
 				}
 				else
 				{
-					char formatter[200];
 					for (unsigned i = 0; i < nn; i++)
 					{
 						m_ui->combo->addItem(QString::asprintf("%05d", i + 1));
@@ -95,6 +95,7 @@ namespace gui
 			void Nodes::slot_add(void)
 			{
 				//add node
+				m_mesh->model()->mark();
 				m_mesh->add_node(0, 0, 0);
 				const unsigned nn = m_mesh->nodes();
 				//set select
@@ -127,6 +128,7 @@ namespace gui
 				const unsigned i = (unsigned) m_ui->combo->currentIndex();
 				QLineEdit* e[] = {m_ui->edit_x, m_ui->edit_y, m_ui->edit_z};
 				//set ui
+				m_mesh->model()->mark();
 				for(unsigned j = 0; j < 3; j++)
 				{
 					if(e[j] == QObject::sender())
@@ -167,6 +169,7 @@ namespace gui
 				const unsigned i = (unsigned) m_ui->combo->currentIndex();
 				//remove node
 				m_mesh->remove_node(i);
+				m_mesh->model()->mark();
 				const unsigned n = m_mesh->nodes();
 				//set combo
 				m_ui->combo->removeItem(i);
@@ -190,8 +193,8 @@ namespace gui
 				//data
 				bool test;
 				const double d = m_ui->table->item(i, j)->text().toDouble(&test);
-				const double v = test ? d : 0;
 				//set node
+				m_mesh->model()->mark();
 				m_mesh->node(i)->coordinates(d, j);
 				//set edits
 				QLineEdit* e[] = {m_ui->edit_x, m_ui->edit_y, m_ui->edit_z};

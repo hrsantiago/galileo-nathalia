@@ -8,16 +8,16 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Materials/Materials.h"
 
 //gui
-#include "Actions/Mesh/Materials/Heat.h"
-#include "Actions/Mesh/Materials/Steel.h"
-#include "Actions/Mesh/Materials/Concrete.h"
 #include "Actions/Mesh/Materials/Materials.h"
+#include "Actions/Mesh/Materials/Heat/Heat.h"
+#include "Actions/Mesh/Materials/Mechanic/Steel.h"
+#include "Actions/Mesh/Materials/Mechanic/Concrete.h"
 
 //ui
 #include "ui_Materials.h"
@@ -68,7 +68,7 @@ namespace gui
 				m_ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 				for(unsigned i = 0; i < nm; i++)
 				{
-					add_material(i);
+					table_add(i);
 				}
 				//slots
 				QObject::connect(m_ui->button_add, SIGNAL(clicked(bool)), SLOT(slot_add(void)));
@@ -89,6 +89,7 @@ namespace gui
 			void Materials::slot_add(void)
 			{
 				//add material
+				m_mesh->model()->mark();
 				const unsigned nm = m_mesh->materials() + 1;
 				const unsigned st = m_ui->combo_type->currentIndex();
 				fea::mesh::materials::Material* material = m_mesh->add_material(fea::mesh::materials::type(1 << st));
@@ -106,16 +107,19 @@ namespace gui
 				//set table
 				m_ui->table->setRowCount(nm);
 				m_ui->table->setEnabled(true);
-				//add section
-				add_material(nm - 1);
+				table_add(nm - 1);
 			}
 			void Materials::slot_name(void)
 			{
+				//data
 				QString text = m_ui->edit_name->text();
 				const unsigned i = m_ui->combo_index->currentIndex();
+				//material
+				m_mesh->model()->mark();
 				m_mesh->material(i)->label(text.remove(' ').toStdString().c_str());
-				m_ui->table->item(i, 1)->setText(text);
+				//edit and table
 				m_ui->edit_name->setText(text);
+				m_ui->table->item(i, 1)->setText(text);
 			}
 			void Materials::slot_mass(void)
 			{
@@ -123,6 +127,7 @@ namespace gui
 				const double m = m_ui->edit_mass->text().toDouble();
 				const unsigned i = m_ui->combo_index->currentIndex();
 				//material
+				m_mesh->model()->mark();
 				m_mesh->material(i)->specific_mass(m);
 				//edit and table
 				m_ui->edit_mass->setText(QString::asprintf("%.2e", m));
@@ -141,8 +146,10 @@ namespace gui
 					case fea::mesh::materials::type::concrete:
 						Concrete((fea::mesh::materials::Concrete*) m_mesh->material(i), nullptr).exec();
 						break;
+					default:
+						return;
 				}
-				update_material(i);
+				table_update(i);
 			}
 			void Materials::slot_index(int i)
 			{
@@ -157,9 +164,10 @@ namespace gui
 			}
 			void Materials::slot_remove(void)
 			{
-				//indes
+				//index
 				const unsigned i = (unsigned) m_ui->combo_index->currentIndex();
 				//remove material
+				m_mesh->model()->mark();
 				m_mesh->remove_material(i);
 				const unsigned nm = m_mesh->materials();
 				//set combo
@@ -179,8 +187,8 @@ namespace gui
 				m_ui->button_remove->setEnabled(nm != 0);
 			}
 			
-			//add
-			void Materials::add_material(unsigned i) const
+			//table
+			void Materials::table_add(unsigned i) const
 			{
 				//material
 				fea::mesh::materials::Material* material = m_mesh->material(i);
@@ -199,7 +207,7 @@ namespace gui
 				in->setFlags(in->flags() ^ Qt::ItemIsEditable);
 				im->setFlags(im->flags() ^ Qt::ItemIsEditable);
 			}
-			void Materials::update_material(unsigned i) const
+			void Materials::table_update(unsigned i) const
 			{
 				//material
 				fea::mesh::materials::Material* material = m_mesh->material(i);

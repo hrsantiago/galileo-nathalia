@@ -75,7 +75,7 @@ namespace gui
 			//list
 			QModelIndexList sr = m_ui->table->selectionModel()->selectedRows(0);
 			//remove
-			for(unsigned i = 0; i < sr.size(); i++)
+			for(unsigned i = 0; i < (unsigned) sr.size(); i++)
 			{
 				const unsigned j = sr.size() - i - 1;
 				m_paths->erase(m_paths->begin() + sr[j].row());

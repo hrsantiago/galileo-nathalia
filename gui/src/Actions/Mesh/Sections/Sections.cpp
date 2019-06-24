@@ -2,6 +2,8 @@
 #include "misc/util.h"
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/Sections.h"
 
@@ -75,7 +77,7 @@ namespace gui
 				m_ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 				for(unsigned i = 0; i < ns; i++)
 				{
-					add_section(i);
+					table_add(i);
 				}
 				//slots
 				QObject::connect(m_ui->push_add, SIGNAL(clicked(bool)), SLOT(slot_add(void)));
@@ -96,6 +98,7 @@ namespace gui
 			void Sections::slot_add(void)
 			{
 				//add section
+				m_mesh->model()->mark();
 				const unsigned ns = m_mesh->sections() + 1;
 				const unsigned st = m_ui->combo_type->currentIndex();
 				fea::mesh::sections::Section* section = m_mesh->add_section(fea::mesh::sections::type(1 << st));
@@ -112,11 +115,11 @@ namespace gui
 				//set table
 				m_ui->table->setRowCount(ns);
 				m_ui->table->setEnabled(true);
-				//add section
-				add_section(ns - 1);
+				table_add(ns - 1);
 			}
 			void Sections::slot_name(void)
 			{
+				m_mesh->model()->mark();
 				QString text = m_ui->edit_name->text();
 				const unsigned i = m_ui->combo_index->currentIndex();
 				m_mesh->section(i)->label(text.remove(' ').toStdString().c_str());
@@ -145,8 +148,10 @@ namespace gui
 					case fea::mesh::sections::type::rectangle:
 						Rectangle((fea::mesh::sections::Rectangle*) m_mesh->section(i)).exec();
 						break;
+					default:
+						return;
 				}
-				update_section(i);
+				table_update(i);
 			}
 			void Sections::slot_index(int i)
 			{
@@ -171,6 +176,7 @@ namespace gui
 				//index
 				const unsigned i = (unsigned) m_ui->combo_index->currentIndex();
 				//remove section
+				m_mesh->model()->mark();
 				m_mesh->remove_section(i);
 				const unsigned ns = m_mesh->sections();
 				//set combo
@@ -189,8 +195,8 @@ namespace gui
 				m_ui->push_rebars->setEnabled(ns != 0);
 			}
 			
-			//misc
-			void Sections::add_section(unsigned i) const
+			//table
+			void Sections::table_add(unsigned i) const
 			{
 				//section
 				fea::mesh::sections::Section* section = m_mesh->section(i);
@@ -231,7 +237,7 @@ namespace gui
 					m_ui->table->setItem(i, j + 3, it);
 				}
 			}
-			void Sections::update_section(unsigned i) const
+			void Sections::table_update(unsigned i) const
 			{
 				//section
 				fea::mesh::sections::Section* section = m_mesh->section(i);

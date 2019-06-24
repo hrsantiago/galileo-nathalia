@@ -1,9 +1,12 @@
 //std
 #include <cmath>
-#include <QIntValidator>
+
+//qt
 #include <QDoubleValidator>
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/Ring.h"
 
@@ -26,7 +29,7 @@ namespace gui
 				//set ui
 				m_ui->setupUi(this);
 				m_ui->canvas->section(m_ring);
-				setWindowTitle(QString::asprintf("Ring - Index: %02d - Name: %s", m_ring->index(), m_ring->label()));
+				setWindowTitle(QString::asprintf("Ring - Index: %02d - Name: %s", m_ring->index() + 1, m_ring->label()));
 				//set edit
 				m_ui->edit_name->setText(m_ring->label());
 				m_ui->edit_mesh_r->setText(QString::asprintf("%02d", m_ring->mesh_r()));
@@ -55,6 +58,7 @@ namespace gui
 			//slots
 			void Ring::slot_name(void)
 			{
+				m_ring->mesh()->model()->mark();
 				QString text = m_ui->edit_name->text();
 				m_ring->label(text.remove(' ').toStdString().c_str());
 				m_ui->edit_name->setText(text);
@@ -65,6 +69,7 @@ namespace gui
 				const double t = m_ui->edit_geom_t->text().toDouble();
 				//material
 				m_ring->thickness(t);
+				m_ring->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_t->setText(QString::asprintf("%.2e", t));
 				//draw
@@ -76,6 +81,7 @@ namespace gui
 				const int r = m_ui->edit_mesh_r->text().toInt();
 				//material
 				m_ring->mesh_r(r);
+				m_ring->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_r->setText(QString::asprintf("%02d", r));
 				//draw
@@ -87,6 +93,7 @@ namespace gui
 				const int t = m_ui->edit_mesh_t->text().toInt();
 				//material
 				m_ring->mesh_t(t);
+				m_ring->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_t->setText(QString::asprintf("%02d", t));
 				//draw
@@ -105,6 +112,7 @@ namespace gui
 				const double d = m_ui->edit_geom_d->text().toDouble();
 				//material
 				m_ring->diameter(d);
+				m_ring->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_d->setText(QString::asprintf("%.2e", d));
 				//draw

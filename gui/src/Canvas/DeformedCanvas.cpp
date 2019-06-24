@@ -12,7 +12,7 @@
 #include "misc/util.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"
@@ -27,7 +27,7 @@
 #include "Analysis/Solvers/Watch_Dof.h"
 
 //gui
-#include "Canvas/DeformedCanvas.h".h"
+#include "Canvas/DeformedCanvas.h"
 
 #include "Actions/Results/Deformed.h"
 
@@ -198,7 +198,7 @@ namespace gui
 						{
 							m_positions[j][i][k] = (k < 3 ? x[k] : 0) + (1 << k & dt ? u : 0);
 						}
-						if(i == nw && 1 << k == dw)
+						if(i == nw && 1U << k == dw)
 						{
 							m_dof[j] = (dt & dw) ? u : 0;
 						}

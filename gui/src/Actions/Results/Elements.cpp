@@ -10,7 +10,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Elements/States.h"
@@ -35,7 +35,7 @@ namespace gui
 	namespace results
 	{
 		//constructors
-		Elements::Elements(fea::models::Model* model, QWidget* parent) : QDialog(parent), m_play(false), m_ui(new Ui::Elements), m_model(model)
+		Elements::Elements(fea::models::Model* model, QWidget* parent) : QDialog(parent), m_play(false), m_ui(new Ui::Elemental), m_model(model)
 		{
 			//set ui
 			m_ui->setupUi(this);

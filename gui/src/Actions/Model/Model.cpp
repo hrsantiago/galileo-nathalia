@@ -7,7 +7,7 @@
 #include <QColorDialog>
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"
@@ -37,8 +37,8 @@ namespace gui
 			//set ui
 			m_ui->setupUi(this);
 			setFixedSize(width(), height());
-			m_ui->edit_name->setText(model->name().c_str());
 			m_ui->edit_name->setEnabled(edit);
+			m_ui->edit_name->setText(model->name().c_str());
 			//set what
 			m_ui->check_axes->setCheckState(m_model->plot()->what()->axes() ? Qt::Checked : Qt::Unchecked);
 			m_ui->check_scale->setCheckState(m_model->plot()->what()->scale() ? Qt::Checked : Qt::Unchecked);
@@ -106,6 +106,7 @@ namespace gui
 		//slots
 		void Model::slot_edit(void)
 		{
+			m_model->mark();
 			m_model->name(m_ui->edit_name->text().toStdString());
 		}
 		void Model::slot_push(void)

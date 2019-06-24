@@ -1,9 +1,12 @@
 //std
 #include <cmath>
-#include <QIntValidator>
+
+//qt
 #include <QDoubleValidator>
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/Rectangle.h"
 
@@ -26,7 +29,7 @@ namespace gui
 				//set ui
 				m_ui->setupUi(this);
 				m_ui->canvas->section(m_rectangle);
-				setWindowTitle(QString::asprintf("Rectangle - Index: %02d - Name: %s", m_rectangle->index(), m_rectangle->label()));
+				setWindowTitle(QString::asprintf("Rectangle - Index: %02d - Name: %s", m_rectangle->index() + 1, m_rectangle->label()));
 				//set edit
 				m_ui->edit_name->setText(m_rectangle->label());
 				m_ui->edit_geom_w->setText(QString::asprintf("%.2e", m_rectangle->width()));
@@ -56,6 +59,7 @@ namespace gui
 			//slots
 			void Rectangle::slot_name(void)
 			{
+				m_rectangle->mesh()->model()->mark();
 				QString text = m_ui->edit_name->text();
 				m_rectangle->label(text.remove(' ').toStdString().c_str());
 				m_ui->edit_name->setText(text);
@@ -66,6 +70,7 @@ namespace gui
 				const double w = m_ui->edit_geom_w->text().toDouble();
 				//material
 				m_rectangle->width(w);
+				m_rectangle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_w->setText(QString::asprintf("%.2e", w));
 				//draw
@@ -77,6 +82,7 @@ namespace gui
 				const double h = m_ui->edit_geom_h->text().toDouble();
 				//material
 				m_rectangle->height(h);
+				m_rectangle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_h->setText(QString::asprintf("%.2e", h));
 				//draw
@@ -88,6 +94,7 @@ namespace gui
 				const int w = m_ui->edit_mesh_w->text().toInt();
 				//material
 				m_rectangle->mesh_w(w);
+				m_rectangle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_w->setText(QString::asprintf("%02d", w));
 				//draw
@@ -99,6 +106,7 @@ namespace gui
 				const int h = m_ui->edit_mesh_h->text().toInt();
 				//material
 				m_rectangle->mesh_h(h);
+				m_rectangle->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_h->setText(QString::asprintf("%02d", h));
 				//draw

@@ -11,7 +11,7 @@ namespace gui
 			Q_OBJECT 
 
 		public:
-		//constructors
+			//constructors
 			Click_Label(QWidget* = nullptr);
 			
 			//destructor

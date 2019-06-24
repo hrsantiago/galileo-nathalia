@@ -16,7 +16,7 @@
 #include "linear/linear.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"

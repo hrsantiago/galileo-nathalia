@@ -10,7 +10,7 @@
 #include "linear/dense.h"
 
 //fea
-#include "Models/Model.h"
+#include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
@@ -279,14 +279,11 @@ namespace gui
 		void Deformed::slot_slider(int step)
 		{
 			char formatter[200];
-			const unsigned n = m_model->analysis()->solver()->watch_dof()->m_node;
-			const unsigned d = (unsigned) m_model->analysis()->solver()->watch_dof()->m_dof;
-			const unsigned p = (unsigned) mat::bit_find(d, (unsigned) fea::mesh::nodes::dof::last);
 			sprintf(formatter, "Step: %04d/%04d", step, m_ui->canvas->m_steps - 1);
 			m_ui->label_step->setText(formatter);
-			sprintf(formatter, "Dof: %+4.2e", m_ui->canvas->m_dof[step]);
+			sprintf(formatter, "Dof: %+.2e", m_ui->canvas->m_dof[step]);
 			m_ui->label_dof->setText(formatter);
-			sprintf(formatter, "%s: %+4.2e", m_model->analysis()->solver()->parameter(), m_ui->canvas->m_parameter[step]);
+			sprintf(formatter, "%s: %+.2e", m_model->analysis()->solver()->parameter(), m_ui->canvas->m_parameter[step]);
 			m_ui->label_time->setText(formatter);
 		}
 	}

@@ -747,6 +747,27 @@
        <string>Support</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_14">
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_support_text_2_x">
+         <property name="text">
+          <string>Dof:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_support_text_1_x">
+         <property name="text">
+          <string>Node:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QLabel" name="label_support_dof_x">
+         <property name="text">
+          <string>ux</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_support_index_x">
          <property name="text">
@@ -761,7 +782,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="6">
+       <item row="0" column="8">
         <spacer name="spacer_support_x">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -777,24 +798,17 @@
        <item row="0" column="1">
         <widget class="QComboBox" name="combo_support_index_x"/>
        </item>
-       <item row="0" column="4">
-        <widget class="QLabel" name="label_support_text_2_x">
+       <item row="0" column="6">
+        <widget class="QLabel" name="label_support_text_3_x">
          <property name="text">
-          <string>Dof</string>
+          <string>Type:</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_support_text_1_x">
+       <item row="0" column="7">
+        <widget class="QLabel" name="label_support_type_x">
          <property name="text">
-          <string>Node</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="5">
-        <widget class="QLabel" name="label_support_dof_x">
-         <property name="text">
-          <string>ux</string>
+          <string>Fixed</string>
          </property>
         </widget>
        </item>
@@ -1135,7 +1149,7 @@
        <item row="0" column="2">
         <widget class="QLabel" name="label_support_text_1_y">
          <property name="text">
-          <string>Node</string>
+          <string>Node:</string>
          </property>
         </widget>
        </item>
@@ -1149,11 +1163,11 @@
        <item row="0" column="4">
         <widget class="QLabel" name="label_support_text_2_y">
          <property name="text">
-          <string>Dof</string>
+          <string>Dof:</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="6">
+       <item row="0" column="8">
         <spacer name="spacer_support_y">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1180,6 +1194,20 @@
         <widget class="QLabel" name="label_support_dof_y">
          <property name="text">
           <string>ux</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
+        <widget class="QLabel" name="label_support_text_3_y">
+         <property name="text">
+          <string>Type:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="7">
+        <widget class="QLabel" name="label_support_type_y">
+         <property name="text">
+          <string>Fixed</string>
          </property>
         </widget>
        </item>

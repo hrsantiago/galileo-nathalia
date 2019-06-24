@@ -41,9 +41,9 @@ namespace gui
 				void slot_remove(void);
 
 			private:
-				//misc
-				void add_section(unsigned) const;
-				void update_section(unsigned) const;
+				//table
+				void table_add(unsigned) const;
+				void table_update(unsigned) const;
 			
 				//attributes
 				Ui::Sections* m_ui;

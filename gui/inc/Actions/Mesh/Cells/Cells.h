@@ -41,9 +41,9 @@ namespace gui
 				void slot_remove(void);
 
 			private:
-				//misc
-				void add_cell(unsigned) const;
-				void update_cell(unsigned) const;
+				//table
+				void table_add(unsigned) const;
+				void table_update(unsigned) const;
 				
 				//attributes
 				Ui::Cells* m_ui;

@@ -23,10 +23,8 @@ namespace gui
 			virtual ~About(void);
 			
 		private slots:
-			void slot_puc(void) const;
-			void slot_ulb(void) const;
-			void slot_ufop(void) const;
-			void slot_galileo(void) const;
+			//slots
+			void slot_logo(void) const;
 		
 		private:
 			//attributes

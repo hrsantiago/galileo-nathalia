@@ -41,9 +41,9 @@ namespace gui
 				void slot_remove(void);
 
 			private:
-				//misc
-				void add_material(unsigned) const;
-				void update_material(unsigned) const;
+				//table
+				void table_add(unsigned) const;
+				void table_update(unsigned) const;
 			
 				//attributes
 				Ui::Materials* m_ui;

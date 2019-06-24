@@ -48,8 +48,8 @@ namespace gui
 				void slot_table(int, int);
 
 			private:
-				//misc
-				void add_rebar(unsigned i) const;
+				//table
+				void table_add(unsigned i) const;
 				
 				//members
 				Ui::Rebars* m_ui;

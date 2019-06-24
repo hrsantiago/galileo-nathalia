@@ -1,9 +1,12 @@
 //std
 #include <cmath>
-#include <QIntValidator>
+
+//qt
 #include <QDoubleValidator>
 
 //fea
+#include "Model/Model.h"
+
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/Box.h"
 
@@ -26,7 +29,7 @@ namespace gui
 				//set ui
 				m_ui->setupUi(this);
 				m_ui->canvas->section(m_box);
-				setWindowTitle(QString::asprintf("Box - Index: %02d - Name: %s", m_box->index(), m_box->label()));
+				setWindowTitle(QString::asprintf("Box - Index: %02d - Name: %s", m_box->index() + 1, m_box->label()));
 				//set edit
 				m_ui->edit_name->setText(m_box->label());
 				m_ui->edit_geom_w->setText(QString::asprintf("%.2e", m_box->width()));
@@ -61,6 +64,7 @@ namespace gui
 			//slots
 			void Box::slot_name(void)
 			{
+				m_box->mesh()->model()->mark();
 				QString text = m_ui->edit_name->text();
 				m_box->label(text.remove(' ').toStdString().c_str());
 				m_ui->edit_name->setText(text);
@@ -71,6 +75,7 @@ namespace gui
 				const double w = m_ui->edit_geom_w->text().toDouble();
 				//material
 				m_box->width(w);
+				m_box->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_w->setText(QString::asprintf("%.2e", w));
 				//draw
@@ -82,6 +87,7 @@ namespace gui
 				const double t = m_ui->edit_geom_t->text().toDouble();
 				//material
 				m_box->thickness(t);
+				m_box->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_t->setText(QString::asprintf("%.2e", t));
 				//draw
@@ -93,6 +99,7 @@ namespace gui
 				const double h = m_ui->edit_geom_h->text().toDouble();
 				//material
 				m_box->height(h);
+				m_box->mesh()->model()->mark();
 				//edit
 				m_ui->edit_geom_h->setText(QString::asprintf("%.2e", h));
 				//draw
@@ -104,6 +111,7 @@ namespace gui
 				const int w = m_ui->edit_mesh_w->text().toInt();
 				//material
 				m_box->mesh_w(w);
+				m_box->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_w->setText(QString::asprintf("%02d", w));
 				//draw
@@ -115,6 +123,7 @@ namespace gui
 				const int h = m_ui->edit_mesh_h->text().toInt();
 				//material
 				m_box->mesh_h(h);
+				m_box->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_h->setText(QString::asprintf("%02d", h));
 				//draw
@@ -126,6 +135,7 @@ namespace gui
 				const int t = m_ui->edit_mesh_t->text().toInt();
 				//material
 				m_box->mesh_t(t);
+				m_box->mesh()->model()->mark();
 				//edit
 				m_ui->edit_mesh_t->setText(QString::asprintf("%02d", t));
 				//draw
