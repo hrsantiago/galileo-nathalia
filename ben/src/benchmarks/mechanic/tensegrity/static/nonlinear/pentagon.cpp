@@ -34,7 +34,7 @@
 void tests::tensegrity::static_nonlinear::pentagon(void)
 {
 	//data
-	const double s0 = 200e6;	//residual stress
+	const double s0 = 100e6;	//residual stress
 	const double E0 = 115e9;	//elastic modulus: cable
 	const double E1 = 210e9;	//elastic modulus: strut
 	const double A0 = 1.5e-4;	//cross section area: cable
@@ -43,23 +43,30 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	//model
 	fea::models::Model model("pentagon", "benchmarks/tensegrity/static/nonlinear");
 	
+	int nModules = 1;
 	//nodes
-	model.mesh()->add_node(+0.000, +0.000, +3.894);
-	model.mesh()->add_node(+0.000, +3.703, +1.203);
-	model.mesh()->add_node(+0.000, +2.289, -3.150);
-	model.mesh()->add_node(+0.000, -2.289, -3.150);
-	model.mesh()->add_node(+0.000, -3.703, +1.203);
-	model.mesh()->add_node(+2.500, +0.000, -3.894);
-	model.mesh()->add_node(+2.500, -3.703, -1.203);
-	model.mesh()->add_node(+2.500, -2.289, +3.150);
-	model.mesh()->add_node(+2.500, +2.289, +3.150);
-	model.mesh()->add_node(+2.500, +3.703, -1.203);
-	model.mesh()->add_node(+5.000, +0.000, +3.894);
-	model.mesh()->add_node(+5.000, +3.703, +1.203);
-	model.mesh()->add_node(+5.000, +2.289, -3.150);
-	model.mesh()->add_node(+5.000, -2.289, -3.150);
-	model.mesh()->add_node(+5.000, -3.703, +1.203);
-	
+	for(int i = 0; i < nModules; i++) {
+		double x = i * 5;
+		if(i == 0) {
+			model.mesh()->add_node(+0.000 + x, +0.000, +3.894);//nó 0
+			model.mesh()->add_node(+0.000 + x, +3.703, +1.203);//nó 1
+			model.mesh()->add_node(+0.000 + x, +2.289, -3.150);//nó 2
+			model.mesh()->add_node(+0.000 + x, -2.289, -3.150);//nó 3
+			model.mesh()->add_node(+0.000 + x, -3.703, +1.203);//nó 4
+		}
+		model.mesh()->add_node(+2.500 + x, +0.000, -3.894);//nó 5
+		model.mesh()->add_node(+2.500 + x, -3.703, -1.203);//nó 6
+		model.mesh()->add_node(+2.500 + x, -2.289, +3.150);//nó 7
+		model.mesh()->add_node(+2.500 + x, +2.289, +3.150);//nó 8
+		model.mesh()->add_node(+2.500 + x, +3.703, -1.203);//nó 9
+		model.mesh()->add_node(+5.000 + x, +0.000, +3.894);//nó 10
+		model.mesh()->add_node(+5.000 + x, +3.703, +1.203);//nó 11
+		model.mesh()->add_node(+5.000 + x, +2.289, -3.150);//nó 12
+		model.mesh()->add_node(+5.000 + x, -2.289, -3.150);//nó 13
+		model.mesh()->add_node(+5.000 + x, -3.703, +1.203);//nó 14
+	}
+
+
 	//cells
 	model.mesh()->add_cell(fea::mesh::cells::type::bar);
 	model.mesh()->add_cell(fea::mesh::cells::type::bar);
@@ -79,66 +86,72 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	((fea::mesh::sections::Circle*) model.mesh()->section(1))->diameter(2 * sqrt(A1 / M_PI));
 	
 	//elements
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 0,  1}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 1,  2}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 2,  3}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 3,  4}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 4,  0}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {10, 11}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {11, 12}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {12, 13}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {13, 14}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {14, 10}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 0,  8}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 1,  8}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {10,  8}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {11,  8}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 1,  9}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 2,  9}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {11,  9}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {12,  9}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 2,  5}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 3,  5}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {12,  5}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {13,  5}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 3,  6}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 4,  6}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {13,  6}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {14,  6}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 0,  7}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 4,  7}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {10,  7}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {14,  7}, 0, 0);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 0, 11}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 1, 12}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 2, 13}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 3, 14}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 4, 10}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {14,  8}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 8,  2}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {10,  9}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 9,  3}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {11,  5}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 5,  4}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {12,  6}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 6,  0}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, {13,  7}, 1, 1);
-	model.mesh()->add_element(fea::mesh::elements::type::bar, { 7,  1}, 1, 1);
-	
-	//cables
-	for(unsigned i = 0; i < 30; i++)
-	{
-		((fea::mesh::elements::Bar*) model.mesh()->element(i))->cable(true);
-		((fea::mesh::elements::Bar*) model.mesh()->element(i))->residual_stress(s0);
+	for(int i = 0; i < nModules; ++i) {
+		unsigned int n = i * 10;
+		// cables
+		if(i == 0) {
+			model.mesh()->add_element(fea::mesh::elements::type::bar, { 0,  1}, 0, 0);
+			model.mesh()->add_element(fea::mesh::elements::type::bar, { 1,  2}, 0, 0);
+			model.mesh()->add_element(fea::mesh::elements::type::bar, { 2,  3}, 0, 0);
+			model.mesh()->add_element(fea::mesh::elements::type::bar, { 3,  4}, 0, 0);
+			model.mesh()->add_element(fea::mesh::elements::type::bar, { 4,  0}, 0, 0);
+		}
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {10+n, 11+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {11+n, 12+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {12+n, 13+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {13+n, 14+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {14+n, 10+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 0+n,  8+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 1+n,  8+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {10+n,  8+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {11+n,  8+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 1+n,  9+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 2+n,  9+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {11+n,  9+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {12+n,  9+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 2+n,  5+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 3+n,  5+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {12+n,  5+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {13+n,  5+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 3+n,  6+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 4+n,  6+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {13+n,  6+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {14+n,  6+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 0+n,  7+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 4+n,  7+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {10+n,  7+n}, 0, 0);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {14+n,  7+n}, 0, 0);
+
+		for(unsigned j = 0; j < 30; j++) {
+			((fea::mesh::elements::Bar*) model.mesh()->element(j+n))->cable(true);
+			((fea::mesh::elements::Bar*) model.mesh()->element(j+n))->residual_stress(s0);
+		}
+
+		// struts
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 0+n, 11+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 1+n, 12+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 2+n, 13+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 3+n, 14+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 4+n, 10+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {14+n,  8+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 8+n,  2+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {10+n,  9+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 9+n,  3+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {11+n,  5+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 5+n,  4+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {12+n,  6+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 6+n,  0+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, {13+n,  7+n}, 1, 1);
+		model.mesh()->add_element(fea::mesh::elements::type::bar, { 7+n,  1+n}, 1, 1);
 	}
-	
+
 	//supports
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_z);
 	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_z);	
+	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_z);
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_y);
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_z);
@@ -150,19 +163,28 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	model.boundary()->add_support(4, fea::mesh::nodes::dof::translation_z);
 	
 	//load cases
-//	model.boundary()->add_load_case();
-//	for(unsigned i = 0; i < 15; i++)
-//	{
-//		model.boundary()->load_case(0)->add_load_node((i), fea::mesh::nodes::dof::translation_y, -100);
-//		((fea::mesh::elements::Bar*) model.mesh()->element(i))->residual_stress(115E09 * 0.05);
-//	}
-//	model.boundary()->load_case(0)->add_load_node(10, fea::mesh::nodes::dof::translation_y, 0);
-//	model.boundary()->load_case(0)->add_load_node(11, fea::mesh::nodes::dof::translation_x, 0);
-//	model.boundary()->load_case(0)->add_load_node(12, fea::mesh::nodes::dof::translation_x, 0);
-//	model.boundary()->load_case(0)->add_load_node(13, fea::mesh::nodes::dof::translation_x, 0);
-//	model.boundary()->load_case(0)->add_load_node(14, fea::mesh::nodes::dof::translation_x, 0);
+	model.boundary()->add_load_case();
+	//	for(unsigned i = 0; i < 15; i++)
+	//	{
+	//		model.boundary()->load_case(0)->add_load_node((i), fea::mesh::nodes::dof::translation_y, -100);
+	//		((fea::mesh::elements::Bar*) model.mesh()->element(i))->residual_stress(115E09 * 0.05);
+	//	}
 
-	model.boundary()->add_self_weight("gravity", fea::mesh::nodes::dof::translation_x);
+	//carregamento vertical
+	model.boundary()->load_case(0)->add_load_node(3-1, fea::mesh::nodes::dof::translation_z, -22890);
+	model.boundary()->load_case(0)->add_load_node(4-1, fea::mesh::nodes::dof::translation_z, -22890);
+	model.boundary()->load_case(0)->add_load_node(13-1, fea::mesh::nodes::dof::translation_z, -22890);
+	model.boundary()->load_case(0)->add_load_node(14-1, fea::mesh::nodes::dof::translation_z, -22890);
+	//model.boundary()->load_case(0)->add_load_node(4, fea::mesh::nodes::dof::translation_z, -22890);
+
+	//carregamento horizontal
+	//model.boundary()->load_case(0)->add_load_node(0, fea::mesh::nodes::dof::translation_x, 2.289);
+	//model.boundary()->load_case(0)->add_load_node(1, fea::mesh::nodes::dof::translation_x, 2.289);
+	//model.boundary()->load_case(0)->add_load_node(2, fea::mesh::nodes::dof::translation_x, 2.289);
+	//model.boundary()->load_case(0)->add_load_node(3, fea::mesh::nodes::dof::translation_x, 2.289);
+	//model.boundary()->load_case(0)->add_load_node(4, fea::mesh::nodes::dof::translation_x, 2.289);
+
+	model.boundary()->add_self_weight("gravity", fea::mesh::nodes::dof::translation_z);
 	
 	//solver
 	fea::mesh::elements::Mechanic::geometric(true);
