@@ -14,4 +14,4 @@ GALILEO is a finite element software for the static and dynamic nonlinear analys
 
 ### Contact
 
-Email: murillobento@yahoo.com.br
+Email: mvbentosantana@gmail.com
