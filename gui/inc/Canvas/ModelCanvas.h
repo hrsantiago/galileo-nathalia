@@ -45,10 +45,13 @@ namespace gui
 			virtual void resizeGL(int, int) override;
 			virtual void initializeGL(void) override;
 			
-			virtual void draw_axes(void) const;
-			virtual void draw_axis_x(const double*, double, double) const;
-			virtual void draw_axis_y(const double*, double, double) const;
-			virtual void draw_axis_z(const double*, double, double) const;
+			virtual void draw_axes(void);
+			virtual void draw_axis_x(const double*, double, double);
+			virtual void draw_axis_y(const double*, double, double);
+			virtual void draw_axis_z(const double*, double, double);
+
+			virtual void draw_nodes();
+			virtual void draw_text(double x, double y, double z, const QString& text, Qt::GlobalColor color);
 
 			virtual void draw_scale(void) const;
 
@@ -65,6 +68,10 @@ namespace gui
 		
 			//arc ball
 			virtual void arc_ball(double*, unsigned, unsigned);
+
+			// text
+			GLint project(GLdouble objx, GLdouble objy, GLdouble objz, const GLdouble model[16], const GLdouble proj[16], const GLint viewport[4], GLdouble * winx, GLdouble * winy, GLdouble * winz);
+			void transformPoint(GLdouble out[4], const GLdouble m[16], const GLdouble in[4]);
 
 		protected slots:
 			//slots

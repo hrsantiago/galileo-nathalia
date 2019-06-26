@@ -97,6 +97,7 @@ namespace gui
 			{
 				draw_axes();
 			}
+			draw_nodes();
 			//update
 			update();
 		}

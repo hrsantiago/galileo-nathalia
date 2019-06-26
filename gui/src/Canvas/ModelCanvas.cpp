@@ -3,6 +3,7 @@
 
 //gl
 #include <GL/glu.h>
+#include <QPainter>
 
 //qt
 #include <QMenu>
@@ -17,6 +18,8 @@
 
 //fea
 #include "Model/Model.h"
+#include "Mesh/Mesh.h"
+#include "Mesh/Nodes/Node.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"
@@ -63,6 +66,10 @@ namespace gui
 			{
 				draw_axes();
 			}
+
+			// nodes text
+			draw_nodes();
+
 			//update
 			update();
 		}
@@ -84,7 +91,7 @@ namespace gui
 			glEnable(GL_POINT_SMOOTH);
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
-		void Model::draw_axes(void) const
+		void Model::draw_axes(void)
 		{
 			//center
 			double p[3];
@@ -98,7 +105,7 @@ namespace gui
 			draw_axis_y(p, s, f);
 			draw_axis_z(p, s, f);
 		}
-		void Model::draw_axis_x(const double* p, double s, double f) const
+		void Model::draw_axis_x(const double* p, double s, double f)
 		{
 			//angles
 			const double t1 =  30 * M_PI / 180;
@@ -117,8 +124,10 @@ namespace gui
 			glVertex3d(p[0] + s, p[1], p[2]);
 			glVertex3d(p[0] + s - f * s * cos(t2), p[1], p[2] - f * s * sin(t2));
 			glEnd();
+
+			draw_text(p[0] + s, p[1], p[2], "X", Qt::red);
 		}
-		void Model::draw_axis_y(const double* p, double s, double f) const
+		void Model::draw_axis_y(const double* p, double s, double f)
 		{
 			//angles
 			const double t1 =  60 * M_PI / 180;
@@ -137,8 +146,10 @@ namespace gui
 			glVertex3d(p[0], p[1] + s, p[2]);
 			glVertex3d(p[0], p[1] + s - f * s * sin(t2), p[2] - f * s * cos(t2));
 			glEnd();
+
+			draw_text(p[0], p[1] + s, p[2], "Y", Qt::green);
 		}
-		void Model::draw_axis_z(const double* p, double s, double f) const
+		void Model::draw_axis_z(const double* p, double s, double f)
 		{
 			//angles
 			const double t1 =  60 * M_PI / 180;
@@ -157,6 +168,48 @@ namespace gui
 			glVertex3d(p[0], p[1], p[2] + s);
 			glVertex3d(p[0], p[1] - f * s * cos(t2), p[2] + s - f * s * sin(t2));
 			glEnd();
+
+			draw_text(p[0], p[1], p[2] + s, "Z", Qt::blue);
+		}
+
+		void Model::draw_nodes()
+		{
+			if(m_model->plot()->what()->nodes())
+			{
+				fea::mesh::Mesh *mesh = m_model->mesh();
+				for(int i = 0; i < mesh->nodes(); ++i)
+				{
+					fea::mesh::nodes::Node *node = mesh->node(i);
+					const double *p = node->coordinates();
+					draw_text(p[0], p[1], p[2], QString::number(i), Qt::white);
+				}
+			}
+		}
+
+		void Model::draw_text(double x, double y, double z, const QString& text, Qt::GlobalColor color)
+		{
+			//https://stackoverflow.com/questions/28216001/how-to-render-text-with-qopenglwidget
+			int height = this->height();
+
+			GLdouble model[4][4], proj[4][4];
+			GLint view[4];
+			glGetDoublev(GL_MODELVIEW_MATRIX, &model[0][0]);
+			glGetDoublev(GL_PROJECTION_MATRIX, &proj[0][0]);
+			glGetIntegerv(GL_VIEWPORT, &view[0]);
+			GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
+
+			project(x, y, z, &model[0][0], &proj[0][0], &view[0], &textPosX, &textPosY, &textPosZ);
+
+			textPosY = height - textPosY; // y is inverted
+
+			QPainter painter(this);
+			painter.setPen(color);
+			painter.setFont(QFont("Helvetica", 10));
+			painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+			painter.drawText(textPosX, textPosY, text); // z = pointT4.z + distOverOp / 4
+			painter.end();
+
+			resizeGL(this->width(), this->height());
 		}
 
 		void Model::draw_scale(void) const
@@ -431,6 +484,39 @@ namespace gui
 				p[0] = a / (a * a + b * b);
 				p[1] = b / (a * a + b * b);
 			}
+		}
+
+		GLint Model::project(GLdouble objx, GLdouble objy, GLdouble objz, const GLdouble model[16], const GLdouble proj[16], const GLint viewport[4], GLdouble * winx, GLdouble * winy, GLdouble * winz)
+		{
+			GLdouble in[4], out[4];
+
+			in[0] = objx;
+			in[1] = objy;
+			in[2] = objz;
+			in[3] = 1.0;
+			transformPoint(out, model, in);
+			transformPoint(in, proj, out);
+
+			if(in[3] == 0.0)
+				return GL_FALSE;
+
+			in[0] /= in[3];
+			in[1] /= in[3];
+			in[2] /= in[3];
+
+			*winx = viewport[0] + (1 + in[0]) * viewport[2] / 2;
+			*winy = viewport[1] + (1 + in[1]) * viewport[3] / 2;
+
+			*winz = (1 + in[2]) / 2;
+			return GL_TRUE;
+		}
+
+		void Model::transformPoint(GLdouble out[4], const GLdouble m[16], const GLdouble in[4])
+		{
+			out[0] = m[0*4+0] * in[0] + m[1*4+0] * in[1] + m[2*4+0] * in[2] + m[3*4+0] * in[3];
+			out[1] = m[0*4+1] * in[0] + m[1*4+1] * in[1] + m[2*4+1] * in[2] + m[3*4+1] * in[3];
+			out[2] = m[0*4+2] * in[0] + m[1*4+2] * in[1] + m[2*4+2] * in[2] + m[3*4+2] * in[3];
+			out[3] = m[0*4+3] * in[0] + m[1*4+3] * in[1] + m[2*4+3] * in[2] + m[3*4+3] * in[3];
 		}
 		
 		//slots
