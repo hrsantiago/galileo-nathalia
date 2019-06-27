@@ -34,7 +34,7 @@
 void tests::tensegrity::static_nonlinear::pentagon(void)
 {
 	//data
-	const double s0 = 100e6;	//residual stress
+	const double s0 = 12.5e6;	//residual stress 5% of 250 MPa
 	const double E0 = 115e9;	//elastic modulus: cable
 	const double E1 = 210e9;	//elastic modulus: strut
 	const double A0 = 1.5e-4;	//cross section area: cable
@@ -43,7 +43,7 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	//model
 	fea::models::Model model("pentagon", "benchmarks/tensegrity/static/nonlinear");
 	
-	int nModules = 1;
+	int nModules = 4;
 	//nodes
 	for(int i = 0; i < nModules; i++) {
 		double x = i * 5;
@@ -66,7 +66,6 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 		model.mesh()->add_node(+5.000 + x, -3.703, +1.203);//nó 14
 	}
 
-
 	//cells
 	model.mesh()->add_cell(fea::mesh::cells::type::bar);
 	model.mesh()->add_cell(fea::mesh::cells::type::bar);
@@ -84,7 +83,7 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	model.mesh()->add_section(fea::mesh::sections::type::circle);
 	((fea::mesh::sections::Circle*) model.mesh()->section(0))->diameter(2 * sqrt(A0 / M_PI));
 	((fea::mesh::sections::Circle*) model.mesh()->section(1))->diameter(2 * sqrt(A1 / M_PI));
-	
+
 	//elements
 	for(int i = 0; i < nModules; ++i) {
 		unsigned int n = i * 10;
@@ -122,9 +121,9 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 		model.mesh()->add_element(fea::mesh::elements::type::bar, {10+n,  7+n}, 0, 0);
 		model.mesh()->add_element(fea::mesh::elements::type::bar, {14+n,  7+n}, 0, 0);
 
-		for(unsigned j = 0; j < 30; j++) {
-			((fea::mesh::elements::Bar*) model.mesh()->element(j+n))->cable(true);
-			((fea::mesh::elements::Bar*) model.mesh()->element(j+n))->residual_stress(s0);
+		for(unsigned j = model.mesh()->elements() - (i == 0 ? 30 : 25); j < model.mesh()->elements(); j++) {
+			((fea::mesh::elements::Bar*) model.mesh()->element(j))->cable(true);
+			((fea::mesh::elements::Bar*) model.mesh()->element(j))->residual_stress(s0);
 		}
 
 		// struts
@@ -146,21 +145,17 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	}
 
 	//supports
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_z);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_x);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_z);
-	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_x);
-	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_z);
-	model.boundary()->add_support(3, fea::mesh::nodes::dof::translation_x);
-	model.boundary()->add_support(3, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(3, fea::mesh::nodes::dof::translation_z);
-	model.boundary()->add_support(4, fea::mesh::nodes::dof::translation_x);
-	model.boundary()->add_support(4, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(4, fea::mesh::nodes::dof::translation_z);
+	for(int i = 0; i < 5; ++i) {
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_x);
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_y);
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_z);
+	}
+
+	for(int i = model.mesh()->nodes() - 5; i < model.mesh()->nodes(); ++i) {
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_x);
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_y);
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_z);
+	}
 	
 	//load cases
 	model.boundary()->add_load_case();
@@ -171,25 +166,29 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	//	}
 
 	//carregamento vertical
-	model.boundary()->load_case(0)->add_load_node(3-1, fea::mesh::nodes::dof::translation_z, -22890);
-	model.boundary()->load_case(0)->add_load_node(4-1, fea::mesh::nodes::dof::translation_z, -22890);
-	model.boundary()->load_case(0)->add_load_node(13-1, fea::mesh::nodes::dof::translation_z, -22890);
-	model.boundary()->load_case(0)->add_load_node(14-1, fea::mesh::nodes::dof::translation_z, -22890);
-	//model.boundary()->load_case(0)->add_load_node(4, fea::mesh::nodes::dof::translation_z, -22890);
+	double verServiceLoad = 4 * 1000; // 4 kN/m2
+	double walkingArea = (2.289*2)*5; // m2
+	double nodeVerServiceLoad = walkingArea * verServiceLoad / 4; // spread across 4 nodes
+	double nodeHorServiceLoad = 0.1 * nodeVerServiceLoad;
+	for(int i = 0; i < nModules; ++i) {
+		int n = 10 * i;
+		model.boundary()->load_case(0)->add_load_node(3-1 + n, fea::mesh::nodes::dof::translation_z, -nodeVerServiceLoad);
+		model.boundary()->load_case(0)->add_load_node(4-1 + n, fea::mesh::nodes::dof::translation_z, -nodeVerServiceLoad);
+		model.boundary()->load_case(0)->add_load_node(13-1 + n, fea::mesh::nodes::dof::translation_z, -nodeVerServiceLoad);
+		model.boundary()->load_case(0)->add_load_node(14-1 + n, fea::mesh::nodes::dof::translation_z, -nodeVerServiceLoad);
 
-	//carregamento horizontal
-	//model.boundary()->load_case(0)->add_load_node(0, fea::mesh::nodes::dof::translation_x, 2.289);
-	//model.boundary()->load_case(0)->add_load_node(1, fea::mesh::nodes::dof::translation_x, 2.289);
-	//model.boundary()->load_case(0)->add_load_node(2, fea::mesh::nodes::dof::translation_x, 2.289);
-	//model.boundary()->load_case(0)->add_load_node(3, fea::mesh::nodes::dof::translation_x, 2.289);
-	//model.boundary()->load_case(0)->add_load_node(4, fea::mesh::nodes::dof::translation_x, 2.289);
+		model.boundary()->load_case(0)->add_load_node(3-1 + n, fea::mesh::nodes::dof::translation_x, nodeHorServiceLoad);
+		model.boundary()->load_case(0)->add_load_node(4-1 + n, fea::mesh::nodes::dof::translation_x, nodeHorServiceLoad);
+		model.boundary()->load_case(0)->add_load_node(13-1 + n, fea::mesh::nodes::dof::translation_x, nodeHorServiceLoad);
+		model.boundary()->load_case(0)->add_load_node(14-1 + n, fea::mesh::nodes::dof::translation_x, nodeHorServiceLoad);
+	}
 
 	model.boundary()->add_self_weight("gravity", fea::mesh::nodes::dof::translation_z);
 	
 	//solver
 	fea::mesh::elements::Mechanic::geometric(true);
 	model.analysis()->solver(fea::analysis::solvers::type::static_nonlinear);
-	model.analysis()->solver()->watch_dof(10, fea::mesh::nodes::dof::translation_z);
+	model.analysis()->solver()->watch_dof(22, fea::mesh::nodes::dof::translation_z);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->step_max(2000);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_max(1.00);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_predictor(0.05);
