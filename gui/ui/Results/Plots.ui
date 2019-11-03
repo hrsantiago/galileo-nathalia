@@ -23,7 +23,8 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset theme="list-add"/>
+      <iconset theme="list-add">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -58,7 +59,8 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset theme="list-remove"/>
+      <iconset theme="list-remove">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -74,7 +76,8 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset theme="edit-delete"/>
+      <iconset theme="edit-delete">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>

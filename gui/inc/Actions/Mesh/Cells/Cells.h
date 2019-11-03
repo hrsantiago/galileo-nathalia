@@ -37,7 +37,6 @@ namespace gui
 				void slot_name(void);
 				void slot_click(int);
 				void slot_index(int);
-				void slot_slider(void);
 				void slot_remove(void);
 
 			private:

@@ -177,13 +177,13 @@ namespace gui
 				//points tension
 				for(unsigned i = 0; i < np; i++)
 				{
-					x1[i] = +i * eu / np;
+					x1[i] = +eu * i / np;
 					y1[i] = return_mapping(x1[i], et);
 				}
 				//points compression
 				for(unsigned i = 0; i < np; i++)
 				{
-					x2[i] = -i * eu / np;
+					x2[i] = -eu * i / np;
 					y2[i] = return_mapping(x2[i], ec);
 				}
 				//end points

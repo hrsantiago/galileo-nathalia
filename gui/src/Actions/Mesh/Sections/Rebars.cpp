@@ -6,7 +6,7 @@
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Sections/Rebar.h"
-#include "Mesh/Sections/Sections.h"
+#include "Mesh/Sections/Section.h"
 
 //gui
 #include "Canvas/Section.h"

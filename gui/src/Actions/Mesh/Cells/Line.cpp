@@ -24,7 +24,7 @@ namespace gui
 				m_ui->setupUi(this);
 				setWindowTitle(QString::asprintf("%s - Index: %02d - Name: %s", m_line->name(), m_line->index() + 1, m_line->label()));
 				//set combo
-				for(unsigned i = 0; i < line->mesh()->sections(); i++)
+				for(unsigned i = 0; i < line->mesh()->sections().size(); i++)
 				{
 					m_ui->combo->addItem(QString::asprintf("%02d", i + 1));
 				}

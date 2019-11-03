@@ -17,7 +17,7 @@
    <iconset>
     <normaloff>../rsc/galileu.jpg</normaloff>../rsc/galileu.jpg</iconset>
   </property>
-  <widget class="gui::canvas::Model" name="canvas">
+  <widget class="gui::canvas::Canvas" name="canvas">
    <layout class="QHBoxLayout" name="horizontalLayout"/>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -239,6 +239,9 @@
    <property name="text">
     <string>Nodes</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+N</string>
+   </property>
   </action>
   <action name="action_results_points">
    <property name="text">
@@ -249,10 +252,16 @@
    <property name="text">
     <string>Elements</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+E</string>
+   </property>
   </action>
   <action name="action_results_deformed">
    <property name="text">
     <string>Deformed</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+D</string>
    </property>
   </action>
   <action name="action_results_time_response">
@@ -263,6 +272,9 @@
   <action name="action_results_equilibrium_path">
    <property name="text">
     <string>Equilibrium Path</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+P</string>
    </property>
   </action>
   <action name="action_help_index">
@@ -401,9 +413,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>gui::canvas::Model</class>
+   <class>gui::canvas::Canvas</class>
    <extends>QWidget</extends>
-   <header location="global">Canvas/ModelCanvas.h</header>
+   <header location="global">Canvas/Canvas.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

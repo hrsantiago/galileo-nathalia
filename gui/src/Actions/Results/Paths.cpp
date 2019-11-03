@@ -12,21 +12,17 @@ namespace gui
 	namespace results
 	{
 		//constructors
-		Paths::Paths(double*** positions, std::vector<unsigned>* paths, unsigned nodes, QWidget* parent) : QDialog(parent), 
-			m_ui(new Ui::Paths), m_nodes(nodes), m_paths(paths)
+		Paths::Paths(std::vector<unsigned>& paths, unsigned nodes, QWidget* parent) : QDialog(parent), m_ui(new Ui::Paths), m_nodes(nodes), m_paths(paths)
 		{
 			//set ui
 			m_ui->setupUi(this);
-			//formatter
-			char formatter[200];
-			sprintf(formatter, "%05d", m_paths->empty() || m_paths->back() == m_nodes ? 0 : m_paths->back() + 1);
 			//set edit
-			m_ui->edit->setText(formatter);
-			m_ui->edit->setValidator(new QIntValidator(0, m_nodes));
+			m_ui->edit->setValidator(new QIntValidator(0, m_nodes - 1));
+			m_ui->edit->setText(QString::asprintf("%05d", m_paths.empty() || m_paths.back() + 1 == m_nodes ? 0 : m_paths.back() + 1));
 			//set table
 			m_ui->table->setColumnCount(1);
-			m_ui->table->setHorizontalHeaderItem(0, new QTableWidgetItem("Nodes"));
-			m_ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); 
+			m_ui->table->setHorizontalHeaderItem(0, new QTableWidgetItem("Node"));
+			m_ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 			//update
 			update_table();
 			m_ui->table->setCurrentCell(m_ui->table->rowCount() - 1, 0);
@@ -46,14 +42,13 @@ namespace gui
 		void Paths::slot_add(void)
 		{
 			const unsigned p = m_ui->edit->text().toUInt();
-			if(std::find(m_paths->begin(), m_paths->end(), p) == m_paths->end())
+			if(std::find(m_paths.begin(), m_paths.end(), p) == m_paths.end())
 			{
 				//plots
-				m_paths->push_back(p);
+				m_paths.push_back(p);
+				std::sort(m_paths.begin(), m_paths.end());
 				//edit
-				char formatter[200];
-				sprintf(formatter, "%05d", p == m_nodes ? 0 : p + 1);
-				m_ui->edit->setText(formatter);
+				m_ui->edit->setText(QString::asprintf("%05d", p + 1 == m_nodes ? 0 : p + 1));
 				//table
 				update_table();
 				m_ui->table->selectRow(m_ui->table->rowCount() - 1);
@@ -62,13 +57,11 @@ namespace gui
 		void Paths::slot_clear(void)
 		{
 			//plots
-			m_paths->clear();
+			m_paths.clear();
 			//table
 			update_table();
 			//edit
-			char formatter[200];
-			sprintf(formatter, "%05d", 0);
-			m_ui->edit->setText(formatter);
+			m_ui->edit->setText(QString::asprintf("%05d", 0));
 		}
 		void Paths::slot_remove(void)
 		{
@@ -78,30 +71,25 @@ namespace gui
 			for(unsigned i = 0; i < (unsigned) sr.size(); i++)
 			{
 				const unsigned j = sr.size() - i - 1;
-				m_paths->erase(m_paths->begin() + sr[j].row());
+				m_paths.erase(m_paths.begin() + sr[j].row());
 			}
 			//table
 			update_table();
 			m_ui->table->setCurrentCell(m_ui->table->rowCount() - 1, 0);
-			//formatter
-			char formatter[200];
-			sprintf(formatter, "%05d", m_paths->empty() || m_paths->back() == m_nodes ? 0 : m_paths->back() + 1);
 			//edit
-			m_ui->edit->setText(formatter);
+			m_ui->edit->setText(QString::asprintf("%05d", m_paths.empty() || m_paths.back() + 1 == m_nodes ? 0 : m_paths.back() + 1));
 		}
 		
 		//update
 		void Paths::update_table(void)
 		{
 			//set rows
-			m_ui->table->setRowCount(m_paths->size());
+			m_ui->table->setRowCount(m_paths.size());
 			//set data
-			char formatter[200];
-			for(unsigned i = 0; i < m_paths->size(); i++)
+			for(unsigned i = 0; i < m_paths.size(); i++)
 			{
 				//text
-				sprintf(formatter, "%05d", (*m_paths)[i]);
-				QTableWidgetItem* item = new QTableWidgetItem(formatter);
+				QTableWidgetItem* item = new QTableWidgetItem(QString::asprintf("%05d", m_paths[i]));
 				//properties
 				item->setTextAlignment(Qt::AlignCenter);
 				item->setFlags(item->flags() ^ Qt::ItemIsEditable);

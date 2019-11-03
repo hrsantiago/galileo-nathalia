@@ -4,7 +4,7 @@
 
 namespace Ui
 {
-	class Limits;
+	class Path;
 }
 
 namespace gui
@@ -24,7 +24,7 @@ namespace gui
 			
 		private:
 			//attributes
-			Ui::Limits* m_ui;
+			Ui::Path* m_ui;
 		};
 	}
 }

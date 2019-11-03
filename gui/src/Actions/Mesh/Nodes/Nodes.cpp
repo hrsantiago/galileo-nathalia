@@ -5,7 +5,7 @@
 #include "Model/Model.h"
 
 //gui
-#include "Canvas/ModelCanvas.h"
+#include "Canvas/Canvas.h"
 #include "Actions/Mesh/Nodes/Nodes.h"
 
 //ui
@@ -18,12 +18,12 @@ namespace gui
 		namespace nodes
 		{
 			//constructors
-			Nodes::Nodes(fea::mesh::Mesh* mesh, gui::canvas::Model* canvas, QWidget* parent) : 
+			Nodes::Nodes(fea::mesh::Mesh* mesh, gui::canvas::Canvas* canvas, QWidget* parent) : 
 				QDialog(parent), m_ui(new Ui::Nodes), m_mesh(mesh), m_canvas(canvas)
 			{
 				//set ui
 				m_ui->setupUi(this);
-				const unsigned nn = m_mesh->nodes();
+				const unsigned nn = m_mesh->nodes().size();
 				//set combo
 				if(nn == 0)
 				{
@@ -64,8 +64,8 @@ namespace gui
 					//items
 					const double* p = m_mesh->node(i)->coordinates();
 					QTableWidgetItem* ix = new QTableWidgetItem(QString::asprintf("%+.2e", p[0]));
-					QTableWidgetItem* iy = new QTableWidgetItem(QString::asprintf("%+.2e", p[0]));
-					QTableWidgetItem* iz = new QTableWidgetItem(QString::asprintf("%+.2e", p[0]));
+					QTableWidgetItem* iy = new QTableWidgetItem(QString::asprintf("%+.2e", p[1]));
+					QTableWidgetItem* iz = new QTableWidgetItem(QString::asprintf("%+.2e", p[2]));
 					//add
 					m_ui->table->setItem(i, 0, ix);
 					m_ui->table->setItem(i, 1, iy);
@@ -97,7 +97,7 @@ namespace gui
 				//add node
 				m_mesh->model()->mark();
 				m_mesh->add_node(0, 0, 0);
-				const unsigned nn = m_mesh->nodes();
+				const unsigned nn = m_mesh->nodes().size();
 				//set select
 				m_ui->combo->setEnabled(true);
 				m_ui->combo->addItem(QString::asprintf("%04d", nn));
@@ -119,8 +119,9 @@ namespace gui
 					m_ui->table->setItem(nn - 1, j, it);
 					it->setTextAlignment(Qt::AlignCenter);
 				}
-				//bound
+				//canvas
 				m_canvas->bound();
+				m_canvas->redraw();
 			}
 			void Nodes::slot_edit(void)
 			{
@@ -142,8 +143,9 @@ namespace gui
 						m_ui->table->item(i, j)->setText(QString::asprintf("%+.2e", v));
 					}
 				}
-				//bound
+				//canvas
 				m_canvas->bound();
+				m_canvas->redraw();
 			}
 			void Nodes::slot_click(int i)
 			{
@@ -170,7 +172,7 @@ namespace gui
 				//remove node
 				m_mesh->remove_node(i);
 				m_mesh->model()->mark();
-				const unsigned n = m_mesh->nodes();
+				const unsigned n = m_mesh->nodes().size();
 				//set combo
 				m_ui->combo->removeItem(i);
 				m_ui->combo->setEnabled(n != 0);
@@ -185,22 +187,26 @@ namespace gui
 				//set table
 				m_ui->table->removeRow(i);
 				m_ui->table->setEnabled(n != 0);
-				//bound
+				//canvas
 				m_canvas->bound();
+				m_canvas->redraw();
 			}
 			void Nodes::slot_table(int i, int j)
 			{
 				//data
 				bool test;
 				const double d = m_ui->table->item(i, j)->text().toDouble(&test);
-				//set node
+				//node
 				m_mesh->model()->mark();
 				m_mesh->node(i)->coordinates(d, j);
-				//set edits
+				//edits
 				QLineEdit* e[] = {m_ui->edit_x, m_ui->edit_y, m_ui->edit_z};
 				e[j]->setText(QString::asprintf("%+.2e", d));
-				//set table
+				//table
 				m_ui->table->item(i, j)->setText(QString::asprintf("%+.2e", d));
+				//canvas
+				m_canvas->bound();
+				m_canvas->redraw();
 			}
 		}
 	}

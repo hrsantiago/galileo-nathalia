@@ -2,7 +2,7 @@
 #include "Actions/Results/Limits.h"
 
 //ui
-#include "ui_Limits.h"
+#include "ui_Path.h"
 
 namespace gui
 {
@@ -10,7 +10,7 @@ namespace gui
 	{
 		//constructors
 		Limits::Limits(const QVector<double> d[], const std::vector<unsigned> p[], const std::vector<unsigned> t[], const QString l[], QWidget* parent) : 
-		QDialog(parent), m_ui(new Ui::Limits)
+		QDialog(parent), m_ui(new Ui::Path)
 		{
 			//set ui
 			m_ui->setupUi(this);

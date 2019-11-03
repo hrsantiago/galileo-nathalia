@@ -38,7 +38,6 @@ namespace gui
 			//draw
 			virtual void paintGL(void) override;
 			virtual void resizeGL(int, int) override;
-			virtual void initializeGL(void) override;
 
 		protected:
 			//attributes

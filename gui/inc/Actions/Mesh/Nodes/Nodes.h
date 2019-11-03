@@ -17,7 +17,7 @@ namespace gui
 {
 	namespace canvas
 	{
-		class Model;
+		class Canvas;
 	}
 }
 
@@ -33,7 +33,7 @@ namespace gui
 
 			public:
 				//constructors
-				Nodes(fea::mesh::Mesh*, gui::canvas::Model*, QWidget* = nullptr);
+				Nodes(fea::mesh::Mesh*, gui::canvas::Canvas*, QWidget* = nullptr);
 
 				//destructor
 				virtual ~Nodes(void);
@@ -51,7 +51,7 @@ namespace gui
 				//members
 				Ui::Nodes* m_ui;
 				fea::mesh::Mesh* m_mesh;
-				gui::canvas::Model* m_canvas;
+				gui::canvas::Canvas* m_canvas;
 			};
 		}
 	}

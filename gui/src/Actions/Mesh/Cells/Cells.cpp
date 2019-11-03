@@ -8,10 +8,11 @@
 #include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
-#include "Mesh/Cells/Cells.h"
+#include "Mesh/Cells/Cell.h"
+#include "Mesh/Cells/Types.h"
 
 //gui
-#include "Canvas/ModelCanvas.h"
+#include "Canvas/Canvas.h"
 #include "Actions/Mesh/Cells/Line.h"
 #include "Actions/Mesh/Cells/Plane.h"
 #include "Actions/Mesh/Cells/Cells.h"
@@ -31,7 +32,7 @@ namespace gui
 			{
 				//set ui
 				m_ui->setupUi(this);
-				const unsigned nc = m_mesh->cells();
+				const unsigned nc = m_mesh->cells().size();
 				//set combo type
 				for(unsigned i = 1; i < unsigned(fea::mesh::cells::type::last); i <<= 1)
 				{
@@ -44,11 +45,10 @@ namespace gui
 					m_ui->edit_name->setEnabled(false);
 					m_ui->push_remove->setEnabled(false);
 					m_ui->combo_index->setEnabled(false);
-					m_ui->slider_rule->setEnabled(false);
 				}
 				else
 				{
-					for (unsigned i = 0; i < nc; i++)
+					for(unsigned i = 0; i < nc; i++)
 					{
 						m_ui->combo_index->addItem(QString::asprintf("%02d", i + 1));
 					}
@@ -58,15 +58,11 @@ namespace gui
 				{
 					m_ui->edit_name->setText(m_mesh->cell(0)->label());
 				}
-				//set slider
-				m_ui->slider_rule->setMinimum(1);
-				m_ui->slider_rule->setMaximum(fea::mesh::cells::Cell::max_rule());
 				//set table
 				m_ui->table->setRowCount(nc);
-				m_ui->table->setColumnCount(4);
+				m_ui->table->setColumnCount(3);
 				m_ui->table->setHorizontalHeaderItem(0, new QTableWidgetItem("Type"));
 				m_ui->table->setHorizontalHeaderItem(1, new QTableWidgetItem("Name"));
-				m_ui->table->setHorizontalHeaderItem(3, new QTableWidgetItem("Rule"));
 				m_ui->table->setHorizontalHeaderItem(2, new QTableWidgetItem("Dimension"));
 				m_ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 				for(unsigned i = 0; i < nc; i++)
@@ -78,7 +74,6 @@ namespace gui
 				QObject::connect(m_ui->table, SIGNAL(cellClicked(int, int)), SLOT(slot_click(int)));
 				QObject::connect(m_ui->push_remove, SIGNAL(clicked(bool)), SLOT(slot_remove(void)));
 				QObject::connect(m_ui->edit_name, SIGNAL(editingFinished(void)), SLOT(slot_name(void)));
-				QObject::connect(m_ui->slider_rule, SIGNAL(valueChanged(int)), SLOT(slot_slider(void)));
 				QObject::connect(m_ui->combo_index, SIGNAL(currentIndexChanged(int)), SLOT(slot_index(int)));
 			}
 
@@ -93,7 +88,7 @@ namespace gui
 			{
 				//add cell
 				m_mesh->model()->mark();
-				const unsigned nc = m_mesh->cells() + 1;
+				const unsigned nc = m_mesh->cells().size() + 1;
 				const unsigned st = m_ui->combo_type->currentIndex();
 				fea::mesh::cells::Cell* cell = m_mesh->add_cell(fea::mesh::cells::type(1 << st));
 				//set select
@@ -105,8 +100,6 @@ namespace gui
 				m_ui->edit_name->setText(cell->label());
 				//set push
 				m_ui->push_remove->setEnabled(true);
-				//set slider
-				m_ui->slider_rule->setEnabled(true);
 				//set table
 				m_ui->table->setRowCount(nc);
 				m_ui->table->setEnabled(true);
@@ -126,7 +119,7 @@ namespace gui
 			}
 			void Cells::slot_click(int i)
 			{
-				if(m_mesh->cell(i)->dimension() == 1 && m_mesh->sections() == 0)
+				if(m_mesh->cell(i)->dimension() == 1 && m_mesh->sections().empty())
 				{
 					QMessageBox::critical(nullptr, "Error", "No section to associate with this 1D cell!", QMessageBox::Ok);
 					return;
@@ -149,19 +142,8 @@ namespace gui
 				if(i != -1)
 				{
 					m_ui->edit_name->setText(m_mesh->cell(i)->label());
-					m_ui->slider_rule->setValue(m_mesh->cell(i)->rule());
-					m_ui->combo_type->setCurrentIndex(mat::log2(unsigned(m_mesh->cell(i)->type())));
+					m_ui->combo_type->setCurrentIndex(mat::bit_index(unsigned(m_mesh->cell(i)->type())));
 				}
-			}
-			void Cells::slot_slider(void)
-			{
-				//index
-				const unsigned i = (unsigned) m_ui->combo_index->currentIndex();
-				//value
-				m_mesh->model()->mark();
-				m_mesh->cell(i)->rule(m_ui->slider_rule->value());
-				//update
-				table_update(i);
 			}
 			void Cells::slot_remove(void)
 			{
@@ -170,7 +152,7 @@ namespace gui
 				//remove section
 				m_mesh->remove_cell(i);
 				m_mesh->model()->mark();
-				const unsigned nc = m_mesh->cells();
+				const unsigned nc = m_mesh->cells().size();
 				//set combo
 				m_ui->combo_index->removeItem(i);
 				m_ui->combo_index->setEnabled(nc != 0);
@@ -185,8 +167,6 @@ namespace gui
 				m_ui->edit_name->setEnabled(nc != 0);
 				//set push
 				m_ui->push_remove->setEnabled(nc != 0);
-				//set slider
-				m_ui->slider_rule->setEnabled(nc != 0);
 			}
 			
 			//table
@@ -204,14 +184,8 @@ namespace gui
 				in->setFlags(in->flags() ^ Qt::ItemIsEditable);
 				in->setTextAlignment(Qt::AlignCenter);
 				m_ui->table->setItem(i, 1, in);
-				//rule
-				QTableWidgetItem* ir = new QTableWidgetItem(QString::asprintf("%02d", cell->rule()));
-				ir->setFlags(ir->flags() ^ Qt::ItemIsEditable);
-				ir->setTextAlignment(Qt::AlignCenter);
-				m_ui->table->setItem(i, 3, ir);
 				//dimension
 				QTableWidgetItem* id = new QTableWidgetItem(QString::asprintf("%dD", cell->dimension()));
-				id->setFlags(ir->flags() ^ Qt::ItemIsEditable);
 				id->setTextAlignment(Qt::AlignCenter);
 				m_ui->table->setItem(i, 2, id);
 			}
@@ -223,7 +197,6 @@ namespace gui
 				if(i < (unsigned) m_ui->table->rowCount())
 				{
 					m_ui->table->item(i, 1)->setText(cell->label());
-					m_ui->table->item(i, 3)->setText(QString::asprintf("%02d", cell->rule()));
 				}
 			}
 		}

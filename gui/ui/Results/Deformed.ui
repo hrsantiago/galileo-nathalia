@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
-    <widget class="gui::canvas::Deformed" name="canvas" native="true">
+    <widget class="gui::canvas::Canvas" name="canvas" native="true">
      <property name="contextMenuPolicy">
       <enum>Qt::PreventContextMenu</enum>
      </property>
@@ -51,7 +51,7 @@
        </widget>
       </item>
       <item row="1" column="19">
-       <widget class="QLabel" name="label_time">
+       <widget class="QLabel" name="label_solver">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -83,7 +83,7 @@
        </spacer>
       </item>
       <item row="1" column="21">
-       <widget class="QLabel" name="label_time_max">
+       <widget class="QLabel" name="label_solver_max">
         <property name="text">
          <string>Max: +0.00e+00</string>
         </property>
@@ -99,8 +99,7 @@
         </property>
         <property name="icon">
          <iconset theme="list-remove">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -120,8 +119,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-skip-backward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -141,8 +139,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-seek-backward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -162,8 +159,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-pause">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -183,8 +179,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-start">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -204,8 +199,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-seek-forward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -225,8 +219,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-stop">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -246,8 +239,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-skip-forward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -267,8 +259,7 @@
         </property>
         <property name="icon">
          <iconset theme="document-print">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -288,8 +279,7 @@
         </property>
         <property name="icon">
          <iconset theme="media-record">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -309,8 +299,7 @@
         </property>
         <property name="icon">
          <iconset theme="document-properties">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -337,8 +326,7 @@
         </property>
         <property name="icon">
          <iconset theme="list-add">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -388,7 +376,7 @@
        </widget>
       </item>
       <item row="1" column="20">
-       <widget class="QLabel" name="label_time_min">
+       <widget class="QLabel" name="label_solver_min">
         <property name="text">
          <string>Min: +0.00e+00</string>
         </property>
@@ -465,8 +453,7 @@
         </property>
         <property name="icon">
          <iconset theme="go-home">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -480,8 +467,7 @@
         </property>
         <property name="icon">
          <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -556,9 +542,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>gui::canvas::Deformed</class>
+   <class>gui::canvas::Canvas</class>
    <extends>QWidget</extends>
-   <header location="global">Canvas/DeformedCanvas.h</header>
+   <header location="global">Canvas/Canvas.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

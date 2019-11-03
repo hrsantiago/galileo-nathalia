@@ -24,6 +24,10 @@ namespace gui
 	{
 		class Recent;
 	}
+	namespace results
+	{
+		class Results;
+	}
 }
 
 namespace gui
@@ -79,5 +83,6 @@ namespace gui
 		fea::plot::Plot* m_plot;
 		fea::models::Model* m_model;
 		gui::util::Recent* m_recent; 
+		gui::results::Results* m_results;
 	};
 }

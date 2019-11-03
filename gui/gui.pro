@@ -29,15 +29,16 @@ HEADERS = \
     inc/Actions/Results/Nodal.h \
     inc/Actions/Results/Paths.h \
     inc/Actions/Results/Plots.h \
-    inc/Actions/Results/Results.h \
     inc/Canvas/Bound.h \
-    inc/Canvas/DeformedCanvas.h \
-    inc/Canvas/ElementsCanvas.h \
-    inc/Canvas/ModelCanvas.h \
-    inc/Canvas/NodalCanvas.h \
+    inc/Canvas/Canvas.h \
+    inc/Canvas/Click.h \
     inc/Canvas/Section.h \
     inc/Galileo/Galileo.h \
-    inc/Util/Click_Label.h \
+    inc/Limit/Dof.h \
+    inc/Limit/State.h \
+    inc/Results/Canvas.h \
+    inc/Results/Path.h \
+    inc/Results/Results.h \
     inc/Util/Recent.h \
     inc/qcustomplot.h \
 
@@ -73,13 +74,15 @@ SOURCES = \
     src/Actions/Results/Plots.cpp \
     src/Actions/Results/Results.cpp \
     src/Canvas/Bound.cpp \
-    src/Canvas/DeformedCanvas.cpp \
-    src/Canvas/ElementsCanvas.cpp \
-    src/Canvas/ModelCanvas.cpp \
-    src/Canvas/NodalCanvas.cpp \
+    src/Canvas/Canvas.cpp \
+    src/Canvas/Click.cpp \
     src/Canvas/Section.cpp \
     src/Galileo/Galileo.cpp \
-    src/Util/Click_Label.cpp \
+    src/Limit/Dof.cpp \
+    src/Limit/State.cpp \
+    src/Results/Canvas.cpp \
+    src/Results/Path.cpp \
+    src/Results/Results.cpp \
     src/Util/Recent.cpp \
     src/main.cpp \
     src/qcustomplot.cpp \
@@ -101,6 +104,9 @@ FORMS += \
     ui/Galileo/Galileo.ui \
     ui/Help/About.ui \
     ui/Help/Index.ui \
+    ui/Limits/Dof.ui \
+    ui/Limits/Path.ui \
+    ui/Limits/State.ui \
     ui/Mesh/Cells/Cells.ui \
     ui/Mesh/Cells/Line.ui \
     ui/Mesh/Cells/Plane.ui \
@@ -121,12 +127,9 @@ FORMS += \
     ui/Mesh/Sections/Sections.ui \
     ui/Mesh/Sections/T.ui \
     ui/Model/Model.ui \
-    ui/Results/Data_Elements.ui \
-    ui/Results/Data_Nodal.ui \
     ui/Results/Deformed.ui \
     ui/Results/Elements.ui \
     ui/Results/Equilibrium_Path.ui \
-    ui/Results/Limits.ui \
     ui/Results/Nodal.ui \
     ui/Results/Paths.ui \
     ui/Results/Plots.ui \

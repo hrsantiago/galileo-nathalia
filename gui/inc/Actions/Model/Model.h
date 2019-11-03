@@ -13,6 +13,13 @@ namespace fea
 		class Model;
 	}
 }
+namespace gui
+{
+	namespace canvas
+	{
+		class Canvas;
+	}
+}
 
 namespace gui
 {
@@ -24,7 +31,7 @@ namespace gui
 
 		public:
 			//constructors
-			Model(fea::models::Model*, QWidget* = nullptr, bool = true);
+			Model(fea::models::Model*, gui::canvas::Canvas*, QWidget* = nullptr, bool = true);
 	
 			//destructor
 			virtual ~Model(void);
@@ -42,9 +49,9 @@ namespace gui
 
 		private:
 			//attributes
-			fea::models::Model* m_model;
-			
 			Ui::Model* m_ui;
+			fea::models::Model* m_model;
+			gui::canvas::Canvas* m_canvas;
 		};
 	}
 }

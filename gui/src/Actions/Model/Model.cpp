@@ -22,6 +22,7 @@
 #include "Analysis/Solvers/Solver.h"
 
 //gui
+#include "Canvas/Canvas.h"
 #include "Actions/Model/Model.h"
 
 //ui
@@ -32,7 +33,8 @@ namespace gui
 	namespace model
 	{
 		//constructors
-		Model::Model(fea::models::Model* model, QWidget* parent, bool edit) : QDialog(parent), m_ui(new Ui::Model), m_model(model)
+		Model::Model(fea::models::Model* model, gui::canvas::Canvas* canvas, QWidget* parent, bool edit) : QDialog(parent), 
+			m_ui(new Ui::Model), m_model(model), m_canvas(canvas)
 		{
 			//set ui
 			m_ui->setupUi(this);
@@ -48,23 +50,21 @@ namespace gui
 			m_ui->check_elements->setCheckState(m_model->plot()->what()->elements() ? Qt::Checked : Qt::Unchecked);
 			m_ui->check_supports->setCheckState(m_model->plot()->what()->supports() ? Qt::Checked : Qt::Unchecked);
 			//set sizes
-			char w[200];
 			const fea::plot::Sizes* p = m_model->plot()->sizes();
 			const double s[] = {p->loads(), p->supports(), p->joints()};
 			QLineEdit* l[] = {m_ui->edit_size_loads, m_ui->edit_size_supports, m_ui->edit_size_joints};
 			for(unsigned i = 0; i < 3; i++)
 			{
-				sprintf(w, "%.2lf", 100 * s[i]);
-				l[i]->setText(w);
+				l[i]->setText(QString::asprintf("%.2lf", 100 * s[i]));
 			}
 			//load cases
-			if(m_model->boundary()->load_cases() == 0)
+			if(m_model->boundary()->load_cases().empty())
 			{
 				m_ui->combo_case->setEnabled(false);
 			}
 			else
 			{
-				for(unsigned i = 0; i < m_model->boundary()->load_cases(); i++)
+				for(unsigned i = 0; i < m_model->boundary()->load_cases().size(); i++)
 				{
 					m_ui->combo_case->addItem(m_model->boundary()->load_case(i)->label());
 				}
@@ -151,20 +151,18 @@ namespace gui
 			{
 				if(b[i] == QObject::sender())
 				{
-					char title[200];
 					const double* c = g[i]();
 					const int r = int(255 * c[0]);
 					const int g = int(255 * c[1]);
 					const int b = int(255 * c[2]);
 					const int a = int(255 * c[3]);
 					QColor start = QColor(r, g, b, a);
-					sprintf(title, "%s Color", names[i]);
-					QColor color = QColorDialog::getColor(start, this, title, QColorDialog::ShowAlphaChannel);
+					QColor color = QColorDialog::getColor(start, this, QString::asprintf("%s Color", names[i]), QColorDialog::ShowAlphaChannel);
 					if(color.isValid())
 					{
 						f[i](color);
 					}
-					break;
+					m_canvas->redraw();
 				}
 			}
 		}
@@ -207,7 +205,7 @@ namespace gui
 					{
 						f[i](color);
 					}
-					break;
+					m_canvas->redraw();
 				}
 			}
 		}
@@ -231,7 +229,7 @@ namespace gui
 					f[i](ll[i]->text().toDouble() / 100);
 					sprintf(w, "%.2lf", ll[i]->text().toDouble());
 					ll[i]->setText(w);
-					break;
+					m_canvas->redraw();
 				}
 			}
 		}
@@ -260,13 +258,14 @@ namespace gui
 				if(c[i] == QObject::sender())
 				{
 					f[i](c[i]->isChecked());
-					break;
+					m_canvas->redraw();
 				}
 			}
 		}
 		void Model::slot_combo(void)
 		{
 			m_model->analysis()->solver()->load_case(m_ui->combo_case->currentIndex());
+			m_canvas->redraw();
 		}
 		void Model::slot_reset(void)
 		{
@@ -290,10 +289,12 @@ namespace gui
 				sprintf(w, "%.2lf", 100 * s[i]);
 				l[i]->setText(w);
 			}
+			m_canvas->redraw();
 		}
 		void Model::slot_print(void)
 		{
 			m_model->plot()->colors()->print();
+			m_canvas->redraw();
 		}
 	}
 }

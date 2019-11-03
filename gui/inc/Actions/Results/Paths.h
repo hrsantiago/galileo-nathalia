@@ -17,7 +17,7 @@ namespace gui
 
 		public:
 			//constructors
-			Paths(double***, std::vector<unsigned>*, unsigned, QWidget* = nullptr);
+			Paths(std::vector<unsigned>&, unsigned, QWidget* = nullptr);
 	
 			//destructor
 			virtual ~Paths(void);
@@ -32,12 +32,10 @@ namespace gui
 			//update
 			void update_table(void);
 
-		private:
 			//attributes
 			Ui::Paths* m_ui;
 			unsigned m_nodes;
-			double*** m_positions;
-			std::vector<unsigned>* m_paths;
+			std::vector<unsigned>& m_paths;
 		};
 	}
 }

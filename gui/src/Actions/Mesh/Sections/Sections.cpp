@@ -5,7 +5,8 @@
 #include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
-#include "Mesh/Sections/Sections.h"
+#include "Mesh/Sections/Types.h"
+#include "Mesh/Sections/Section.h"
 
 //gui
 #include "Actions/Mesh/Sections/T.h"
@@ -31,7 +32,7 @@ namespace gui
 			{
 				//set ui
 				m_ui->setupUi(this);
-				const unsigned ns = m_mesh->sections();
+				const unsigned ns = m_mesh->sections().size();
 				//set combo type
 				for(unsigned i = 1; i < unsigned(fea::mesh::sections::type::last); i <<= 1)
 				{
@@ -99,7 +100,7 @@ namespace gui
 			{
 				//add section
 				m_mesh->model()->mark();
-				const unsigned ns = m_mesh->sections() + 1;
+				const unsigned ns = m_mesh->sections().size() + 1;
 				const unsigned st = m_ui->combo_type->currentIndex();
 				fea::mesh::sections::Section* section = m_mesh->add_section(fea::mesh::sections::type(1 << st));
 				//set select
@@ -159,7 +160,7 @@ namespace gui
 				{
 					m_ui->table->selectRow(i);
 					m_ui->edit_name->setText(m_mesh->section(i)->label());
-					m_ui->combo_type->setCurrentIndex(mat::log2(unsigned(m_mesh->section(i)->type())));
+					m_ui->combo_type->setCurrentIndex(mat::bit_index(unsigned(m_mesh->section(i)->type())));
 				}
 			}
 			void Sections::slot_rebars(void)
@@ -178,7 +179,7 @@ namespace gui
 				//remove section
 				m_mesh->model()->mark();
 				m_mesh->remove_section(i);
-				const unsigned ns = m_mesh->sections();
+				const unsigned ns = m_mesh->sections().size();
 				//set combo
 				m_ui->combo_index->removeItem(i);
 				m_ui->combo_index->setEnabled(ns != 0);
@@ -203,9 +204,9 @@ namespace gui
 				//data
 				const double p[] = {
 					section->area(),
-					section->inercia_z(),
-					section->inercia_y(),
-					section->inercia_x(),
+					section->inertia_z(),
+					section->inertia_y(),
+					section->inertia_x(),
 					section->elastic_modulus_z(),
 					section->elastic_modulus_y(),
 					section->plastic_modulus_z(),
@@ -244,9 +245,9 @@ namespace gui
 				//data
 				const double p[] = {
 					section->area(),
-					section->inercia_z(),
-					section->inercia_y(),
-					section->inercia_x(),
+					section->inertia_z(),
+					section->inertia_y(),
+					section->inertia_x(),
 					section->elastic_modulus_z(),
 					section->elastic_modulus_y(),
 					section->plastic_modulus_z(),

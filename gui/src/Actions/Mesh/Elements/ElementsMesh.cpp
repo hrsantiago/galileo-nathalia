@@ -10,7 +10,8 @@
 
 //fea
 #include "Mesh/Mesh.h"
-#include "Mesh/Elements/Elements.h"
+#include "Mesh/Elements/Types.h"
+#include "Mesh/Elements/Element.h"
 
 //gui
 #include "Actions/Mesh/Elements/ElementsMesh.h"
@@ -30,7 +31,7 @@ namespace gui
 			{
 				//set ui
 				m_ui->setupUi(this);
-				const unsigned ne = m_mesh->elements();
+				const unsigned ne = m_mesh->elements().size();
 				//set combo type
 				for(unsigned i = 1; i < unsigned(fea::mesh::elements::type::last); i <<= 1)
 				{
@@ -79,25 +80,25 @@ namespace gui
 			void Elements::slot_add(void)
 			{
 				//check nodes
-				if(m_mesh->nodes() == 0)
+				if(m_mesh->nodes().empty())
 				{
 					QMessageBox::warning(nullptr, "Warning", "The current mesh has an empty list of nodes!", QMessageBox::Ok);
 					return;
 				}
 				//check cells
-				if(m_mesh->cells() == 0)
+				if(m_mesh->cells().empty())
 				{
 					QMessageBox::warning(nullptr, "Warning", "The current mesh has an empty list of cells!", QMessageBox::Ok);
 					return;
 				}
 				//check materials
-				if(m_mesh->materials() == 0)
+				if(m_mesh->materials().empty())
 				{
 					QMessageBox::warning(nullptr, "Warning", "The current mesh has an empty list of materials!", QMessageBox::Ok);
 					return;
 				}
 				//add element
-				const unsigned ne = m_mesh->elements() + 1;
+				const unsigned ne = m_mesh->elements().size() + 1;
 				const unsigned st = m_ui->combo_type->currentIndex();
 				m_mesh->add_element(fea::mesh::elements::type(1 << st), {}, 0, 0);
 				//set select
@@ -125,7 +126,7 @@ namespace gui
 				if(i != -1)
 				{
 					m_ui->table->selectRow(i);
-					m_ui->combo_type->setCurrentIndex(mat::log2(unsigned(m_mesh->element(i)->type())));
+					m_ui->combo_type->setCurrentIndex(mat::bit_index(unsigned(m_mesh->element(i)->type())));
 				}
 			}
 			void Elements::slot_remove(void)
@@ -134,7 +135,7 @@ namespace gui
 				const unsigned i = (unsigned) m_ui->combo_index->currentIndex();
 				//remove element
 				m_mesh->remove_element(i);
-				const unsigned ne = m_mesh->elements();
+				const unsigned ne = m_mesh->elements().size();
 				//set combo
 				m_ui->combo_index->removeItem(i);
 				m_ui->combo_index->setEnabled(ne != 0);

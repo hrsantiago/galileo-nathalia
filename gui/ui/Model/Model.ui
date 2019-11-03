@@ -199,20 +199,13 @@
       <string>Sizes</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="edit_size_loads">
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="edit_size_supports">
         <property name="text">
-         <string>3.00</string>
+         <string>10</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_size_loads">
-        <property name="text">
-         <string>Loads</string>
         </property>
        </widget>
       </item>
@@ -223,10 +216,20 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="edit_size_loads">
+        <property name="text">
+         <string>10</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="edit_size_joints">
         <property name="text">
-         <string>3.00</string>
+         <string>5</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -246,15 +249,51 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="edit_size_supports">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_size_loads">
         <property name="text">
-         <string>5.00</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>Loads</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="2">
+       <spacer name="spacer_size_1">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="2">
+       <spacer name="spacer_size_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="2">
+       <spacer name="spacer_size_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -457,21 +496,17 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="button_scale_min">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="applications-graphics">
-          <normaloff>.</normaloff>.</iconset>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label_scale_mean">
         <property name="text">
          <string>Mean</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_scale_max">
+        <property name="text">
+         <string>Max</string>
         </property>
        </widget>
       </item>
@@ -486,10 +521,14 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="4">
-       <widget class="QLabel" name="label_scale_max">
+      <item row="0" column="1">
+       <widget class="QPushButton" name="button_scale_min">
         <property name="text">
-         <string>Max</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="applications-graphics">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>

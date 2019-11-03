@@ -13,6 +13,13 @@ namespace fea
 		class Model;
 	}
 }
+namespace gui
+{
+	namespace results
+	{
+		class Path;
+	}
+}
 
 namespace gui
 {
@@ -24,7 +31,7 @@ namespace gui
 
 		public:
 			//constructors
-			Equilibrium_Path(fea::models::Model*, QWidget* = nullptr);
+			Equilibrium_Path(const fea::models::Model*, const Path*, QWidget* = nullptr);
 	
 			//destructor
 			virtual ~Equilibrium_Path(void);
@@ -39,10 +46,7 @@ namespace gui
 
 		private slots:
 			//data
-			void prepare(void);
-			void allocate(void);
-			void get_data(void);
-			
+			void setup(void);
 			const QString current_name(unsigned) const;
 			const double* current_data(unsigned) const;
 		
@@ -68,23 +72,9 @@ namespace gui
 			
 		private:
 			//attributes
-			unsigned m_steps;
-			
-			double* m_step;
-			double* m_parameter;
-			
-			double** m_support;
-			
-			double*** m_state;
-			double*** m_velocity;
-			double*** m_acceleration;
-			
-			double**** m_joint;
-			double**** m_element;
-			
+			const Path* m_path;
 			Ui::Equilibrium_Path* m_ui;
-			
-			fea::models::Model* m_model;
+			const fea::models::Model* m_model;
 		};
 	}
 }

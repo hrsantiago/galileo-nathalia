@@ -29,23 +29,8 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="11">
-       <widget class="QPushButton" name="button_paths">
-        <property name="toolTip">
-         <string>Paths</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="applications-graphics">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="button_last">
+      <item row="1" column="7">
+       <widget class="QPushButton" name="button_print">
         <property name="maximumSize">
          <size>
           <width>50</width>
@@ -53,62 +38,14 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Last</string>
+         <string>Print</string>
         </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="media-skip-forward">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="17">
-       <widget class="QLabel" name="label_steps">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Steps</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="9">
-       <widget class="QPushButton" name="button_plot">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Options</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="document-properties">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="18">
-       <widget class="Line" name="line_load">
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <iconset theme="document-print">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -128,202 +65,22 @@
         </property>
         <property name="icon">
          <iconset theme="media-playback-pause">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
-      <item row="1" column="7">
-       <widget class="QPushButton" name="button_print">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Print</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="document-print">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="16">
-       <widget class="Line" name="line_step">
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="12">
-       <widget class="QLabel" name="label_skip">
-        <property name="maximumSize">
-         <size>
-          <width>35</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Skip:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="button_next">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Next</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="media-seek-forward">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="10">
-       <widget class="QPushButton" name="button_plots">
-        <property name="toolTip">
-         <string>Plots</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="go-home">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="23">
-       <widget class="QComboBox" name="combo_dof"/>
-      </item>
-      <item row="1" column="27">
-       <widget class="Line" name="line_end">
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="button_previous">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Previous</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="media-seek-backward">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="21">
-       <widget class="Line" name="line_dof">
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="lineWidth">
-         <number>1</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="15">
-       <widget class="QPushButton" name="button_skip_sub">
-        <property name="toolTip">
-         <string>Decrement skip</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="list-remove">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="13">
-       <widget class="QPushButton" name="button_skip_add">
-        <property name="toolTip">
-         <string>Increment skip</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="list-add">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QPushButton" name="button_stop">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Stop</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="media-playback-stop">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="29">
-       <widget class="QSlider" name="slider">
+      <item row="1" column="30">
+       <spacer name="spacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="22">
-       <widget class="QLabel" name="label_type">
-        <property name="text">
-         <string>Type:</string>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
         </property>
-       </widget>
+       </spacer>
       </item>
       <item row="1" column="17">
        <widget class="QLabel" name="label_step">
@@ -332,22 +89,23 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="19">
-       <widget class="QLabel" name="label_time">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
+      <item row="1" column="6">
+       <widget class="QPushButton" name="button_last">
         <property name="maximumSize">
          <size>
-          <width>250</width>
+          <width>50</width>
           <height>16777215</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Last</string>
+        </property>
         <property name="text">
-         <string>Load: +0.00e+00</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="media-skip-forward">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -367,8 +125,83 @@
         </property>
         <property name="icon">
          <iconset theme="media-skip-backward">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="22">
+       <widget class="QLabel" name="label_type_2">
+        <property name="text">
+         <string>Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="15">
+       <widget class="QPushButton" name="button_skip_sub">
+        <property name="toolTip">
+         <string>Decrement skip</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="list-remove">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="27">
+       <widget class="QPushButton" name="button_min">
+        <property name="toolTip">
+         <string>Min</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="format-indent-less">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="26">
+       <widget class="QPushButton" name="button_limits">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="input-tablet">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="11">
+       <widget class="QPushButton" name="button_paths">
+        <property name="toolTip">
+         <string>Paths</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="applications-graphics">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="25" colspan="4">
+       <widget class="QLabel" name="label_header_dof">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>DOFs</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -388,48 +221,30 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="23" colspan="4">
-       <widget class="QLabel" name="label_header_dof">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
+      <item row="1" column="5">
+       <widget class="QPushButton" name="button_stop">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Stop</string>
         </property>
         <property name="text">
-         <string>DOFs</string>
+         <string/>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="icon">
+         <iconset theme="media-playback-stop">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
-      <item row="1" column="28">
-       <spacer name="spacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="18" colspan="3">
-       <widget class="QLabel" name="label_header_solver">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
+      <item row="1" column="24">
+       <widget class="QLabel" name="label_type">
         <property name="text">
-         <string>Solver</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>Type:</string>
         </property>
        </widget>
       </item>
@@ -449,8 +264,42 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="button_play">
+      <item row="2" column="0" colspan="31">
+       <widget class="QSlider" name="slider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="16">
+       <widget class="Line" name="line_step">
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="25">
+       <widget class="QComboBox" name="combo_dof"/>
+      </item>
+      <item row="1" column="28">
+       <widget class="QPushButton" name="button_max">
+        <property name="toolTip">
+         <string>Max</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="format-indent-more">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="button_next">
         <property name="maximumSize">
          <size>
           <width>50</width>
@@ -458,15 +307,131 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Play</string>
+         <string>Next</string>
         </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="media-playback-start">
-          <normaloff/>
-         </iconset>
+         <iconset theme="media-seek-forward">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="button_previous">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Previous</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="media-seek-backward">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="9">
+       <widget class="QPushButton" name="button_plot">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Options</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="document-properties">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="13">
+       <widget class="QPushButton" name="button_skip_add">
+        <property name="toolTip">
+         <string>Increment skip</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="list-add">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="21">
+       <widget class="Line" name="line_dof">
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="10">
+       <widget class="QPushButton" name="button_plots">
+        <property name="toolTip">
+         <string>Plots</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="go-home">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="17">
+       <widget class="QLabel" name="label_steps">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Steps</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="29">
+       <widget class="Line" name="line_end">
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="18">
+       <widget class="Line" name="line_load">
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -486,54 +451,86 @@
         </property>
         <property name="icon">
          <iconset theme="media-record">
-          <normaloff/>
-         </iconset>
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
-      <item row="1" column="24">
-       <widget class="QPushButton" name="button_limits">
+      <item row="1" column="19">
+       <widget class="QLabel" name="label_solver">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>250</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="input-tablet">
-          <normaloff/>
-         </iconset>
+         <string>Load: +0.00e+00</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="26">
-       <widget class="QPushButton" name="button_max">
+      <item row="1" column="3">
+       <widget class="QPushButton" name="button_play">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="toolTip">
-         <string>Max</string>
+         <string>Play</string>
         </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="format-indent-more"/>
+         <iconset theme="media-playback-start">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
-      <item row="1" column="25">
-       <widget class="QPushButton" name="button_min">
-        <property name="toolTip">
-         <string>Min</string>
+      <item row="1" column="12">
+       <widget class="QLabel" name="label_skip">
+        <property name="maximumSize">
+         <size>
+          <width>35</width>
+          <height>16777215</height>
+         </size>
         </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="format-indent-less"/>
+         <string>Skip:</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="18" colspan="3">
+       <widget class="QLabel" name="label_header_solver">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Solver</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="23">
+       <widget class="QComboBox" name="combo_type"/>
       </item>
      </layout>
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="gui::canvas::Nodal" name="canvas" native="true">
+    <widget class="gui::canvas::Canvas" name="canvas" native="true">
      <property name="contextMenuPolicy">
       <enum>Qt::PreventContextMenu</enum>
      </property>
@@ -543,9 +540,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>gui::canvas::Nodal</class>
+   <class>gui::canvas::Canvas</class>
    <extends>QWidget</extends>
-   <header location="global">Canvas/NodalCanvas.h</header>
+   <header location="global">Canvas/Canvas.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

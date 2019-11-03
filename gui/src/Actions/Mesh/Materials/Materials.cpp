@@ -11,7 +11,8 @@
 #include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
-#include "Mesh/Materials/Materials.h"
+#include "Mesh/Materials/Types.h"
+#include "Mesh/Materials/Material.h"
 
 //gui
 #include "Actions/Mesh/Materials/Materials.h"
@@ -33,7 +34,7 @@ namespace gui
 			{
 				//set ui
 				m_ui->setupUi(this);
-				const unsigned nm = m_mesh->materials();
+				const unsigned nm = m_mesh->materials().size();
 				//set combo type
 				for(unsigned i = 1; i < unsigned(fea::mesh::materials::type::last); i <<= 1)
 				{
@@ -90,7 +91,7 @@ namespace gui
 			{
 				//add material
 				m_mesh->model()->mark();
-				const unsigned nm = m_mesh->materials() + 1;
+				const unsigned nm = m_mesh->materials().size() + 1;
 				const unsigned st = m_ui->combo_type->currentIndex();
 				fea::mesh::materials::Material* material = m_mesh->add_material(fea::mesh::materials::type(1 << st));
 				//set select
@@ -158,7 +159,7 @@ namespace gui
 					m_ui->table->selectRow(i);
 					fea::mesh::materials::Material* material = m_mesh->material(i);
 					m_ui->edit_name->setText(material->label());
-					m_ui->combo_type->setCurrentIndex(mat::log2(unsigned(material->type())));
+					m_ui->combo_type->setCurrentIndex(mat::bit_index(unsigned(material->type())));
 					m_ui->edit_mass->setText(QString::asprintf("%.2e", material->specific_mass()));
 				}
 			}
@@ -169,7 +170,7 @@ namespace gui
 				//remove material
 				m_mesh->model()->mark();
 				m_mesh->remove_material(i);
-				const unsigned nm = m_mesh->materials();
+				const unsigned nm = m_mesh->materials().size();
 				//set combo
 				m_ui->combo_index->removeItem(i);
 				m_ui->combo_index->setEnabled(nm != 0);

@@ -17,7 +17,7 @@ namespace gui
 
 		public:
 			//constructors
-			Plots(std::vector<unsigned>*, unsigned, QWidget* = nullptr);
+			Plots(std::vector<unsigned>&, unsigned, QWidget* = nullptr);
 	
 			//destructor
 			virtual ~Plots(void);
@@ -32,11 +32,10 @@ namespace gui
 			//update
 			void update_table(void);
 
-		private:
 			//attributes
 			Ui::Plots* m_ui;
 			unsigned m_steps;
-			std::vector<unsigned>* m_plots;
+			std::vector<unsigned>& m_plots;
 		};
 	}
 }

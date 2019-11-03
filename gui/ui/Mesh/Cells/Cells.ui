@@ -104,26 +104,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labe_rule">
-        <property name="text">
-         <string>Rule:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSlider" name="slider_rule">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="spacer2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>

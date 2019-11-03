@@ -3,13 +3,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-//boost
-#include <boost/filesystem.hpp>
-
 //fea
 #include "Model/Model.h"
 
 #include "Plot/Plot.h"
+#include "Plot/What.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
@@ -26,6 +24,8 @@
 
 //gui
 #include "Util/Recent.h"
+
+#include "Results/Results.h"
 
 #include "Galileo/Galileo.h"
 
@@ -51,15 +51,16 @@
 namespace gui
 {
 	//constructors
-	Galileo::Galileo(QWidget* parent) : QMainWindow(parent), 
-		m_ui(new Ui::Galileo), m_plot(new fea::plot::Plot), m_model(new fea::models::Model), m_recent(new gui::util::Recent)
+	Galileo::Galileo(QWidget* parent) : 
+		QMainWindow(parent), m_ui(new Ui::Galileo), m_plot(new fea::plot::Plot), 
+		m_model(new fea::models::Model), m_recent(new gui::util::Recent), m_results(new gui::results::Results(m_model))
 	{
 		//ui
+		plot(true);
 		m_ui->setupUi(this);
-		m_ui->canvas->update_model(m_model);
+		m_ui->canvas->model(m_model);
 		m_ui->menubar->setNativeMenuBar(false);
 		//data
-		plot(true);
 		m_recent->load();
 		m_recent->update(m_ui->menu_model_recent);
 		//maximize
@@ -71,6 +72,8 @@ namespace gui
 	{
 		//save
 		plot(false);
+		//delete
+		delete m_results;
 		//delete
 		delete m_ui;
 		delete m_plot;
@@ -114,8 +117,8 @@ namespace gui
 		m_model = new fea::models::Model();
 		//update
 		m_model->plot(m_plot);
-		m_ui->canvas->m_model = m_model;
-		m_ui->canvas->m_bound.update(m_model);
+		m_results->model(m_model);
+		m_ui->canvas->model(m_model);
 	}
 	void Galileo::on_action_model_save_triggered(void)
 	{
@@ -166,23 +169,19 @@ namespace gui
 		}
 		//update
 		current(path, false);
-		m_ui->canvas->m_model = m_model;
-		m_ui->canvas->m_bound.update(m_model);
+		m_results->model(m_model);
+		m_ui->canvas->model(m_model);
 		setWindowTitle("Galileo - " + QString(m_model->name().c_str()));
 	}
 	void Galileo::on_action_model_plot_triggered(void)
 	{
-		//create dialog
-		model::Model(m_model, nullptr).exec();
-        //update title
+		model::Model(m_model, m_ui->canvas, nullptr).exec();
 		setWindowTitle("Galileo - " + QString(m_model->name().c_str()));
 	}
 	void Galileo::on_action_model_print_triggered(void)
 	{
-		//data
-		const QString path = m_model->path().c_str();
-		const QString name = m_model->name().c_str();
-		const QString file = path + "/" + name + "/Model.png";
+		//file
+		const QString file = QString::asprintf("%s/Model.png", m_model->folder().c_str());
 		//print
 		m_ui->canvas->grabFramebuffer().save(file);
 		QMessageBox::information(nullptr, "Model", "Model image saved!", QMessageBox::Ok);
@@ -226,7 +225,13 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		results::Nodal(m_model, this).exec();
+		if(!m_results->read())
+		{
+			QMessageBox::critical(nullptr, "Analysis", "The model results data are corrupted!", QMessageBox::Ok);
+			return;
+		}
+		results::Nodal(m_model, m_results, this).exec();
+		m_ui->canvas->redraw();
 	}
 	void Galileo::on_action_results_elements_triggered(void)
 	{
@@ -235,7 +240,13 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		results::Elements(m_model, this).exec();
+		if(!m_results->read())
+		{
+			QMessageBox::critical(nullptr, "Analysis", "The model results data are corrupted!", QMessageBox::Ok);
+			return;
+		}
+		results::Elements(m_model, m_results, this).exec();
+		m_ui->canvas->redraw();
 	}
 	void Galileo::on_action_results_deformed_triggered(void)
 	{
@@ -244,7 +255,13 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		results::Deformed(m_model, this).exec();
+		if(!m_results->read())
+		{
+			QMessageBox::critical(nullptr, "Analysis", "The model results data are corrupted!", QMessageBox::Ok);
+			return;
+		}
+		results::Deformed(m_model, m_results, this).exec();
+		m_ui->canvas->redraw();
 	}
 	void Galileo::on_action_results_equilibrium_path_triggered(void)
 	{
@@ -253,13 +270,21 @@ namespace gui
 			QMessageBox::warning(nullptr, "Analysis", "The model must be analysed first!", QMessageBox::Ok);
 			return;
 		}
-		const std::string path = m_model->path() + "/" + m_model->name() + "/Solver/";
-		if(!boost::filesystem::exists(path + "Load.txt") && !boost::filesystem::exists(path + "Time.txt"))
+		if(!m_results->read())
+		{
+			QMessageBox::critical(nullptr, "Analysis", "The model results data are corrupted!", QMessageBox::Ok);
+			return;
+		}
+		FILE* load = fopen((m_model->folder() + "/Solver/Load.txt").c_str(), "r");
+		FILE* time = fopen((m_model->folder() + "/Solver/Time.txt").c_str(), "r");
+		if(!load && !time)
 		{
 			QMessageBox::warning(nullptr, "Analysis", "Solver type does not allow equilibrium path!", QMessageBox::Ok);
 			return;
 		}
-		results::Equilibrium_Path(m_model, this).exec();
+		load ? fclose(load) : 0;
+		time ? fclose(time) : 0;
+		results::Equilibrium_Path(m_model, m_results->path(), this).exec();
 	}
 	
 	void Galileo::on_action_help_index_triggered(void)
@@ -274,27 +299,7 @@ namespace gui
 	//events
 	void Galileo::keyPressEvent(QKeyEvent* event) 
 	{
-		//key
-		const unsigned key = event->key();
-		//canvas
-		const unsigned ck[] = {
-			Qt::Key_X, Qt::Key_Y, Qt::Key_Z, Qt::Key_I, Qt::Key_F, Qt::Key_C, 
-			Qt::Key_Right, Qt::Key_Left, Qt::Key_Up, Qt::Key_Down, Qt::Key_Plus, Qt::Key_Minus
-		};
-		if(std::find(ck, ck + 11, key) != ck + 11)
-		{
-			m_ui->canvas->keyPressEvent(event);
-		}
-		//deformed
-		if(key == Qt::Key_D)
-		{
-			on_action_results_deformed_triggered();
-		}
-		//equilibrium path
-		if(key == Qt::Key_E)
-		{
-			on_action_results_equilibrium_path_triggered();
-		}
+		m_ui->canvas->keyPressEvent(event);
 	}
 	
 	//saved

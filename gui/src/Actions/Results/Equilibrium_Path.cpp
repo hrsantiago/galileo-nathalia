@@ -34,6 +34,8 @@
 #include "Analysis/Solvers/Watch_Dof.h"
 
 //gui
+#include "Results/Path.h"
+
 #include "Actions/Results/Limits.h"
 #include "Actions/Results/Equilibrium_Path.h"
 
@@ -45,24 +47,19 @@ namespace gui
 	namespace results
 	{
 		//constructors
-		Equilibrium_Path::Equilibrium_Path(fea::models::Model* model, QWidget* parent) : QDialog(parent), 
-		m_steps(0), 
-		m_step(nullptr), m_parameter(nullptr), m_support(nullptr), 
-		m_state(nullptr), m_velocity(nullptr), m_acceleration(nullptr), 
-		m_joint(nullptr), m_element(nullptr), 
-		m_ui(new Ui::Equilibrium_Path), m_model(model)
+		Equilibrium_Path::Equilibrium_Path(const fea::models::Model* model, const Path* path, QWidget* parent) : QDialog(parent), 
+			m_ui(new Ui::Equilibrium_Path), m_model(model), m_path(path)
 		{
 			//data
-			prepare();
-			allocate();
-			get_data();
+			setup();
 			slot_fit();
 			//setup
-			m_ui->slider_step_min->setRange(0, m_steps - 1);
-			m_ui->slider_step_max->setRange(0, m_steps - 1);
-			m_ui->slider_step_min->setPageStep(m_steps / 20);
-			m_ui->slider_step_max->setPageStep(m_steps / 20);
-			m_ui->slider_step_max->setValue(m_steps - 1);
+			const unsigned ns = m_path->steps();
+			m_ui->slider_step_min->setRange(0, ns - 1);
+			m_ui->slider_step_max->setRange(0, ns - 1);
+			m_ui->slider_step_min->setPageStep(ns / 20);
+			m_ui->slider_step_max->setPageStep(ns / 20);
+			m_ui->slider_step_max->setValue(ns - 1);
 			slot_slider();
 			//connect
 			QObject::connect(m_ui->check_x, SIGNAL(clicked(bool)), this, SLOT(slot_fit(void)));
@@ -128,8 +125,6 @@ namespace gui
 				QObject::connect(cn[i + 0], SIGNAL(activated(int)), this, SLOT(slot_data(void)));
 				QObject::connect(cn[i + 3], SIGNAL(activated(int)), this, SLOT(slot_data(void)));
 			}
-			//set focus
-			setFocus(Qt::OtherFocusReason);
 			//maximize
 			showMaximized();
 		}
@@ -137,66 +132,7 @@ namespace gui
 		//destructor
 		Equilibrium_Path::~Equilibrium_Path(void)
 		{
-			const unsigned nn = m_model->mesh()->nodes();
-			const unsigned nj = m_model->mesh()->joints();
-			const unsigned ne = m_model->mesh()->elements();
-			const unsigned nc = m_model->boundary()->supports();
-			double*** data[] = {m_state, m_velocity, m_acceleration};
-			for(unsigned i = 0; i < 3; i++)
-			{
-				if(data[i])
-				{
-					for(unsigned j = 0; j < nn; j++)
-					{
-						for(unsigned k = 0; k < m_model->mesh()->node(j)->dofs(); k++)
-						{
-							delete[] data[i][j][k];
-						}
-						delete[] data[i][j];
-					}
-					delete[] data[i];
-				}
-			}
-			for(unsigned i = 0; i < nj; i++)
-			{
-				const unsigned nn = m_model->mesh()->joint(i)->nodes();
-				const unsigned ls = unsigned(fea::mesh::joints::state::last);
-				const unsigned nr = mat::bit_find(m_model->mesh()->joint(i)->states(), ls);
-				for(unsigned j = 0; j < nr; j++)
-				{
-					for(unsigned k = 0; k < nn; k++)
-					{
-						delete[] m_joint[i][j][k];
-					}
-					delete[] m_joint[i][j];
-				}
-				delete[] m_joint[i];
-			}
-			for(unsigned i = 0; i < ne; i++)
-			{
-				const unsigned nn = m_model->mesh()->element(i)->nodes();
-				const unsigned ls = unsigned(fea::mesh::elements::state::last);
-				const unsigned nr = mat::bit_find(m_model->mesh()->element(i)->states(), ls);
-				for(unsigned j = 0; j < nr; j++)
-				{
-					for(unsigned k = 0; k < nn; k++)
-					{
-						delete[] m_element[i][j][k];
-					}
-					delete[] m_element[i][j];
-				}
-				delete[] m_element[i];
-			}
-			for(unsigned i = 0; i < nc; i++)
-			{
-				delete[] m_support[i];
-			}
 			delete m_ui;
-			delete[] m_step;
-			delete[] m_joint;
-			delete[] m_element;
-			delete[] m_support;
-			delete[] m_parameter;
 		}
 		
 		//limits
@@ -243,19 +179,19 @@ namespace gui
 		}
 		
 		//data
-		void Equilibrium_Path::prepare(void)
+		void Equilibrium_Path::setup(void)
 		{
 			//sizes
-			const unsigned nn = m_model->mesh()->nodes();
-			const unsigned nj = m_model->mesh()->joints();
-			const unsigned ne = m_model->mesh()->elements();
-			const unsigned nc = m_model->boundary()->supports();
+			const unsigned nn = m_model->mesh()->nodes().size();
+			const unsigned nj = m_model->mesh()->joints().size();
+			const unsigned ne = m_model->mesh()->elements().size();
+			const unsigned nc = m_model->boundary()->supports().size();
 			//solver
 			fea::analysis::solvers::Solver* solver = m_model->analysis()->solver();
 			//watch
 			const unsigned wn = solver->watch_dof()->m_node;
 			const unsigned wt = m_model->mesh()->node(wn)->dof_types();
-			const unsigned wd = mat::bit_find(wt, (unsigned) solver->watch_dof()->m_dof);
+			const unsigned wd = mat::bit_index(wt, (unsigned) solver->watch_dof()->m_dof);
 			//set ui
 			m_ui->setupUi(this);
 			//combos
@@ -270,7 +206,7 @@ namespace gui
 			//interface
 			const unsigned na[] = {nj, ne, nc};
 			const unsigned ss = solver->state_set();
-			const std::string path = m_model->path() + "/" + m_model->name() + "/Solver/Load.txt";
+			const std::string path = m_model->folder() + "/Solver/Load.txt";
 			const bool load = boost::filesystem::exists(path);
 			m_ui->tab_x->setCurrentIndex(load ? 2 : 1);
 			m_ui->tab_y->setCurrentIndex(load ? 1 : 2);
@@ -333,8 +269,8 @@ namespace gui
 			}
 			if(ne != 0)
 			{
-				const unsigned nn = m_model->mesh()->element(0)->nodes();
 				const unsigned st = m_model->mesh()->element(0)->states();
+				const unsigned nn = m_model->mesh()->element(0)->nodes().size();
 				for(unsigned i = 0; i < nn; i++)
 				{
 					m_ui->combo_element_node_x->addItem(QString::asprintf("%02d (%04d)", i, m_model->mesh()->element(0)->index_node(i)));
@@ -392,206 +328,6 @@ namespace gui
 			m_ui->canvas->yAxis2->ticker()->setTickCount(10);
 			m_ui->canvas->xAxis2->ticker()->setTickCount(10);
 		}
-		void Equilibrium_Path::allocate(void)
-		{
-			//nodes
-			const unsigned nn = m_model->mesh()->nodes();
-			const unsigned nj = m_model->mesh()->joints();
-			const unsigned ne = m_model->mesh()->elements();
-			const unsigned nc = m_model->boundary()->supports();
-			const unsigned ss = m_model->analysis()->solver()->state_set();
-			//solver
-			const std::string path_load = m_model->path() + "/" + m_model->name() + "/Solver/Load.txt";
-			const std::string path_time = m_model->path() + "/" + m_model->name() + "/Solver/Time.txt";
-			const std::string path_parm = boost::filesystem::exists(path_load) ? path_load : path_time;
-			//steps
-			const unsigned& ns = m_steps = 0;
-			FILE* file = fopen(path_parm.c_str(), "r");
-			while(!feof(file))
-			{
-				if(fgetc(file) == '\n')
-				{
-					m_steps++;
-				}
-			}
-			fclose(file);
-			//allocate
-			m_step = new double[ns];
-			m_joint = new double***[nj];
-			m_support = new double*[nc];
-			m_parameter = new double[ns];
-			m_element = new double***[ne];
-			double**** data[] = {&m_state, &m_velocity, &m_acceleration};
-			for(unsigned i = 0; i < 3; i++)
-			{
-				if(ss & 1 << i)
-				{
-					*data[i] = new double**[nn];
-					for(unsigned j = 0; j < nn; j++)
-					{
-						(*data[i])[j] = new double*[m_model->mesh()->node(j)->dofs()];
-						for(unsigned k = 0; k < m_model->mesh()->node(j)->dofs(); k++)
-						{
-							(*data[i])[j][k] = new double[ns];
-						}
-					}
-				}
-			}
-			for(unsigned i = 0; i < nj; i++)
-			{
-				const unsigned nn = m_model->mesh()->joint(i)->nodes();
-				const unsigned ls = unsigned(fea::mesh::joints::state::last);
-				const unsigned nr = mat::bit_find(m_model->mesh()->joint(i)->states(), ls);
-				m_joint[i] = new double**[nr];
-				for(unsigned j = 0; j < nr; j++)
-				{
-					m_joint[i][j] = new double*[nn];
-					for(unsigned k = 0; k < nn; k++)
-					{
-						m_joint[i][j][k] = new double[ns];
-					}
-				}
-			}
-			for(unsigned i = 0; i < ne; i++)
-			{
-				const unsigned nn = m_model->mesh()->element(i)->nodes();
-				const unsigned ls = unsigned(fea::mesh::elements::state::last);
-				const unsigned nr = mat::bit_find(m_model->mesh()->element(i)->states(), ls);
-				m_element[i] = new double**[nr];
-				for(unsigned j = 0; j < nr; j++)
-				{
-					m_element[i][j] = new double*[nn];
-					for(unsigned k = 0; k < nn; k++)
-					{
-						m_element[i][j][k] = new double[ns];
-					}
-				}
-			}
-			for(unsigned i = 0; i < nc; i++)
-			{
-				m_support[i] = new double[ns];
-			}
-		}
-		void Equilibrium_Path::get_data(void)
-		{
-			//sizes
-			const unsigned ns = m_steps;
-			const unsigned nn = m_model->mesh()->nodes();
-			const unsigned nj = m_model->mesh()->joints();
-			const unsigned ne = m_model->mesh()->elements();
-			const unsigned nc = m_model->boundary()->supports();
-			//status
-			QStatusBar* status = ((QMainWindow*) parent())->statusBar();
-			//solver
-			const std::string path_load = m_model->path() + "/" + m_model->name() + "/Solver/Load.txt";
-			const std::string path_time = m_model->path() + "/" + m_model->name() + "/Solver/Time.txt";
-			const std::string path_parm = boost::filesystem::exists(path_load) ? path_load : path_time;
-			//parameter
-			FILE* file = fopen(path_parm.c_str(), "r");
-			for(unsigned i = 0; i < ns; i++)
-			{
-				m_step[i] = i;
-				fscanf(file, "%lf", &m_parameter[i]);
-			}
-			fclose(file);
-			//interface
-			m_ui->label_step_max_x->setText(QString::asprintf("%05d", m_steps));
-			m_ui->label_step_max_y->setText(QString::asprintf("%05d", m_steps));
-			m_ui->label_parameter_min_x->setText(QString::asprintf("%+.2e", mat::min(m_parameter, ns)));
-			m_ui->label_parameter_min_y->setText(QString::asprintf("%+.2e", mat::min(m_parameter, ns)));
-			m_ui->label_parameter_max_x->setText(QString::asprintf("%+.2e", mat::max(m_parameter, ns)));
-			m_ui->label_parameter_max_y->setText(QString::asprintf("%+.2e", mat::max(m_parameter, ns)));
-			//load data
-			double*** data[] = {m_state, m_velocity, m_acceleration};
-			const char* name[] = {"State", "Velocity", "Acceleration"};
-			for(unsigned i = 0; i < 3; i++)
-			{
-				if(data[i])
-				{
-					for(unsigned j = 0; j < nn; j++)
-					{
-						//path
-						char path[200];
-						const std::string folder = m_model->path() + "/" + m_model->name() + "/" + name[i];
-						sprintf(path, "%s/N%04d.txt", folder.c_str(), j);
-						//file
-						FILE* file = fopen(path, "r");
-						for(unsigned k = 0; k < ns; k++)
-						{
-							for(unsigned p = 0; p < m_model->mesh()->node(j)->dofs(); p++)
-							{
-								fscanf(file, "%lf", &data[i][j][p][k]);
-							}
-						}
-						fclose(file);
-						status->showMessage(QString::asprintf("Equilibrium Path: Loading %s (%5.2lf\%)", name[i], 100 * double(j) / nn));
-					}
-				}
-			}
-			for(unsigned i = 0; i < nj; i++)
-			{
-				//sizes
-				const unsigned nn = m_model->mesh()->joint(i)->nodes();
-				const unsigned ls = unsigned(fea::mesh::joints::state::last);
-				const unsigned nr = mat::bit_find(m_model->mesh()->joint(i)->states(), ls);
-				//file
-				char path[200];
-				sprintf(path, "%s/%s/Joints/J%04d.txt", m_model->path().c_str(), m_model->name().c_str(), i);
-				FILE* file = fopen(path, "r");
-				for(unsigned p = 0; p < ns; p++)
-				{
-					for(unsigned k = 0; k < nn; k++)
-					{
-						for(unsigned j = 0; j < nr; j++)
-						{
-							fscanf(file, "%lf", &m_joint[i][j][k][p]);
-						}
-					}
-				}
-				fclose(file);
-				status->showMessage(QString::asprintf("Equilibrium Path: Loading Joints (%5.2lf\%)", 100 * double(i) / nj));
-			}
-			for(unsigned i = 0; i < ne; i++)
-			{
-				//sizes
-				const unsigned nn = m_model->mesh()->element(i)->nodes();
-				const unsigned ls = unsigned(fea::mesh::elements::state::last);
-				const unsigned nr = mat::bit_find(m_model->mesh()->element(i)->states(), ls);
-				//file
-				char path[200];
-				sprintf(path, "%s/%s/Elements/E%04d.txt", m_model->path().c_str(), m_model->name().c_str(), i);
-				FILE* file = fopen(path, "r");
-				for(unsigned p = 0; p < ns; p++)
-				{
-					for(unsigned k = 0; k < nn; k++)
-					{
-						for(unsigned j = 0; j < nr; j++)
-						{
-							fscanf(file, "%lf", &m_element[i][j][k][p]);
-						}
-					}
-				}
-				fclose(file);
-				status->showMessage(QString::asprintf("Equilibrium Path: Loading Elements (%5.2lf\%)", 100 * double(i) / ne));
-			}
-			for(unsigned i = 0; i < nc; i++)
-			{
-				//path
-				char path[200];
-				const std::string folder = m_model->path() + "/" + m_model->name() + "/Supports";
-				sprintf(path, "%s/S%04d.txt", folder.c_str(), i);
-				//file
-				FILE* file = fopen(path, "r");
-				for(unsigned j = 0; j < ns; j++)
-				{
-					fscanf(file, "%lf", &m_support[i][j]);
-				}
-				fclose(file);
-				status->showMessage(QString::asprintf("Equilibrium Path: Loading Supports (%5.2lf\%)", 100 * double(i) / nc));
-			}
-			status->showMessage("Equilibrium Path: Loading Complete!", 5000);
-		}
-		
 		const QString Equilibrium_Path::current_name(unsigned index) const
 		{
 			//interface
@@ -691,48 +427,48 @@ namespace gui
 			{
 				case 0:
 				{
-					return m_step;
+					return m_path->step();
 				}
 				case 1:
 				{
-					return m_parameter;
+					return m_path->solver();
 				}
 				case 2:
 				{
 					const unsigned n = cl[1]->currentIndex();
 					const unsigned p = cl[0]->currentIndex();
-					return m_state[n][p];
+					return m_path->node()[0][n][p];
 				}
 				case 3:
 				{
 					const unsigned n = cl[3]->currentIndex();
 					const unsigned p = cl[2]->currentIndex();
-					return m_velocity[n][p];
+					return m_path->node()[1][n][p];
 				}
 				case 4:
 				{
 					const unsigned n = cl[5]->currentIndex();
 					const unsigned p = cl[4]->currentIndex();
-					return m_acceleration[n][p];
+					return m_path->node()[2][n][p];
 				}
 				case 5:
 				{
 					const unsigned j = cl[8]->currentIndex();
 					const unsigned s = cl[7]->currentIndex();
 					const unsigned n = cl[6]->currentIndex();
-					return m_joint[j][s][n];
+					return m_path->joint()[j][s][n];
 				}
 				case 6:
 				{
 					const unsigned e = cl[11]->currentIndex();
 					const unsigned s = cl[10]->currentIndex();
 					const unsigned n = cl[ 9]->currentIndex();
-					return m_element[e][s][n];
+					return m_path->element()[e][s][n];
 				}
 				case 7:
 				{
 					const unsigned s = cl[12]->currentIndex();
-					return m_support[s];
+					return m_path->support()[s];
 				}
 			}
 		}
@@ -740,14 +476,15 @@ namespace gui
 		//slots
 		void Equilibrium_Path::slot_fit(void) const
 		{
+			const unsigned ns = m_path->steps();
 			const QCheckBox* bl[] = {m_ui->check_x, m_ui->check_y};
 			QLineEdit* ll[] = {m_ui->edit_min_x, m_ui->edit_min_y, m_ui->edit_max_x, m_ui->edit_max_y};
 			for(unsigned i = 0; i < 2; i++)
 			{
 				char li[50], lj[50];
 				const double* data = current_data(i);
-				sprintf(li, "%+.2e", bl[i]->isChecked() ? -mat::max(data, m_steps) : +mat::min(data, m_steps));
-				sprintf(lj, "%+.2e", bl[i]->isChecked() ? -mat::min(data, m_steps) : +mat::max(data, m_steps));
+				sprintf(li, "%+.2e", bl[i]->isChecked() ? -mat::max(data, ns) : +mat::min(data, ns));
+				sprintf(lj, "%+.2e", bl[i]->isChecked() ? -mat::min(data, ns) : +mat::max(data, ns));
 				ll[i + 0]->setText(li);
 				ll[i + 2]->setText(lj);
 			}
@@ -890,7 +627,8 @@ namespace gui
 			std::vector<unsigned> px, py;
 			const double* dx = current_data(0);
 			const double* dy = current_data(1);
-			for(unsigned i = 1; i + 1 < m_steps; i++)
+			const unsigned ns = m_path->steps();
+			for(unsigned i = 1; i + 1 < ns; i++)
 			{
 				const bool txk = dx[i] * dx[i + 1] < 0;
 				const bool tyk = dy[i] * dy[i + 1] < 0;
@@ -1024,8 +762,8 @@ namespace gui
 			const unsigned a = ce[p + 0]->currentIndex();
 			const unsigned b = ce[p + 1]->currentIndex();
 			const unsigned c = ce[p + 2]->currentIndex();
-			const unsigned n = m_model->mesh()->element(a)->nodes();
 			const unsigned s = m_model->mesh()->element(a)->states();
+			const unsigned n = m_model->mesh()->element(a)->nodes().size();
 			//fill
 			ce[p + 1]->clear();
 			ce[p + 2]->clear();

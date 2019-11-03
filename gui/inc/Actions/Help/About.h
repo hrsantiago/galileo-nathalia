@@ -22,10 +22,6 @@ namespace gui
 			//destructor
 			virtual ~About(void);
 			
-		private slots:
-			//slots
-			void slot_logo(void) const;
-		
 		private:
 			//attributes
 			Ui::About* m_ui;
