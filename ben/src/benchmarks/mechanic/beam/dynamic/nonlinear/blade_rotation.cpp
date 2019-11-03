@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -55,7 +52,7 @@ void tests::beam::dynamic_nonlinear::blade_rotation(void)
 	//sections
 	model.mesh()->add_section(fea::mesh::sections::type::generic);
 	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(1.40e-4);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_z(7.00e-8);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_z(7.00e-8);
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);

@@ -2,7 +2,6 @@
 #include <cmath>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 #include "linear/dense.h"
 
@@ -74,11 +73,11 @@ const static unsigned nd = 4;
 const static unsigned nr = 4;
 const static unsigned ni = 6;
 const static unsigned nm = 10;
-const static unsigned ns = 250;
+const static unsigned ns = 517;
 
 const static fea::analysis::strategies::type st1 = fea::analysis::strategies::type::control_load;
 const static fea::analysis::strategies::type st2 = fea::analysis::strategies::type::minimal_norm;
-//const static fea::analysis::strategies::type st2 = fea::analysis::strategies::type::control_displacement;
+//const static fea::analysis::strategies::type st2 = fea::analysis::strategies::type::control_state;
 //const static fea::analysis::strategies::type st2 = fea::analysis::strategies::type::arc_length_cylindric;
 
 //parameters
@@ -357,6 +356,7 @@ static void create_solver(fea::models::Model* model)
 		dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model->analysis()->solver())->step_max(100);
 		dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model->analysis()->solver())->load_max(1e0);
 		dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model->analysis()->solver())->strategy(st1);
+		dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model->analysis()->solver())->frequencies(true);
 		dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model->analysis()->solver())->load_predictor(5e-2);
 		model->analysis()->solve();
 	}

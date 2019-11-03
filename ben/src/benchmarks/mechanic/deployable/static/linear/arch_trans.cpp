@@ -2,7 +2,6 @@
 #include <cmath>
 
 //mat
-#include "misc/defs.h"
 #include "linear/dense.h"
 #include "linear/linear.h"
 

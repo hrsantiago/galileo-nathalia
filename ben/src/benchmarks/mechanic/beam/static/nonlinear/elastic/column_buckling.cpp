@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -65,7 +62,7 @@ void tests::beam::static_nonlinear::elastic::column_buckling(void)
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);
-	model.mesh()->add_element(fea::mesh::elements::type::beam2, {0, 1});
+	model.mesh()->add_element(fea::mesh::elements::type::beam3, {0, 1});
 
 	//refine
 	fea::mesh::cells::Line::refine(0, 10);
@@ -74,7 +71,7 @@ void tests::beam::static_nonlinear::elastic::column_buckling(void)
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_z);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
-	for(unsigned i = 0; i < model.mesh()->nodes(); i++)
+	for(unsigned i = 0; i < model.mesh()->nodes().size(); i++)
 	{
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::rotation_x);
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::rotation_y);

@@ -6,22 +6,27 @@ namespace tests
 	{
 		namespace modal
 		{
+			void single_bar(void);
 			void von_mises_truss_2D(void);
 		}
 		namespace buckling
 		{
+			void single_bar(void);
 			void von_mises_truss_2D(void);
 		}
 		namespace static_linear
 		{
 			void load_point(void);
+			void truss_carol(void);
 			void load_uniform(void);
 		}
 		namespace static_nonlinear
 		{
+			void tower(void);
 			void tent_unit(void);
 			void tent_roof(void);
 			void dome_star(void);
+			void cantilever(void);
 			void dome_circle(void);
 			void space_truss(void);
 			void pinned_tip_force(void);

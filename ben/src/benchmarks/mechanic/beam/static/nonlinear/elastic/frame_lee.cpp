@@ -59,9 +59,12 @@ void tests::beam::static_nonlinear::elastic::frame_lee(void)
 	((fea::mesh::sections::Rectangle*) model.mesh()->section(0))->height(h);
 
 	//elements
-	fea::mesh::elements::Mechanic::geometric(true);
-	model.mesh()->add_element(fea::mesh::elements::type::beam2, {0, 1});
-	model.mesh()->add_element(fea::mesh::elements::type::beam2, {1, 2});
+	model.mesh()->add_element(fea::mesh::elements::type::beam3, {0, 1});
+	model.mesh()->add_element(fea::mesh::elements::type::beam3, {1, 2});
+
+	//refine
+	fea::mesh::cells::Line::refine(0, 10);
+	fea::mesh::cells::Line::refine(1, 10);
 
 	//supports
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_x);
@@ -72,14 +75,11 @@ void tests::beam::static_nonlinear::elastic::frame_lee(void)
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_y);
 
-	//refine
-	fea::mesh::cells::Line::refine(0, 10);
-	fea::mesh::cells::Line::refine(1, 10);
-
 	//loads
 	model.boundary()->add_load_case(13, fea::mesh::nodes::dof::translation_y, -1);
 
 	//solver
+	fea::mesh::elements::Mechanic::geometric(true);
 	model.analysis()->solver(fea::analysis::solvers::type::static_nonlinear);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->step_max(200);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_max(2.5);

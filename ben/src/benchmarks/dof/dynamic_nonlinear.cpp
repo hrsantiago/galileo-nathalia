@@ -17,7 +17,7 @@
 //ben
 #include "benchmarks/dof/dof.h"
 
-void tests::dof::dynamic_nonlinear(void) 
+void tests::dof::dynamic_nonlinear(void)
 {
 	//model
 	fea::models::Model model("nonlinear", "benchmarks/dof/dynamic");

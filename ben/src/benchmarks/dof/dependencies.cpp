@@ -2,9 +2,6 @@
 #include <cmath>
 #include <functional>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 

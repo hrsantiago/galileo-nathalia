@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -196,16 +193,6 @@ void tests::bar::static_nonlinear::tent_roof(void)
 			model.boundary()->load_case(1)->add_load_node(nn + nx * (i + 1) + j + 0, fea::mesh::nodes::dof::translation_z, -f * pr * dy * ds / 4);
 		}
 	}
-
-	//check
-	double li = model.mesh()->element(0)->cell()->edge(model.mesh()->element(0), 0);
-	double lj = model.mesh()->element(0)->cell()->edge(model.mesh()->element(0), 0);
-	for(unsigned i = 1; i < model.mesh()->elements(); i++)
-	{
-		li = std::min(li, model.mesh()->element(i)->cell()->edge(model.mesh()->element(i), 0));
-		lj = std::max(lj, model.mesh()->element(i)->cell()->edge(model.mesh()->element(i), 0));
-	}
-	printf("min: %+.2e max: %+.2e\n", li, lj);
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::static_nonlinear);

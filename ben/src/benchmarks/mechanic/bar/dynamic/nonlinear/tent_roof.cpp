@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 

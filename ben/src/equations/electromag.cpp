@@ -4,9 +4,6 @@
 #include <string>
 #include <cstring>
 
-//mat
-#include "misc/defs.h"
-
 //ben
 #include "equations/electromag.h"
 

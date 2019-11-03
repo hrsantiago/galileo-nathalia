@@ -121,7 +121,7 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 		model.mesh()->add_element(fea::mesh::elements::type::bar, {10+n,  7+n}, 0, 0);
 		model.mesh()->add_element(fea::mesh::elements::type::bar, {14+n,  7+n}, 0, 0);
 
-		for(unsigned j = model.mesh()->elements() - (i == 0 ? 30 : 25); j < model.mesh()->elements(); j++) {
+		for(unsigned j = model.mesh()->elements().size() - (i == 0 ? 30 : 25); j < model.mesh()->elements().size(); j++) {
 			((fea::mesh::elements::Bar*) model.mesh()->element(j))->cable(true);
 			((fea::mesh::elements::Bar*) model.mesh()->element(j))->residual_stress(s0);
 		}
@@ -151,7 +151,7 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_z);
 	}
 
-	for(int i = model.mesh()->nodes() - 5; i < model.mesh()->nodes(); ++i) {
+	for(int i = model.mesh()->nodes().size() - 5; i < model.mesh()->nodes().size(); ++i) {
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_x);
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_y);
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_z);

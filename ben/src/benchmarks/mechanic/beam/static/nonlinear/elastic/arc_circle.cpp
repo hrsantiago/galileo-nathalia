@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -61,7 +58,7 @@ void tests::beam::static_nonlinear::elastic::arc_circle(void)
 	//sections
 	model.mesh()->add_section(fea::mesh::sections::type::generic);
 	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(10.0);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_z(1.0);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_z(1.0);
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);

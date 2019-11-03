@@ -72,8 +72,8 @@ void tests::joint::pinned::frame(void)
 	model.mesh()->add_section(fea::mesh::sections::type::generic);
 	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(Ac);
 	((fea::mesh::sections::Generic*) model.mesh()->section(1))->area(Ab);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_z(Ic);
-	((fea::mesh::sections::Generic*) model.mesh()->section(1))->inercia_z(Ib);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_z(Ic);
+	((fea::mesh::sections::Generic*) model.mesh()->section(1))->inertia_z(Ib);
 
 	//elements
 	model.mesh()->add_element(fea::mesh::elements::type::beam2, {1, 2}, { 0 }, 0);

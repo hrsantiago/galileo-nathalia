@@ -5,6 +5,7 @@ HEADERS = \
     inc/benchmarks/benchmarks.h \
     inc/benchmarks/material/material.h \
     inc/benchmarks/dof/dof.h \
+    inc/benchmarks/mechanic/cable.h \
     inc/benchmarks/mechanic/deployable.h \
     inc/benchmarks/mechanic/joints.h \
     inc/benchmarks/mechanic/bar.h \
@@ -33,6 +34,16 @@ SOURCES = \
     src/benchmarks/dof/dynamic_nonlinear.cpp \
     src/benchmarks/dof/dynamic_linear.cpp \
     src/benchmarks/dof/dependencies.cpp \
+    src/benchmarks/mechanic/cable/buckling/cable.cpp \
+    src/benchmarks/mechanic/cable/buckling/mixed.cpp \
+    src/benchmarks/mechanic/cable/buckling/tower.cpp \
+    src/benchmarks/mechanic/cable/dynamic/nonlinear/grid_weight.cpp \
+    src/benchmarks/mechanic/cable/dynamic/nonlinear/line_bridge.cpp \
+    src/benchmarks/mechanic/cable/dynamic/nonlinear/line_weight.cpp \
+    src/benchmarks/mechanic/cable/modal/cable.cpp \
+    src/benchmarks/mechanic/cable/modal/mixed.cpp \
+    src/benchmarks/mechanic/cable/modal/tower.cpp \
+    src/benchmarks/mechanic/cable/static/nonlinear/line_bridge.cpp \
     src/benchmarks/mechanic/joints/rigid/spring.cpp \
     src/benchmarks/mechanic/joints/rigid/motion.cpp \
     src/benchmarks/mechanic/joints/pinned/frame.cpp \
@@ -93,6 +104,8 @@ SOURCES = \
     src/benchmarks/mechanic/beam/state/shear.cpp \
     src/benchmarks/mechanic/beam/state/torsion.cpp \
     src/benchmarks/mechanic/beam/state/bending.cpp \
+    src/benchmarks/mechanic/beam/buckling/column_buckling.cpp \
+    src/benchmarks/mechanic/deployable/buckling/slut_unit.cpp \
     src/benchmarks/mechanic/deployable/static/nonlinear/arch_polar.cpp \
     src/benchmarks/mechanic/deployable/static/nonlinear/slut_beam.cpp \
     src/benchmarks/mechanic/deployable/static/nonlinear/tent_unit.cpp \
@@ -120,6 +133,8 @@ SOURCES = \
     src/benchmarks/mechanic/bar/dynamic/nonlinear/tent_roof.cpp \
     src/benchmarks/mechanic/bar/dynamic/linear/free.cpp \
     src/benchmarks/mechanic/bar/dynamic/linear/tent.cpp \
+    src/benchmarks/mechanic/bar/static/nonlinear/cantilever.cpp \
+    src/benchmarks/mechanic/bar/static/nonlinear/tower.cpp \
     src/benchmarks/mechanic/bar/static/nonlinear/von_mises_truss_2D.cpp \
     src/benchmarks/mechanic/bar/static/nonlinear/tent_unit.cpp \
     src/benchmarks/mechanic/bar/static/nonlinear/space_truss.cpp \
@@ -131,7 +146,9 @@ SOURCES = \
     src/benchmarks/mechanic/bar/static/nonlinear/dome_circle.cpp \
     src/benchmarks/mechanic/bar/static/linear/load_point.cpp \
     src/benchmarks/mechanic/bar/static/linear/load_uniform.cpp \
+    src/benchmarks/mechanic/bar/static/linear/truss_carol.cpp \
     src/benchmarks/mechanic/bar/modal/von_mises_truss_2D.cpp \
+    src/benchmarks/mechanic/bar/buckling/single_bar.cpp \
     src/benchmarks/mechanic/bar/buckling/von_mises_truss_2D.cpp \
     src/benchmarks/mechanic/plane/static/linear/axial.cpp \
     src/equations/gravity.cpp \

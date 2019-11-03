@@ -4,6 +4,10 @@ namespace tests
 {
 	namespace deployable
 	{
+		namespace modal
+		{
+			void slut_unit(void);
+		}
 		namespace state
 		{
 			void slut_unit(void);
@@ -12,6 +16,10 @@ namespace tests
 			void slut_roof(void);
 			void arch_polar(void);
 			void arch_trans(void);
+		}
+		namespace buckling
+		{
+			void slut_unit(void);
 		}
 		namespace static_linear
 		{
@@ -32,6 +40,14 @@ namespace tests
 			void slut_test(void);
 			void arch_polar(void);
 			void arch_trans(void);
+		}
+		namespace dynamic_linear
+		{
+			void slut_unit(void);
+		}
+		namespace dynamic_nonlinear
+		{
+			void slut_unit(void);
 		}
 	}
 }

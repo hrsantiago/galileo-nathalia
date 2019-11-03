@@ -62,8 +62,8 @@ void tests::beam::static_nonlinear::elastic::frame_buckling(void)
 	model.mesh()->add_section(fea::mesh::sections::type::generic);
 	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(A0);
 	((fea::mesh::sections::Generic*) model.mesh()->section(1))->area(A1);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_z(I0);
-	((fea::mesh::sections::Generic*) model.mesh()->section(1))->inercia_z(I1);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_z(I0);
+	((fea::mesh::sections::Generic*) model.mesh()->section(1))->inertia_z(I1);
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);

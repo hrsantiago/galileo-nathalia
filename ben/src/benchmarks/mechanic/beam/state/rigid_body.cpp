@@ -3,7 +3,6 @@
 #include <ctime>
 
 //mat
-#include "misc/defs.h"
 #include "linear/dense.h"
 
 //fea

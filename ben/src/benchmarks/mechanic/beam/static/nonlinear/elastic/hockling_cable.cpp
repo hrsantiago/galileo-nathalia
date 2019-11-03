@@ -50,9 +50,9 @@ void tests::beam::static_nonlinear::elastic::hockling_cable(void)
 	//sections
 	model.mesh()->add_section(fea::mesh::sections::type::generic);
 	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(1.00e-6);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_x(2.16e-12);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_y(8.33e-14);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_z(8.33e-14);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_x(2.16e-12);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_y(8.33e-14);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_z(8.33e-14);
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);

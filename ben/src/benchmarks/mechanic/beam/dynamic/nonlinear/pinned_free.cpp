@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -76,7 +73,7 @@ void tests::beam::dynamic_nonlinear::pinned_free(void)
 	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_y);
 
 	//initials
-	for(unsigned i = 2; i < model.mesh()->nodes(); i++)
+	for(unsigned i = 2; i < model.mesh()->nodes().size(); i++)
 	{
 		const double x = model.mesh()->node(i)->coordinates()[0];
 		model.boundary()->add_initial(i, fea::mesh::nodes::dof::translation_y, A * sin(m * M_PI * x / L), 0);

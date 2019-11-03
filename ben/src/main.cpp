@@ -6,15 +6,20 @@
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
+//#include <armadillo>
 
+#include "misc/util.h"
 #include "linear/dense.h"
+#include "linear/sparse.h"
+#include "linear/matrix.h"
 #include "linear/linear.h"
 #include "misc/rotation.h"
+#include "solvers/runge_kutta.h"
 
 #include "equations/equations.h"
 #include "benchmarks/benchmarks.h"
 
-int main(int, char*[])
+int main(int argc, char* argv[])
 {
 	//tests
 //	tests::dof::static_linear();
@@ -22,13 +27,31 @@ int main(int, char*[])
 //	tests::dof::static_nonlinear();
 //	tests::dof::dynamic_nonlinear();
 
+//	tests::bar::buckling::single_bar();
+//	tests::bar::buckling::von_mises_truss_2D();
+
+//	tests::bar::static_linear::truss_carol();
+
+//	tests::bar::static_nonlinear::tower();
 //	tests::bar::static_nonlinear::tent_unit();
 //	tests::bar::static_nonlinear::tent_roof();
-	tests::bar::static_nonlinear::dome_star();
+//	tests::bar::static_nonlinear::dome_star();
+//	tests::bar::static_nonlinear::cantilever();
 //	tests::bar::dynamic_nonlinear::tent_roof();
 //	tests::bar::dynamic_nonlinear::single_pendulum_2D();
 //	tests::bar::dynamic_nonlinear::single_pendulum_3D();
 //	tests::bar::dynamic_nonlinear::double_pendulum_2D();
+
+//	tests::cable::modal::tower();
+//	tests::cable::modal::cable();
+//	tests::cable::modal::mixed();
+//	tests::cable::buckling::tower();
+//	tests::cable::buckling::cable();
+//	tests::cable::buckling::mixed();
+//	tests::cable::static_nonlinear::line_bridge();
+//	tests::cable::dynamic_nonlinear::line_bridge();
+
+//	tests::beam::buckling::column_buckling();
 
 //	tests::beam::static_nonlinear::elastic::frame_lee();
 //	tests::beam::static_nonlinear::elastic::hockling_cable();
@@ -55,9 +78,13 @@ int main(int, char*[])
 //	tests::joint::hinge::two_beams_axial();
 //	tests::joint::hinge::two_beams_torsion();
 
+//	tests::deployable::modal::slut_unit();
+//	tests::deployable::state::slut_grid();
 //	tests::deployable::state::arch_polar();
+	tests::deployable::buckling::slut_unit();
 //	tests::deployable::static_linear::arch_polar();
 //	tests::deployable::static_linear::arch_trans();
+//	tests::deployable::dynamic_linear::slut_unit();
 //	tests::deployable::static_nonlinear::tent_unit();
 //	tests::deployable::static_nonlinear::tent_size();
 //	tests::deployable::static_nonlinear::slut_fric();
@@ -72,6 +99,8 @@ int main(int, char*[])
 //	tests::deployable::static_nonlinear::arch_trans();
 
 //	tests::tensegrity::static_nonlinear::pentagon();
+
+//	tests::plane::static_linear::axial(); 
 
 //	tests::solid::static_linear::axial();
 //	tests::solid::static_linear::hinge();

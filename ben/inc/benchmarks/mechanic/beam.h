@@ -12,6 +12,10 @@ namespace tests
 			void bending(void);
 			void rigid_body(void);
 		}
+		namespace buckling
+		{
+			void column_buckling(void);
+		}
 		namespace static_linear
 		{
 			void load_axial(void);

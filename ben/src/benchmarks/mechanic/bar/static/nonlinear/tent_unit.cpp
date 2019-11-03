@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -32,12 +29,12 @@
 void tests::bar::static_nonlinear::tent_unit(void)
 {
 	//parameters
-	const bool base = true;
+	const bool base = false;
 	const bool strain = false;
 	const double d = 5.08e-01;
 	const double t = 12.7e-03;
 	const double b = 7.00e+00;
-	const double a = 0.20e+00;
+	const double a = 1.20e+00;
 	const double k = 0.00e+00;
 	const double g = 0.15e+00;
 	const double s = 4.00e+08;
@@ -63,7 +60,7 @@ void tests::bar::static_nonlinear::tent_unit(void)
 
 	//nodes
 	model.mesh()->add_node(q, 0, h);
-	for (unsigned i = 0; i < n; i++)
+	for(unsigned i = 0; i < n; i++)
 	{
 		const double t = 2 * i * M_PI / n;
 		model.mesh()->add_node(b * cos(t), b * sin(t), 0);
@@ -85,14 +82,12 @@ void tests::bar::static_nonlinear::tent_unit(void)
 	((fea::mesh::sections::Ring*)model.mesh()->section(0))->thickness(t);
 
 	//elements
-	for (unsigned i = 0; i < n; i++)
+	for(unsigned i = 0; i < n; i++)
 	{
 		model.mesh()->add_element(fea::mesh::elements::type::bar, {0, i + 1});
 	}
 
 	//supports
-	model.boundary()->add_support(0, ux);
-	model.boundary()->add_support(0, uy);
 	for(unsigned i = 0; i < n; i++)
 	{
 		model.boundary()->add_support(i + 1, uz);
@@ -111,7 +106,7 @@ void tests::bar::static_nonlinear::tent_unit(void)
 	//dependencies
 	if(base)
 	{
-		for (unsigned i = 1; i < n; i++)
+		for(unsigned i = 1; i < n; i++)
 		{
 			const double t = 2 * i * M_PI / n;
 			model.boundary()->add_dependency(i + 1, ux, { 1 }, { ux });

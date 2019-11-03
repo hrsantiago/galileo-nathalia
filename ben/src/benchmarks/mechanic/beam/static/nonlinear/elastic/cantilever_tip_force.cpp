@@ -55,7 +55,7 @@ void tests::beam::static_nonlinear::elastic::cantilever_tip_force(void)
 	//sections
 	model.mesh()->add_section(fea::mesh::sections::type::generic);
 	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(A);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inercia_z(I);
+	((fea::mesh::sections::Generic*) model.mesh()->section(0))->inertia_z(I);
 
 	//elements
 	fea::mesh::elements::Mechanic::geometric(true);

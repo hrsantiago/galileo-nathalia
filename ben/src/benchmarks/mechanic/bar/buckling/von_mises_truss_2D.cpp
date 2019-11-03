@@ -1,9 +1,6 @@
 //std
 #include <cmath>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Model/Model.h"
 
@@ -27,12 +24,8 @@
 #include "benchmarks/mechanic/bar.h"
 
 //buckling
-void tests::bar::buckling::von_mises_truss_2D(void) 
+void tests::bar::buckling::von_mises_truss_2D(void)
 {
-	/*
-	Elastic pinned shallow truss subjected to a compression vertical load
-	Literature: UFOP Phd Tesis L. Pinheiro (2003) pp. 137
-	 */
 
 	//parameters
 	const double l = 1.00e+0;
@@ -64,7 +57,6 @@ void tests::bar::buckling::von_mises_truss_2D(void)
 	model.mesh()->add_element(fea::mesh::elements::type::bar, {2, 0});
 
 	//supports
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_z);
 	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_y);
 	model.boundary()->add_support(1, fea::mesh::nodes::dof::translation_z);
@@ -72,16 +64,10 @@ void tests::bar::buckling::von_mises_truss_2D(void)
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_y);
 	model.boundary()->add_support(2, fea::mesh::nodes::dof::translation_z);
 
-	//initials
-	model.boundary()->add_initial(0, fea::mesh::nodes::dof::translation_x, 0, 0);
-	model.boundary()->add_initial(0, fea::mesh::nodes::dof::translation_y, 0, 0);
-
-	//loads
-	model.boundary()->add_load_case();
-
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::buckling);
 	model.analysis()->solver()->watch_dof(0, fea::mesh::nodes::dof::translation_y);
+	dynamic_cast<fea::analysis::solvers::Buckling*>(model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
 
 	//solve
 	model.analysis()->solve();

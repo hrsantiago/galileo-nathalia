@@ -3,7 +3,6 @@
 #include <ctime>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 #include "linear/dense.h"
 
@@ -38,9 +37,9 @@
 #include "benchmarks/mechanic/deployable.h"
 
 //controls
+const static bool depl = true;
+const static bool grav = true;
 const static bool open = false;
-const static bool depl = false;
-const static bool grav = false;
 const static bool alte = false;
 const static bool sups = false;
 const static bool fric = false;
