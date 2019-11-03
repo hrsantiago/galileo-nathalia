@@ -36,9 +36,10 @@ namespace fea
 			
 		private:
 			//attributes
-			double m_loads = 0.05;
-			double m_joints = 0.03;
-			double m_supports = 0.03;
+			double m_loads;
+			double m_joints;
+			double m_supports;
 		};
 	}
 }
+

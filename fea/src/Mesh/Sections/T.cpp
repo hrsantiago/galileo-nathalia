@@ -151,7 +151,7 @@ namespace fea
 			{
 				return m_flange_thickness + m_web_height;
 			}
-			double T::inercia_y(void) const
+			double T::inertia_y(void) const
 			{
 				//web
 				const double wh = m_web_height;
@@ -161,10 +161,10 @@ namespace fea
 				const double fw = m_flange_width;
 				const double ft = m_flange_thickness;
 				const double If = ft * pow(fw, 3) / 12;
-				// inercia
+				// inertia
 				return Iw + If;
 			}
-			double T::inercia_z(void) const
+			double T::inertia_z(void) const
 			{
 				//data
 				const double wh = m_web_height;
@@ -181,12 +181,12 @@ namespace fea
 				const double Qf = Af * yf;
 				//centroid
 				const double yc = (Qw + Qf) / (Aw + Af);
-				//inercia
+				//inertia
 				const double Iw = wt * pow(wh, 3) / 12 + Aw * pow(yw - yc, 2);
 				const double If = fw * pow(ft, 3) / 12 + Af * pow(yf - yc, 2);
 				return Iw + If;
 			}
-			double T::inercia_w(void) const
+			double T::inertia_w(void) const
 			{
 				return 0;
 			}

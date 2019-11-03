@@ -151,7 +151,7 @@ namespace fea
 			{
 				return m_web_height + 2 * m_flange_thickness;
 			}
-			double I::inercia_y(void) const
+			double I::inertia_y(void) const
 			{
 				//web
 				const double hw = m_web_height;
@@ -161,10 +161,10 @@ namespace fea
 				const double wf = m_flange_width;
 				const double tf = m_flange_thickness;
 				const double If = tf * pow(wf, 3) / 12;
-				//inercia
+				//inertia
 				return Iw + 2 * If;
 			}
-			double I::inercia_z(void) const
+			double I::inertia_z(void) const
 			{
 				//web
 				const double hw = m_web_height;
@@ -175,10 +175,10 @@ namespace fea
 				const double tf = m_flange_thickness;
 				const double Af = tf * wf;
 				const double If = wf * pow(tf, 3) / 12 + Af * pow((hw + tf) / 2, 2);
-				//inercia
+				//inertia
 				return Iw + 2 * If;
 			}
-			double I::inercia_w(void) const
+			double I::inertia_w(void) const
 			{
 				return 0.0;
 			}

@@ -61,16 +61,6 @@ namespace fea
 						break;
 				}
 			}
-			
-			//integration
-			unsigned Tri::points(void) const
-			{
-				return 0;
-			}
-			double Tri::point(double* x, unsigned i) const
-			{
-				return 0;
-			}
 		}
 	}
 }

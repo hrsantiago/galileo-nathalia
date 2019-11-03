@@ -1,3 +1,6 @@
+//std
+#include <algorithm>
+
 //mat
 #include "misc/util.h"
 
@@ -123,14 +126,8 @@ namespace fea
 		//index
 		unsigned Dependency::index(void) const
 		{
-			for(unsigned i = 0; i < m_boundary->dependencies(); i++)
-			{
-				if(m_boundary->dependency(i) == this)
-				{
-					return i;
-				}
-			}
-			return 0;
+			const std::vector<Dependency*>& list = m_boundary->dependencies();
+			return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 		}
 		unsigned Dependency::index_slave_dof(void) const
 		{
@@ -192,7 +189,7 @@ namespace fea
 		{
 			//sizes
 			const unsigned nm = m_masters_dof.size();
-			const unsigned nn = m_boundary->model()->mesh()->nodes();
+			const unsigned nn = m_boundary->model()->mesh()->nodes().size();
 			//size consistency
 			if(nm != m_masters_node.size())
 			{
@@ -224,35 +221,32 @@ namespace fea
 				}
 			}
 			//check initials
-			for(unsigned i = 0; i < m_boundary->initials(); i++)
+			for(const Initial* initial : m_boundary->initials())
 			{
-				const Initial* initial = m_boundary->initial(i);
 				if(m_slave_node == initial->index_node() && m_slave_dof == initial->dof())
 				{
-					printf("Dependency %02d is incompatible with initial %02d!\n", index(), i);
+					printf("Dependency %02d is incompatible with initial %02d!\n", index(), initial->index());
 					return false;
 				}
 			}
 			//check supports
-			for(unsigned i = 0; i < m_boundary->supports(); i++)
+			for(const Support* support : m_boundary->supports())
 			{
-				const Support* support = m_boundary->support(i);
 				if(support->fixed() && m_slave_node == support->index_node() && m_slave_dof == support->dof())
 				{
-					printf("Dependency %02d is incompatible with support %02d!\n", index(), i);
+					printf("Dependency %02d is incompatible with support %02d!\n", index(), support->index());
 					return false;
 				}
 			}
 			//check dependencies
-			for(unsigned i = 0; i < m_boundary->dependencies(); i++)
+			for(Dependency* dependency : m_boundary->dependencies())
 			{
-				Dependency* dependency = m_boundary->dependency(i);
 				if(dependency != this)
 				{
 					if(m_slave_node == dependency->m_slave_node && m_slave_dof == dependency->m_slave_dof)
 					{
 						const char msg[] = "Dependency %02d (Node: %04d dof: %s) is incompatible with dependency %02d!\n";
-						printf(msg, index(), m_slave_node, mesh::nodes::Node::dof_name(m_slave_dof), i);
+						printf(msg, index(), m_slave_node, mesh::nodes::Node::dof_name(m_slave_dof), dependency->index());
 						return false;
 					}
 				}
@@ -283,7 +277,7 @@ namespace fea
 			//slave data
 			const mesh::nodes::Node* ns = slave_node();
 			double* nd[] = {ns->m_state_new, ns->m_velocity_new, ns->m_acceleration_new};
-			const unsigned char ps = mat::bit_find(ns->m_dof_types, (unsigned) m_slave_dof);
+			const unsigned char ps = mat::bit_index(ns->m_dof_types, (unsigned) m_slave_dof);
 			//master data
 			const unsigned n = m_masters_dof.size();
 			//solver set

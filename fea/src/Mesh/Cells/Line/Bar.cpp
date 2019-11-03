@@ -11,7 +11,7 @@ namespace fea
 			//constructors
 			Bar::Bar(void)
 			{
-				m_rule = 1;
+				return;
 			}
 
 			//destructor
@@ -44,11 +44,22 @@ namespace fea
 				N[1] = (1 + p[0]) / 2;
 				return N;
 			}
-			double* Bar::gradient(double* B, const double*) const
+			double* Bar::gradient(double* B, const double* p) const
 			{
 				B[0] = -(double) 1 / 2;
 				B[1] = +(double) 1 / 2;
 				return B;
+			}
+			
+			//integration
+			unsigned Bar::points(void) const
+			{
+				return 1;
+			}
+			double Bar::point(double* x, unsigned i) const
+			{
+				x[0] = 0;
+				return 2;
 			}
 		}
 	}

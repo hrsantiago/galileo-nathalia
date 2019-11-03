@@ -1,9 +1,9 @@
 //std
 #include <cmath>
 #include <GL/gl.h>
+#include <algorithm>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 
 //fea
@@ -154,14 +154,8 @@ namespace fea
 		//index
 		unsigned Support::index(void) const
 		{
-			for(unsigned i = 0; i < m_boundary->supports(); i++)
-			{
-				if(m_boundary->support(i) == this)
-				{
-					return i;
-				}
-			}
-			return 0;
+			const std::vector<Support*>& list = m_boundary->supports();
+			return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 		}
 		unsigned Support::index_node(void) const
 		{
@@ -172,19 +166,19 @@ namespace fea
 		double Support::state(double t) const
 		{
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+			const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 			return m_fix ? m_state(t) : m_boundary->model()->mesh()->node(m_node)->m_state_new[p];
 		}
 		double Support::velocity(double t) const
 		{
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+			const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 			return m_fix ? m_velocity(t) : m_boundary->model()->mesh()->node(m_node)->m_velocity_new[p];
 		}
 		double Support::acceleration(double t) const
 		{
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+			const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 			return m_fix ? m_acceleration(t) : m_boundary->model()->mesh()->node(m_node)->m_acceleration_new[p];
 		}
 
@@ -207,7 +201,7 @@ namespace fea
 				//state set
 				const unsigned ss = solver->state_set();
 				//apply
-				const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+				const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 				if(ss & (unsigned) analysis::solvers::state::u)
 				{
 					node->m_state_new[p] = m_state(t);
@@ -267,7 +261,7 @@ namespace fea
 		bool Support::check(void) const
 		{
 			//check node
-			if(m_node >= m_boundary->model()->mesh()->nodes())
+			if(m_node >= m_boundary->model()->mesh()->nodes().size())
 			{
 				printf("Support %02d has out of range node!\n", index());
 				return false;
@@ -296,7 +290,7 @@ namespace fea
 		void Support::prepare(void)
 		{
 			mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			m_dof = node->m_dof[mat::bit_find(node->m_dof_types, (unsigned) m_dof_type)];
+			m_dof = node->m_dof[mat::bit_index(node->m_dof_types, (unsigned) m_dof_type)];
 		}
 		void Support::record(void)
 		{

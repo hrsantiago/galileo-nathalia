@@ -73,9 +73,9 @@ namespace fea
 				virtual double* damping(double*) const override;
 				virtual double* stiffness(double*) const override;
 				
-				virtual double* local_mixed(const double*, double, double, double);
-				virtual double* local_elast(const double*, double, double, double, double, double);
-				virtual double* local_inter(const double*, double, double, double, double, double);
+				virtual void local_mixed(const double*, double, double, double);
+				virtual void local_fiber(const double*, double, double, double, double, double);
+				virtual void local_elastic(const double*, double, double, double, double, double);
 
 				//attributes
 				static bool m_shear;

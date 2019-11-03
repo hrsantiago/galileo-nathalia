@@ -6,8 +6,15 @@
 
 //fea
 #include "Mesh/Mesh.h"
+#include "Mesh/Sections/T.h"
+#include "Mesh/Sections/I.h"
+#include "Mesh/Sections/Box.h"
+#include "Mesh/Sections/Ring.h"
 #include "Mesh/Sections/Types.h"
-#include "Mesh/Sections/Sections.h"
+#include "Mesh/Sections/Circle.h"
+#include "Mesh/Sections/Generic.h"
+#include "Mesh/Sections/Section.h"
+#include "Mesh/Sections/Rectangle.h"
 
 namespace fea
 {
@@ -144,7 +151,8 @@ namespace fea
 			//index
 			unsigned Section::index(void) const
 			{
-				return distance(m_mesh->m_sections.begin(), find(m_mesh->m_sections.begin(), m_mesh->m_sections.end(), this));
+				const std::vector<sections::Section*>& list = m_mesh->sections();
+				return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 			}
 
 			//analysis
@@ -166,18 +174,18 @@ namespace fea
 			{
 				return 0;	
 			}
-			double Section::inercia_x(void) const
+			double Section::inertia_x(void) const
 			{
-				const double Iy = inercia_y();
-				const double Iz = inercia_z();
-				const double Iw = inercia_w();
+				const double Iy = inertia_y();
+				const double Iz = inertia_z();
+				const double Iw = inertia_w();
 				return Iy + Iz - Iw;
 			}
 			double Section::elastic_modulus_z(void) const
 			{
 				const double h = height();
 				const double y = centroid_y();
-				const double Iz = inercia_z();
+				const double Iz = inertia_z();
 				const double d = fmax(y, h - y);
 				return Iz / d;
 			}
@@ -185,20 +193,20 @@ namespace fea
 			{
 				const double w = width();
 				const double z = centroid_z();
-				const double Iy = inercia_y();
+				const double Iy = inertia_y();
 				const double d = fmax(z, w - z);
 				return Iy / d;
 			}
 			double Section::radius_of_gyration_z(void) const
 			{
 				const double A = area();
-				const double Iz = inercia_z();
+				const double Iz = inertia_z();
 				return sqrt(Iz / A);
 			}
 			double Section::radius_of_gyration_y(void) const
 			{
 				const double A = area();
-				const double Iy = inercia_y();
+				const double Iy = inertia_y();
 				return sqrt(Iy / A);
 			}
 			

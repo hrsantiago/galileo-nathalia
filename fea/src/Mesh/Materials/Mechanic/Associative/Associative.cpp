@@ -39,9 +39,9 @@ namespace fea
 				double r[6], q[6], ds[6], ee[6], se[6], dfs[6], D[36], dfss[36];
 				//componentes
 				const unsigned t = mp.m_stress_types;
-				const unsigned n = mat::bit_find(t, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(t);
 				//elastic properties
-				mat::inv(C, elastic_flexibility(D, t), n);
+				mat::inverse(C, elastic_flexibility(D, t), n);
 				//reference_stress
 				const double s0 = reference_stress();
 				//old configuration
@@ -85,7 +85,7 @@ namespace fea
 						yield_hessian(dfss, s, t);
 						fp = yield_stress(s, t) - plastic_gradient(a);
 						mat::multisub(mat::sub(r, ee, dfs, n, dg), D, mat::sub(se, s, sr, n), n, n);
-						mat::inv(mat::add(mat::add(mat::outer(C, dfs, n, 1 / kp), D, n * n), dfss, n * n, dg), n);
+						mat::inverse(mat::add(mat::add(mat::outer(C, dfs, n, 1 / kp), D, n * n), dfss, n * n, dg), n);
 						//check solution
 						if(mat::norm(r, n) < 1e-5 && fp / s0 < 1e-5)
 						{

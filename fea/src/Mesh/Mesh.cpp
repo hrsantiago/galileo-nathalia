@@ -292,29 +292,29 @@ namespace fea
 		}
 
 		//sizes
-		unsigned Mesh::nodes(void) const
+		const std::vector<nodes::Node*>& Mesh::nodes(void) const
 		{
-			return (unsigned) m_nodes.size();
+			return m_nodes;
 		}
-		unsigned Mesh::cells(void) const
+		const std::vector<cells::Cell*>& Mesh::cells(void) const
 		{
-			return (unsigned) m_cells.size();
+			return m_cells;
 		}
-		unsigned Mesh::joints(void) const
+		const std::vector<joints::Joint*>& Mesh::joints(void) const
 		{
-			return (unsigned) m_joints.size();
+			return m_joints;
 		}
-		unsigned Mesh::materials(void) const
+		const std::vector<sections::Section*>& Mesh::sections(void) const
 		{
-			return (unsigned) m_materials.size();
+			return m_sections;
 		}
-		unsigned Mesh::sections(void) const
+		const std::vector<elements::Element*>& Mesh::elements(void) const
 		{
-			return (unsigned) m_sections.size();
+			return m_elements;
 		}
-		unsigned Mesh::elements(void) const
+		const std::vector<materials::Material*>& Mesh::materials(void) const
 		{
-			return (unsigned) m_elements.size();
+			return m_materials;
 		}
 
 		//add
@@ -566,27 +566,26 @@ namespace fea
 		}
 
 		//results
-		void Mesh::plot(double s, const double** p, const double* vn, const double** ve) const
+		void Mesh::plot_nodes(double s, const double** p, const double* vn, const double** ve) const
 		{
-			//colors
 			const double* cn = m_model->plot()->colors()->nodes();
-			const double* cj = m_model->plot()->colors()->joints();
-			const double* ce = m_model->plot()->colors()->elements();
-			//gradient
 			const double* g[] = {
 				m_model->plot()->gradient()->color_min(),
 				m_model->plot()->gradient()->color_mean(),
 				m_model->plot()->gradient()->color_max()
 			};
-			//elements
-			if(m_model->plot()->what()->elements())
+			if(m_model->plot()->what()->nodes())
 			{
-				for(unsigned i = 0; i < m_elements.size(); i++)
+				double c[4];
+				for(unsigned i = 0; i < m_nodes.size(); i++)
 				{
-					m_cells[m_elements[i]->m_cell]->plot(m_elements[i], ce, p, vn ? vn : ve ? ve[i] : nullptr, !vn);
+					m_nodes[i]->plot(vn ? mat::map_color(c, g, vn[i]) : cn, p ? p[i] : nullptr);
 				}
 			}
-			//joint
+		}
+		void Mesh::plot_joints(double s, const double** p, const double* vn, const double** ve) const
+		{
+			const double* cj = m_model->plot()->colors()->joints();
 			if(m_model->plot()->what()->joints())
 			{
 				for(const joints::Joint* joint : m_joints)
@@ -594,13 +593,15 @@ namespace fea
 					joint->plot(m_model->plot()->sizes()->joints() * s, cj, p);
 				}
 			}
-			//nodes
-			if(m_model->plot()->what()->nodes())
+		}
+		void Mesh::plot_elements(double s, const double** p, const double* vn, const double** ve) const
+		{
+			const double* ce = m_model->plot()->colors()->elements();
+			if(m_model->plot()->what()->elements())
 			{
-				double c[4];
-				for(unsigned i = 0; i < m_nodes.size(); i++)
+				for(unsigned i = 0; i < m_elements.size(); i++)
 				{
-					m_nodes[i]->plot(vn ? mat::map_color(c, g, vn[i]) : cn, p ? p[i] : nullptr);
+					m_cells[m_elements[i]->m_cell]->plot(m_elements[i], ce, p, vn ? vn : ve ? ve[i] : nullptr, !vn);
 				}
 			}
 		}

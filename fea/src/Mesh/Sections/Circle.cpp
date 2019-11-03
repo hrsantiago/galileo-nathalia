@@ -2,9 +2,6 @@
 #include <cmath>
 #include <GL/gl.h>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Mesh/Sections/Types.h"
 #include "Mesh/Sections/Circle.h"
@@ -87,15 +84,15 @@ namespace fea
 			{
 				return m_diameter;
 			}
-			double Circle::inercia_y(void) const
+			double Circle::inertia_y(void) const
 			{
 				return M_PI * pow(m_diameter, 4) / 64;
 			}
-			double Circle::inercia_z(void) const
+			double Circle::inertia_z(void) const
 			{
 				return M_PI * pow(m_diameter, 4) / 64;
 			}
-			double Circle::inercia_w(void) const
+			double Circle::inertia_w(void) const
 			{
 				return 0;
 			}

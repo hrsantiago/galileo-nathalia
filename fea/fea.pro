@@ -6,11 +6,12 @@ HEADERS = \
     inc/Analysis/Solvers/Buckling.h \
     inc/Analysis/Solvers/Dynamic_Linear.h \
     inc/Analysis/Solvers/Dynamic_Nonlinear.h \
+    inc/Analysis/Solvers/Eigen.h \
     inc/Analysis/Solvers/Minimum.h \
     inc/Analysis/Solvers/Modal.h \
     inc/Analysis/Solvers/Nonlinear.h \
     inc/Analysis/Solvers/Solver.h \
-    inc/Analysis/Solvers/Solvers.h \
+    inc/Analysis/Solvers/Spectre.h \
     inc/Analysis/Solvers/State.h \
     inc/Analysis/Solvers/Static_Linear.h \
     inc/Analysis/Solvers/Static_Nonlinear.h \
@@ -26,7 +27,6 @@ HEADERS = \
     inc/Analysis/Strategies/Control_State.h \
     inc/Analysis/Strategies/Minimal_Norm.h \
     inc/Analysis/Strategies/Orthogonal_Residue.h \
-    inc/Analysis/Strategies/Strategies.h \
     inc/Analysis/Strategies/Strategy.h \
     inc/Analysis/Strategies/Types.h \
     inc/Boundary/Boundary.h \
@@ -47,12 +47,10 @@ HEADERS = \
     inc/Boundary/Loads/Elements/Mechanic/Solid/Solid_Edge.h \
     inc/Boundary/Loads/Elements/Mechanic/Solid/Solid_Face.h \
     inc/Boundary/Loads/Load.h \
-    inc/Boundary/Loads/Loads.h \
     inc/Boundary/Loads/Nodes/Node.h \
     inc/Boundary/Loads/Types.h \
     inc/Boundary/Supports/Support.h \
     inc/Mesh/Cells/Cell.h \
-    inc/Mesh/Cells/Cells.h \
     inc/Mesh/Cells/Line/Bar.h \
     inc/Mesh/Cells/Line/Beam.h \
     inc/Mesh/Cells/Line/Line.h \
@@ -74,14 +72,12 @@ HEADERS = \
     inc/Mesh/Cells/Volume/Tetra4.h \
     inc/Mesh/Cells/Volume/Volume.h \
     inc/Mesh/Elements/Element.h \
-    inc/Mesh/Elements/Elements.h \
     inc/Mesh/Elements/Heat/Heat.h \
     inc/Mesh/Elements/Mechanic/Frame/Bar.h \
     inc/Mesh/Elements/Mechanic/Frame/Beam2.h \
     inc/Mesh/Elements/Mechanic/Frame/Beam3.h \
-    inc/Mesh/Elements/Mechanic/Frame/Cable.h \
+    inc/Mesh/Elements/Mechanic/Frame/BeamT.h \
     inc/Mesh/Elements/Mechanic/Frame/Frame.h \
-    inc/Mesh/Elements/Mechanic/Frame/Rope.h \
     inc/Mesh/Elements/Mechanic/Mechanic.h \
     inc/Mesh/Elements/Mechanic/Plane/Plane.h \
     inc/Mesh/Elements/Mechanic/Solid/Solid.h \
@@ -89,7 +85,6 @@ HEADERS = \
     inc/Mesh/Elements/Types.h \
     inc/Mesh/Joints/Hinge.h \
     inc/Mesh/Joints/Joint.h \
-    inc/Mesh/Joints/Joints.h \
     inc/Mesh/Joints/Pinned.h \
     inc/Mesh/Joints/Rigid.h \
     inc/Mesh/Joints/Spherical.h \
@@ -98,7 +93,6 @@ HEADERS = \
     inc/Mesh/Joints/Types.h \
     inc/Mesh/Materials/Heat/Heat.h \
     inc/Mesh/Materials/Material.h \
-    inc/Mesh/Materials/Materials.h \
     inc/Mesh/Materials/Mechanic/Associative/Associative.h \
     inc/Mesh/Materials/Mechanic/Associative/Concrete.h \
     inc/Mesh/Materials/Mechanic/Associative/Steel.h \
@@ -113,7 +107,6 @@ HEADERS = \
     inc/Mesh/Points/Mechanic/Section.h \
     inc/Mesh/Points/Mechanic/States.h \
     inc/Mesh/Points/Point.h \
-    inc/Mesh/Points/Points.h \
     inc/Mesh/Points/Types.h \
     inc/Mesh/Sections/Box.h \
     inc/Mesh/Sections/Circle.h \
@@ -123,7 +116,6 @@ HEADERS = \
     inc/Mesh/Sections/Rectangle.h \
     inc/Mesh/Sections/Ring.h \
     inc/Mesh/Sections/Section.h \
-    inc/Mesh/Sections/Sections.h \
     inc/Mesh/Sections/T.h \
     inc/Mesh/Sections/Types.h \
     inc/Model/Model.h \
@@ -137,7 +129,6 @@ HEADERS = \
     inc/Topology/Curves/Line.h \
     inc/Topology/Points/Point.h \
     inc/Topology/Surfaces/Surface.h \
-    inc/Topology/Topologies.h \
     inc/Topology/Topology.h \
 
 
@@ -147,6 +138,7 @@ SOURCES = \
     src/Analysis/Solvers/Buckling.cpp \
     src/Analysis/Solvers/Dynamic_Linear.cpp \
     src/Analysis/Solvers/Dynamic_Nonlinear.cpp \
+    src/Analysis/Solvers/Eigen.cpp \
     src/Analysis/Solvers/Minimum.cpp \
     src/Analysis/Solvers/Modal.cpp \
     src/Analysis/Solvers/Nonlinear.cpp \
@@ -211,9 +203,8 @@ SOURCES = \
     src/Mesh/Elements/Mechanic/Frame/Bar.cpp \
     src/Mesh/Elements/Mechanic/Frame/Beam2.cpp \
     src/Mesh/Elements/Mechanic/Frame/Beam3.cpp \
-    src/Mesh/Elements/Mechanic/Frame/Cable.cpp \
+    src/Mesh/Elements/Mechanic/Frame/BeamT.cpp \
     src/Mesh/Elements/Mechanic/Frame/Frame.cpp \
-    src/Mesh/Elements/Mechanic/Frame/Rope.cpp \
     src/Mesh/Elements/Mechanic/Mechanic.cpp \
     src/Mesh/Elements/Mechanic/Plane/Plane.cpp \
     src/Mesh/Elements/Mechanic/Solid/Solid.cpp \

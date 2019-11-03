@@ -24,10 +24,6 @@ namespace fea
 				//parametrization
 				virtual void edge(double*, unsigned, double) const override;
 				virtual void gradient(double*, unsigned, double) const override;
-				
-				//integration
-				virtual unsigned points(void) const override;
-				virtual double point(double*, unsigned) const override;
 			};
 		}
 	}

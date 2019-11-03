@@ -10,8 +10,14 @@
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Nodes/Node.h"
+#include "Mesh/Joints/Types.h"
+#include "Mesh/Joints/Joint.h"
+#include "Mesh/Joints/Hinge.h"
+#include "Mesh/Joints/Rigid.h"
+#include "Mesh/Joints/Spring.h"
+#include "Mesh/Joints/Pinned.h"
 #include "Mesh/Joints/States.h"
-#include "Mesh/Joints/Joints.h"
+#include "Mesh/Joints/Spherical.h"
 
 #include "Boundary/Boundary.h"
 #include "Boundary/Dependencies/Dependency.h"
@@ -148,7 +154,8 @@ namespace fea
 			//index
 			unsigned Joint::index(void) const
 			{
-				return distance(m_mesh->m_joints.begin(), find(m_mesh->m_joints.begin(), m_mesh->m_joints.end(), this));
+				const std::vector<joints::Joint*>& list = m_mesh->joints();
+				return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 			}
 			unsigned Joint::index_node(unsigned index) const
 			{
@@ -181,7 +188,7 @@ namespace fea
 			{
 				for(unsigned i : m_nodes)
 				{
-					if(i >= m_mesh->nodes())
+					if(i >= m_mesh->nodes().size())
 					{
 						printf("\tJoint %04d has out of range nodes!\n", index());
 						return false;
@@ -198,7 +205,7 @@ namespace fea
 					{
 						if(dt[i] & j)
 						{
-							const char p = mat::bit_find(node(i)->m_dof_types, j);
+							const unsigned char p = mat::bit_index(node(i)->m_dof_types, j);
 							m_dof.push_back(node(i)->m_dof[p]);
 						}
 					}

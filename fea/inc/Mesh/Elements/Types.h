@@ -8,17 +8,21 @@ namespace fea
 		{
 			enum class type : unsigned
 			{
+				//1D
 				bar			= 1 << 0,
-				rope		= 1 << 1,
-				heat		= 1 << 2,
-				cable		= 1 << 3,
-				beam2		= 1 << 4, 
-				beam3		= 1 << 5,
-				plane		= 1 << 6,
-				plate		= 1 << 7,
-				shell		= 1 << 8,
-				solid		= 1 << 9,
-				membrane	= 1 << 10,
+				beam2		= 1 << 1, 
+				beam3		= 1 << 2,
+				beamT		= 1 << 3,
+				//2D
+				plane		= 1 << 4,
+				plate		= 1 << 5,
+				shell		= 1 << 6,
+				membrane	= 1 << 7,
+				//3D
+				solid		= 1 << 8,
+				//heat
+				heat		= 1 << 9,
+				//last
 				last
 			};
 		}

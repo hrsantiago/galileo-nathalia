@@ -73,22 +73,6 @@ namespace fea
 						break;
 				}
 			}
-			
-			
-			//integration
-			unsigned Quad::points(void) const
-			{
-				return m_rule * m_rule;
-			}
-			double Quad::point(double* x, unsigned i) const
-			{
-				double w[2];
-				const unsigned a = i % m_rule;
-				const unsigned b = (i - a) / m_rule;
-				mat::gauss_point(x[0], w[0], m_rule, a);
-				mat::gauss_point(x[1], w[1], m_rule, b);
-				return w[0] * w[1];
-			}
 		}
 	}
 }

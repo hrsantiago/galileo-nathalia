@@ -54,10 +54,10 @@ namespace fea
 
 		public:
 			//analysis
-			bool check(void) const;
-			bool symmetric(void) const;
 			void prepare(void);
+			bool check(void) const;
 			void finish(void) const;
+			bool symmetric(void) const;
 
 			void record(void) const;
 			void update(void) const;
@@ -172,8 +172,6 @@ namespace fea
 			unsigned m_dof_unknow;
 			unsigned m_dof_triplet;
 			unsigned m_dof_dependent;
-			
-			
 		};
 	}
 }

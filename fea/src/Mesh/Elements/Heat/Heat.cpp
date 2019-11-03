@@ -1,16 +1,12 @@
 #include <cstring>
 
 #include "Mesh/Nodes/Dofs.h"
-
-#include "Mesh/Cells/Cells.h"
-
-#include "Mesh/Materials/Heat/Heat.h"
-
+#include "Mesh/Cells/Types.h"
+#include "Mesh/Points/Types.h"
 #include "Mesh/Elements/Types.h"
 #include "Mesh/Elements/States.h"
 #include "Mesh/Elements/Heat/Heat.h"
-
-#include "Mesh/Points/Types.h"
+#include "Mesh/Materials/Heat/Heat.h"
 
 #include "Boundary/Loads/Types.h"
 

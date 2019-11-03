@@ -3,7 +3,6 @@
 #include <GL/gl.h>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 
 //fea
@@ -86,7 +85,7 @@ namespace fea
 			bool Node::check(void) const
 			{
 				const unsigned k = m_boundary->model()->analysis()->solver()->load_case();
-				if(m_node >= m_boundary->model()->mesh()->nodes())
+				if(m_node >= m_boundary->model()->mesh()->nodes().size())
 				{
 					printf("Load case %02d: Node load %02d has out of range node\n", k, index());
 					return false;
@@ -95,8 +94,8 @@ namespace fea
 			}
 			void Node::prepare(void)
 			{
-				mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-				char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+				const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
+				const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 				m_dof = node->m_dof[p];
 			}
 			void Node::add_dof(void) const

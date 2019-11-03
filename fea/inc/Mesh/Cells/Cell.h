@@ -58,12 +58,6 @@ namespace fea
 				//data
 				static Mesh* mesh(void);
 				
-				unsigned rule(void) const;
-				unsigned rule(unsigned);
-				
-				static unsigned max_rule(void);
-				static unsigned max_nodes(void);
-				
 				virtual const char* label(void) const;
 				virtual const char* label(const char*);
 
@@ -84,9 +78,10 @@ namespace fea
 				virtual void gradient(double*, unsigned, double, double) const = 0;
 				
 				//geometry
-				virtual double mass(const elements::Element*, double) const;
 				virtual double edge(const elements::Element*, unsigned) const;
 				virtual double face(const elements::Element*, unsigned) const;
+				virtual double volume(const elements::Element*) const;
+				
 				virtual double jacobian(double*, const elements::Element*, const double*) const;
 
 				//interpolation
@@ -105,11 +100,8 @@ namespace fea
 				virtual void plot(const elements::Element*, const double*, const double** = nullptr, const double* = nullptr, bool = false) const = 0;
 				
 				//attributes
-				unsigned m_rule;
 				char m_label[200];
 				static Mesh* m_mesh;
-				static const unsigned m_max_rule = 9;
-				static const unsigned m_max_nodes = 27;
 			};
 		}
 	}

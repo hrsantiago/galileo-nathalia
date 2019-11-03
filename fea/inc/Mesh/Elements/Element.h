@@ -101,7 +101,7 @@ namespace fea
 				static const char* state_name(state);
 				
 				//sizes
-				unsigned nodes(void) const;
+				const std::vector<unsigned>& nodes(void) const;
 
 				//index
 				unsigned index(void) const;

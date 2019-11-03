@@ -36,7 +36,7 @@ namespace fea
 		namespace elements
 		{
 			//constructors
-			Bar::Bar(void) : m_cable(false), m_f(0), m_k(0), m_sr(0)
+			Bar::Bar(void) : m_cable(false), m_l(0), m_f(0), m_k(0), m_sr(0)
 			{
 				return;
 			}
@@ -51,12 +51,12 @@ namespace fea
 			void Bar::load(FILE* file)
 			{
 				Frame::load(file);
-				fscanf(file, "%d %lf", &m_cable, &m_sr);
+				fscanf(file, "%d %lf %lf", &m_cable, &m_l, &m_sr);
 			}
 			void Bar::save(FILE* file) const
 			{
 				Frame::save(file);
-				fprintf(file, "%01d %+.6e ", m_cable, m_sr);
+				fprintf(file, "%01d %+.6e %+.6e ", m_cable, m_l, m_sr);
 			}
 
 			//types
@@ -107,6 +107,15 @@ namespace fea
 				return m_strain = strain;
 			}
 			
+			double Bar::length(void) const
+			{
+				return m_l;
+			}
+			double Bar::length(double length)
+			{
+				return m_l = length;
+			}
+			
 			double Bar::residual_stress(void) const
 			{
 				return m_sr;
@@ -128,12 +137,13 @@ namespace fea
 				//displacements
 				double ur[3];
 				double ui[3], uj[3];
-				mat::sub(uj, xi, Xi, 3);
-				mat::sub(ui, xj, Xj, 3);
+				mat::sub(uj, xj, Xj, 3);
+				mat::sub(ui, xi, Xi, 3);
 				mat::sub(ur, uj, ui, 3);
 				//length
 				const double l = mat::norm(xj, xi, 3);
-				const double L = mat::norm(Xj, Xi, 3);
+				const double L = m_l != 0 ? m_l : mat::norm(Xj, Xi, 3);
+				//strech
 				const double a = m_geometric ? l / L : 1;
 				//direction
 				double s1[3];
@@ -180,9 +190,8 @@ namespace fea
 				const double* Xi = node(0)->coordinates();
 				const double* Xj = node(1)->coordinates();
 				//acceleration
-				double ai[3], aj[3];
-				node(0)->displacement(ai, 2);
-				node(1)->displacement(aj, 2);
+				const double* ai = node(0)->translation(2);
+				const double* aj = node(1)->translation(2);
 				//length
 				const double L = mat::norm(Xj, Xi, 3);
 				//material

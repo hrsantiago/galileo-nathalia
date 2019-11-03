@@ -12,8 +12,12 @@ namespace fea
 	{
 		namespace solvers
 		{
+			//static data
+			static unsigned n;
+			static Assembler* assembler;
+			
 			//constructors
-			Modal::Modal(void) : m_scale(1), m_modes(0)
+			Modal::Modal(void)
 			{
 				return;
 			}
@@ -27,13 +31,11 @@ namespace fea
 			//serialization
 			void Modal::load(FILE* file)
 			{
-				Solver::load(file);
-				fscanf(file, "%lf", &m_scale);
+				Eigen::load(file);
 			}
 			void Modal::save(FILE* file) const
 			{
-				Solver::save(file);
-				fprintf(file, "%+.6e", m_scale);
+				Eigen::save(file);
 			}
 
 			//type
@@ -42,31 +44,10 @@ namespace fea
 				return solvers::type::modal;
 			}
 			
-			//data
-			double Modal::scale(void) const
-			{
-				return m_scale;
-			}
-			double Modal::scale(double scale)
-			{
-				return m_scale = scale;
-			}
-			unsigned Modal::modes(void) const
-			{
-				return m_modes;
-			}
-			unsigned Modal::modes(unsigned modes)
-			{
-				return m_modes = modes;
-			}
-
 			//sets
 			unsigned Modal::state_set(void) const
 			{
-				return 
-					(unsigned) solvers::state::u |
-					(unsigned) solvers::state::v |
-					(unsigned) solvers::state::a;
+				return (unsigned) solvers::state::u;
 			}
 			unsigned Modal::force_set(void) const
 			{
@@ -74,7 +55,10 @@ namespace fea
 			}
 			unsigned Modal::tangent_set(void) const
 			{
-				return (unsigned) solvers::tangent::K | (unsigned) solvers::tangent::M;
+				return 
+					(unsigned) solvers::tangent::f | 
+					(unsigned) solvers::tangent::K | 
+					(unsigned) solvers::tangent::M;
 			}
 
 			//analysis
@@ -86,9 +70,9 @@ namespace fea
 			void Modal::run(void)
 			{
 				//assembler
-				const Assembler* assembler = m_analysis->assembler();
+				assembler = m_analysis->assembler();
 				//dofs
-				const unsigned nu = assembler->dof_unknow();
+				n = assembler->dof_unknow();
 				//apply
 				assembler->apply_supports();
 				assembler->apply_initials();
@@ -97,19 +81,24 @@ namespace fea
 				//inertia and stiffness
 				assembler->assembly_inertia();
 				assembler->assembly_stiffness();
-				//compute natural frequencies and modes
-//				const arma::mat M = arma::mat(m_M);
-//				const arma::mat K = arma::mat(m_K);
-//				const arma::mat S = arma::inv(M) * K;
-//				arma::eig_sym(m_k, m_f, S);
-				//record
-				while(m_step < nu)
+				//solve
+				if(!eigen_gen())
 				{
-//					m_u = m_scale * m_f.col(m_step);
+					printf("\tModal decomposition failed!\n");
+					return;
+				}
+				//record
+				while(m_step < n)
+				{
+					for(unsigned i = 0; i <  n; i++)
+					{
+						m_u[i] = m_scale * m_f[n * m_step + i];
+					}
 					assembler->apply_state();
 					assembler->apply_dependencies();
+					assembler->apply_configurations();
 					assembler->record();
-					printf("mode: %04d frequency: %+4.2e dof: %+4.2e\n", m_step, m_k[m_step], dof());
+					printf("mode: %04d frequency: %+.2e dof: %+.2e\n", m_step, m_k[m_step], dof());
 					m_step++;
 				}
 			}
@@ -122,7 +111,7 @@ namespace fea
 			}
 			void Modal::finish(void) const
 			{
-				const std::string path = m_analysis->model()->folder() + "/Solver/Frequencies.txt";
+				const std::string path = m_analysis->model()->folder() + "/Solver/Load.txt";
 				FILE* file = fopen(path.c_str(), "w");
 				fprintf(file, m_results[0].c_str());
 				fclose(file);

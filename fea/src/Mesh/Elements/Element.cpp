@@ -10,8 +10,17 @@
 #include "Mesh/Nodes/Node.h"
 #include "Mesh/Cells/Cell.h"
 #include "Mesh/Points/Point.h"
+#include "Mesh/Elements/Types.h"
 #include "Mesh/Elements/States.h"
-#include "Mesh/Elements/Elements.h"
+#include "Mesh/Elements/Element.h"
+#include "Mesh/Elements/Heat/Heat.h"
+#include "Mesh/Elements/Mechanic/Mechanic.h"
+#include "Mesh/Elements/Mechanic/Frame/Bar.h"
+#include "Mesh/Elements/Mechanic/Frame/Frame.h"
+#include "Mesh/Elements/Mechanic/Frame/Beam2.h"
+#include "Mesh/Elements/Mechanic/Frame/Beam3.h"
+#include "Mesh/Elements/Mechanic/Plane/Plane.h"
+#include "Mesh/Elements/Mechanic/Solid/Solid.h"
 
 #include "Model/Model.h"
 
@@ -81,14 +90,8 @@ namespace fea
 					case elements::type::bar:
 						element = base ? new Bar(*(Bar*) base) : new Bar;
 						break;
-					case elements::type::rope:
-						element = base ? new Rope(*(Rope*) base) : new Rope;
-						break;
 					case elements::type::heat:
 						element = base ? new Heat(*(Heat*) base) : new Heat;
-						break;
-					case elements::type::cable:
-						element = base ? new Cable(*(Cable*) base) : new Cable;
 						break;
 					case elements::type::beam2:
 						element = base ? new Beam2(*(Beam2*) base) : new Beam2;
@@ -163,16 +166,14 @@ namespace fea
 				{
 					case elements::type::bar:
 						return "Bar";
-					case elements::type::rope:
-						return "Rope";
 					case elements::type::heat:
 						return "Heat";
-					case elements::type::cable:
-						return "Cable";
 					case elements::type::beam2:
 						return "Beam2";
 					case elements::type::beam3:
 						return "Beam3";
+					case elements::type::beamT:
+						return "BeamT";
 					case elements::type::plane:
 						return "Plane";
 					case elements::type::plate:
@@ -212,16 +213,17 @@ namespace fea
 				}
 			}
 
-			//sizes
-			unsigned Element::nodes(void) const
+			//list
+			const std::vector<unsigned>& Element::nodes(void) const
 			{
-				return (unsigned) m_nodes.size();
+				return m_nodes;
 			}
 
 			//index
 			unsigned Element::index(void) const
 			{
-				return distance(m_mesh->m_elements.begin(), find(m_mesh->m_elements.begin(), m_mesh->m_elements.end(), this));
+				const std::vector<elements::Element*>& list = m_mesh->elements();
+				return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 			}
 			unsigned Element::index_cell(void) const
 			{
@@ -278,7 +280,7 @@ namespace fea
 				}
 				else
 				{
-					const unsigned nn = m_mesh->nodes();
+					const unsigned nn = m_mesh->nodes().size();
 					for(unsigned i = 0; i < m_nodes.size(); i++)
 					{
 						if(m_nodes[i] >= nn)
@@ -289,7 +291,7 @@ namespace fea
 					}
 				}
 				//check cell
-				if(m_cell >= m_mesh->cells())
+				if(m_cell >= m_mesh->cells().size())
 				{
 					printf("\tElement %04d has out of range cell!\n", index());
 					return false;
@@ -300,7 +302,7 @@ namespace fea
 					return false;
 				}
 				//check material
-				if(m_material >= m_mesh->materials())
+				if(m_material >= m_mesh->materials().size())
 				{
 					printf("\tElement %04d has out of range material!\n", index());
 					return false;
@@ -318,7 +320,7 @@ namespace fea
 					{
 						if(dt[i] & j)
 						{
-							const char p = mat::bit_find(node(i)->m_dof_types, j);
+							const unsigned char p = mat::bit_index(node(i)->m_dof_types, j);
 							m_dof.push_back(node(i)->m_dof[p]);
 						}
 					}

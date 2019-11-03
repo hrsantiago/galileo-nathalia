@@ -1,8 +1,10 @@
+//std
 #include <cstring>
 
+//mat
 #include "misc/util.h"
-#include "misc/stress.h"
 
+//fea
 #include "Mesh/Materials/Material.h"
 
 #include "Mesh/Elements/Mechanic/Mechanic.h"
@@ -44,7 +46,7 @@ namespace fea
 			{
 				//types
 				m_stress_types = t;
-				const unsigned n = mat::bit_find(t, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(t);
 				//state
 				m_hardening_old = 0;
 				m_hardening_new = 0;
@@ -64,7 +66,7 @@ namespace fea
 			void Mechanic::update(void)
 			{
 				//components
-				const unsigned n = mat::bit_find(m_stress_types, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(m_stress_types);
 				//update
 				m_state_old = m_state_new;
 				m_hardening_old = m_hardening_new;
@@ -73,7 +75,7 @@ namespace fea
 			void Mechanic::restore(void)
 			{
 				//components
-				const unsigned n = mat::bit_find(m_stress_types, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(m_stress_types);
 				//update
 				m_state_new = m_state_old;
 				m_hardening_new = m_hardening_old;

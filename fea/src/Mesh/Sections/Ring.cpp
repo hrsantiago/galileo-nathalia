@@ -2,9 +2,6 @@
 #include <cmath>
 #include <GL/gl.h>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Mesh/Sections/Ring.h"
 #include "Mesh/Sections/Types.h"
@@ -96,19 +93,19 @@ namespace fea
 			{
 				return m_diameter;
 			}
-			double Ring::inercia_y(void) const
+			double Ring::inertia_y(void) const
 			{
 				const double d = m_diameter;
 				const double t = m_thickness;
 				return M_PI * (pow(d, 4) - pow(d - 2 * t, 4)) / 64;
 			}
-			double Ring::inercia_z(void) const
+			double Ring::inertia_z(void) const
 			{
 				const double d = m_diameter;
 				const double t = m_thickness;
 				return M_PI * (pow(d, 4) - pow(d - 2 * t, 4)) / 64;
 			}
-			double Ring::inercia_w(void) const
+			double Ring::inertia_w(void) const
 			{
 				return 0;
 			}

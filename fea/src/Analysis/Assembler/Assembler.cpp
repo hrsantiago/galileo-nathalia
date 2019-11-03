@@ -1,6 +1,3 @@
-//std
-#include <limits>
-
 //suitesparse
 #include <umfpack.h>
 
@@ -154,16 +151,16 @@ namespace fea
 			{
 				const mesh::nodes::dof d = dependency->m_slave_dof;
 				const mesh::nodes::Node* n = dependency->slave_node();
-				const char p = mat::bit_find(n->m_dof_types, (unsigned) d);
+				const unsigned char p = mat::bit_index(n->m_dof_types, (unsigned) d);
 				dd.push_back(n->m_dof[p]);
 			}
 			for(const boundary::Support* support : m_analysis->m_model->m_boundary->m_supports)
 			{
 				if(support->m_fix)
 				{
-					const mesh::nodes::dof d = support->m_dof_type;
 					const mesh::nodes::Node* n = support->node();
-					const char p = mat::bit_find(n->m_dof_types, (unsigned) d);
+					const mesh::nodes::dof d = support->m_dof_type;
+					const unsigned char p = mat::bit_index(n->m_dof_types, (unsigned) d);
 					kd.push_back(n->m_dof[p]);
 				}
 			}
@@ -328,7 +325,7 @@ namespace fea
 			//tangent
 			if(st & (unsigned) solvers::tangent::f)
 			{
-				solver->m_f = new double[m_col_map[nu]];
+				solver->m_f = new double[nu * nu];
 			}
 			if(st & (unsigned) solvers::tangent::K)
 			{
@@ -365,6 +362,23 @@ namespace fea
 		}
 
 		//analysis
+		void Assembler::prepare(void)
+		{
+			//prepare
+			m_analysis->m_model->m_mesh->prepare();
+			m_analysis->m_model->m_boundary->prepare();
+			m_analysis->prepare();
+			//memory
+			allocate();
+			//dof report
+			printf("-------------------------------------------------------------------------------\n");
+			printf("Degrees of freedom:\n");
+			printf("\tKnow:\t\t %05d\n", m_dof_know);
+			printf("\tUnknow:\t\t %05d\n", m_dof_unknow);
+			printf("\tDependent:\t %05d\n", m_dof_dependent);
+			printf("\tTotal:\t\t %05d\n", m_dof_know + m_dof_unknow + m_dof_dependent);
+			printf("-------------------------------------------------------------------------------\n");
+		}
 		bool Assembler::check(void) const
 		{
 			//print
@@ -407,34 +421,6 @@ namespace fea
 			//return
 			return true;
 		}
-		bool Assembler::symmetric(void) const
-		{
-			for(const mesh::elements::Element* element : m_analysis->m_model->m_mesh->m_elements)
-			{
-				if(!element->symmetric())
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		void Assembler::prepare(void)
-		{
-			//prepare
-			m_analysis->m_model->m_mesh->prepare();
-			m_analysis->m_model->m_boundary->prepare();
-			m_analysis->prepare();
-			//memory
-			allocate();
-			//dof report
-			printf("-------------------------------------------------------------------------------\n");
-			printf("Degrees of freedom:\n");
-			printf("\tKnow:\t\t %05d\n", m_dof_know);
-			printf("\tUnknow:\t\t %05d\n", m_dof_unknow);
-			printf("\tDependent:\t %05d\n", m_dof_dependent);
-			printf("\tTotal:\t\t %05d\n", m_dof_know + m_dof_unknow + m_dof_dependent);
-			printf("-------------------------------------------------------------------------------\n");
-		}
 		void Assembler::finish(void) const
 		{
 			//state set
@@ -464,6 +450,17 @@ namespace fea
 			m_analysis->finish();
 			m_analysis->m_model->m_mesh->finish();
 			m_analysis->m_model->m_boundary->finish();
+		}
+		bool Assembler::symmetric(void) const
+		{
+			for(const mesh::elements::Element* element : m_analysis->m_model->m_mesh->m_elements)
+			{
+				if(!element->symmetric())
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 		
 		void Assembler::record(void) const

@@ -3,11 +3,7 @@
 #include <cstring>
 #include <GL/gl.h>
 
-//mat
-#include "misc/defs.h"
-
 //fea
-#include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Nodes/Node.h"
 #include "Mesh/Joints/Types.h"

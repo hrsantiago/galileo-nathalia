@@ -5,6 +5,8 @@
 
 //mat
 #include "misc/util.h"
+#include "linear/quat.h"
+#include "linear/vec3.h"
 #include "linear/dense.h"
 #include "misc/rotation.h"
 
@@ -27,20 +29,18 @@ namespace fea
 		{
 			//constructors
 			Node::Node(void) : 
-				m_dof_types(0),
+				m_dof_types(0), m_quat_old(nullptr), m_quat_new(nullptr), 
 				m_state_old(nullptr), m_velocity_old(nullptr), m_acceleration_old(nullptr),
 				m_state_new(nullptr), m_velocity_new(nullptr), m_acceleration_new(nullptr)
 			{
 				memset(m_coordinates, 0, 3 * sizeof(double));
-				memset(m_rotation_old, 0, 9 * sizeof(double));
-				memset(m_rotation_new, 0, 9 * sizeof(double));
-				m_rotation_old[0] = m_rotation_old[4] = m_rotation_old[8] = 1;
-				m_rotation_new[0] = m_rotation_new[4] = m_rotation_new[8] = 1;
 			}
 
 			//destructor
 			Node::~Node(void)
 			{
+				delete[] m_quat_old;
+				delete[] m_quat_new;
 				delete[] m_state_old;
 				delete[] m_state_new;
 				delete[] m_velocity_old;
@@ -90,10 +90,11 @@ namespace fea
 			//index
 			unsigned Node::index(void) const
 			{
-				return distance(m_mesh->m_nodes.begin(), find(m_mesh->m_nodes.begin(), m_mesh->m_nodes.end(), this));
+				const std::vector<nodes::Node*>& list = m_mesh->nodes();
+				return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 			}
 
-			//moviment
+			//kinematics
 			double* Node::position(double* x) const
 			{
 				memcpy(x, m_coordinates, 3 * sizeof(double));
@@ -101,42 +102,49 @@ namespace fea
 				{
 					if(unsigned(dof::translation_x) << i & m_dof_types)
 					{
-						x[i] += m_state_new[mat::bit_find(m_dof_types, unsigned(dof::translation_x) << i)];
+						x[i] += m_state_new[mat::bit_index(m_dof_types, unsigned(dof::translation_x) << i)];
 					}
 					
 				}
 				return x;
 			}
-			double* Node::rotation(double* t, unsigned c) const
+			const double* Node::quaternion(void) const
 			{
-				const double* d[] = {m_state_new, m_velocity_new, m_acceleration_new};
-				for(unsigned i = 0; i < 3; i++)
-				{
-					const unsigned j = unsigned(dof::rotation_x) << i;
-					t[i] = d[c] && j & m_dof_types ? d[c][mat::bit_find(m_dof_types, j)] : 0;
-				}
-				return t;
-			}			
-			double* Node::displacement(double* u, unsigned c) const
-			{
-				const double* d[] = {m_state_new, m_velocity_new, m_acceleration_new};
-				for(unsigned i = 0; i < 3; i++)
-				{
-					const unsigned j = unsigned(dof::translation_x) << i;
-					u[i] = d[c] && j & m_dof_types ? d[c][mat::bit_find(m_dof_types, j)] : 0;
-				}
-				return u;
+				return m_quat_new;
 			}
-			
-			const double* Node::rotation_tensor(void) const
+			const double* Node::rotation(unsigned i) const
 			{
-				return m_rotation_new;
+				switch(i)
+				{
+					case 0:
+						return m_state_new + mat::bit_index(m_dof_types, unsigned(dof::rotation_x));
+					case 1:
+						return m_velocity_new + mat::bit_index(m_dof_types, unsigned(dof::rotation_x));
+					case 2:
+						return m_acceleration_new + mat::bit_index(m_dof_types, unsigned(dof::rotation_x));
+					default:
+						return nullptr;
+				}
+			}			
+			const double* Node::translation(unsigned i) const
+			{
+				switch(i)
+				{
+					case 0:
+						return m_state_new + mat::bit_index(m_dof_types, unsigned(dof::translation_x));
+					case 1:
+						return m_velocity_new + mat::bit_index(m_dof_types, unsigned(dof::translation_x));
+					case 2:
+						return m_acceleration_new + mat::bit_index(m_dof_types, unsigned(dof::translation_x));
+					default:
+						return nullptr;
+				}
 			}
 
 			//state
 			double Node::state(dof type, unsigned c) const
 			{
-				const unsigned char p = mat::bit_find(m_dof_types, unsigned(type));
+				const unsigned char p = mat::bit_index(m_dof_types, unsigned(type));
 				if(m_state_new && m_dof_types & unsigned(type))
 				{
 					switch(c)
@@ -150,7 +158,7 @@ namespace fea
 			}
 			double Node::velocity(dof type, unsigned c) const
 			{
-				const unsigned char p = mat::bit_find(m_dof_types, unsigned(type));
+				const unsigned char p = mat::bit_index(m_dof_types, unsigned(type));
 				if(m_velocity_new && m_dof_types & unsigned(type))
 				{
 					switch(c)
@@ -164,7 +172,7 @@ namespace fea
 			}
 			double Node::acceleration(dof type, unsigned c) const
 			{
-				const unsigned char p = mat::bit_find(m_dof_types, unsigned(type));
+				const unsigned char p = mat::bit_index(m_dof_types, unsigned(type));
 				if(m_acceleration_new && m_dof_types & unsigned(type))
 				{
 					switch(c)
@@ -203,11 +211,11 @@ namespace fea
 			
 			unsigned Node::dofs(void) const
 			{
-				return mat::bit_find(m_dof_types, (unsigned) dof::last);
+				return mat::bit_count(m_dof_types);
 			}
 			unsigned Node::dof_index(dof d) const
 			{
-				return m_dof_types & (unsigned) d ? m_dof[mat::bit_find(m_dof_types, (unsigned) d)] : 0;
+				return m_dof_types & (unsigned) d ? m_dof[mat::bit_index(m_dof_types, (unsigned) d)] : 0;
 			}
 			unsigned Node::dof_index(unsigned index) const
 			{
@@ -235,7 +243,7 @@ namespace fea
 			void Node::prepare(unsigned& counter)
 			{
 				//dof size
-				const char n_dof = mat::bit_find(m_dof_types, (unsigned) nodes::dof::last);
+				const char n_dof = mat::bit_count(m_dof_types);
 				//set dof
 				m_dof.resize(n_dof);
 				for(unsigned i = 0; i < (unsigned) n_dof; i++)
@@ -265,6 +273,20 @@ namespace fea
 						memset(*data_old[i], 0, n_dof * sizeof(double));
 						memset(*data_new[i], 0, n_dof * sizeof(double));
 					}
+				}
+				//rotation
+				const unsigned dofs_rotation = 
+					(unsigned) dof::rotation_x | 
+					(unsigned) dof::rotation_y | 
+					(unsigned) dof::rotation_z;
+				if((m_dof_types & dofs_rotation) == dofs_rotation)
+				{
+					m_quat_old = new double[4];
+					m_quat_new = new double[4];
+					m_quat_old[0] = m_quat_new[0] = 1;
+					m_quat_old[1] = m_quat_new[1] = 0;
+					m_quat_old[2] = m_quat_new[2] = 0;
+					m_quat_old[3] = m_quat_new[3] = 0;
 				}
 			}
 			
@@ -341,7 +363,11 @@ namespace fea
 						memcpy(data_old[i], data_new[i], n_dof * sizeof (double));
 					}
 				}
-				memcpy(m_rotation_old, m_rotation_new, 9 * sizeof (double));
+				//rotation
+				if(m_quat_old)
+				{
+					memcpy(m_quat_old, m_quat_new, 4 * sizeof (double));
+				}
 			}
 			void Node::restore(void)
 			{
@@ -365,7 +391,11 @@ namespace fea
 						memcpy(data_new[i], data_old[i], n_dof * sizeof (double));
 					}
 				}
-				memcpy(m_rotation_new, m_rotation_old, 9 * sizeof (double));
+				//rotation
+				if(m_quat_new)
+				{
+					memcpy(m_quat_new, m_quat_old, 4 * sizeof (double));
+				}
 			}
 			
 			void Node::update_rotation(void)
@@ -377,7 +407,8 @@ namespace fea
 					(unsigned) dof::rotation_z;
 				if((m_dof_types & dofs_rotation) == dofs_rotation)
 				{
-					mat::rotation_matrix(m_rotation_new, m_state_new + mat::bit_find(m_dof_types, (unsigned) dof::rotation_x));
+					mat::quat q(m_quat_new); 
+					q = mat::vec3(m_state_new + mat::bit_index(m_dof_types, (unsigned) dof::rotation_x)).rotation();
 				}
 			}
 
@@ -441,14 +472,17 @@ namespace fea
 				if((m_dof_types & dofs_rotation) == dofs_rotation)
 				{
 					//index
-					const char dp = mat::bit_find(m_dof_types, (unsigned) dof::rotation_x);
+					const char dp = mat::bit_index(m_dof_types, (unsigned) dof::rotation_x);
 					//increment
-					double dt[3], dR[9];
-					dt[0] = m_dof[dp + 0] < nu ? du[m_dof[dp + 0]] : 0;
-					dt[1] = m_dof[dp + 1] < nu ? du[m_dof[dp + 1]] : 0;
-					dt[2] = m_dof[dp + 2] < nu ? du[m_dof[dp + 2]] : 0;
+					const double dt[] = {
+						m_dof[dp + 0] < nu ? du[m_dof[dp + 0]] : 0,
+						m_dof[dp + 1] < nu ? du[m_dof[dp + 1]] : 0,
+						m_dof[dp + 2] < nu ? du[m_dof[dp + 2]] : 0
+					};
 					//increment state
-					mat::rotation_vector(m_state_new + dp, mat::multiply(m_rotation_new, mat::rotation_matrix(dR, dt), m_rotation_old, 3, 3, 3));
+					mat::quat q(m_quat_new);
+					q = mat::vec3(dt).rotation() * mat::quat(m_quat_old);
+					mat::vec3(m_state_new + dp) = q.angle() * q.axial();
 				}
 			}
 			void Node::increment_velocity(void)

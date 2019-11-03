@@ -4,7 +4,12 @@
 
 //fea
 #include "Mesh/Mesh.h"
-#include "Mesh/Materials/Materials.h"
+#include "Mesh/Materials/Types.h"
+#include "Mesh/Materials/Material.h"
+#include "Mesh/Materials/Heat/Heat.h"
+#include "Mesh/Materials/Mechanic/Mechanic.h"
+#include "Mesh/Materials/Mechanic/Associative/Steel.h"
+#include "Mesh/Materials/Mechanic/Associative/Concrete.h"
 
 namespace fea
 {
@@ -104,7 +109,8 @@ namespace fea
 			//index
 			unsigned Material::index(void) const
 			{
-				return distance(m_mesh->m_materials.begin(), find(m_mesh->m_materials.begin(), m_mesh->m_materials.end(), this));
+				const std::vector<materials::Material*>& list = m_mesh->materials();
+				return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 			}
 
 			//analysis

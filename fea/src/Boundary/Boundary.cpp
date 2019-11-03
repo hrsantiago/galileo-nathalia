@@ -192,21 +192,21 @@ namespace fea
 		}
 
 		//sizes
-		unsigned Boundary::initials(void) const
+		const std::vector<Initial*>& Boundary::initials(void) const
 		{
-			return (unsigned) m_initials.size();
+			return m_initials;
 		}
-		unsigned Boundary::supports(void) const
+		const std::vector<Support*>& Boundary::supports(void) const
 		{
-			return (unsigned) m_supports.size();
+			return m_supports;
 		}
-		unsigned Boundary::load_cases(void) const
+		const std::vector<Load_Case*>& Boundary::load_cases(void) const
 		{
-			return (unsigned) m_load_cases.size();
+			return m_load_cases;
 		}
-		unsigned Boundary::dependencies(void) const
+		const std::vector<Dependency*>& Boundary::dependencies(void) const
 		{
-			return (unsigned) m_dependencies.size();
+			return m_dependencies;
 		}
 
 		//add
@@ -307,9 +307,9 @@ namespace fea
 			}
 			for(const mesh::elements::Element* element : mesh->m_elements)
 			{
-				const unsigned n = element->nodes();
+				const unsigned n = element->nodes().size();
 				const double r = element->material()->specific_mass();
-				const double m = element->cell()->mass(element, r);
+				const double m = r * element->cell()->volume(element);
 				if(m != 0)
 				{
 					for(unsigned j = 0; j < n; j++)
@@ -430,7 +430,7 @@ namespace fea
 				const unsigned n = support->m_node;
 				const unsigned d = (unsigned) support->m_dof;
 				const unsigned t = support->node()->dof_types();
-				if(d & r && mat::bit_find(t & r, (unsigned) mesh::nodes::dof::last) == 3)
+				if(d & r && mat::bit_count(t & r) == 3)
 				{
 					Support::m_update_nodes.push_back(n);
 				}
@@ -448,7 +448,7 @@ namespace fea
 				const unsigned n = dependency->m_slave_node;
 				const unsigned d = (unsigned) dependency->m_slave_dof;
 				const unsigned t = dependency->slave_node()->dof_types();
-				if(d & r && mat::bit_find(t & r, (unsigned) mesh::nodes::dof::last) == 3)
+				if(d & r && mat::bit_count(t & r) == 3)
 				{
 					Dependency::m_update_nodes.push_back(n);
 				}
@@ -517,20 +517,21 @@ namespace fea
 		}
 
 		//results
-		void Boundary::plot(double s, const double** p) const
+		void Boundary::plot_loads(double s, const double** p) const
 		{
-			//supports
+			if(m_model->plot()->what()->loads() && !m_load_cases.empty())
+			{
+				m_load_cases[m_model->analysis()->solver()->load_case()]->plot(m_model->plot()->sizes()->loads() * s, m_model->plot()->colors()->loads(), p);
+			}
+		}
+		void Boundary::plot_supports(double s, const double** p) const
+		{
 			if(m_model->plot()->what()->supports())
 			{
 				for(const Support* support : m_supports)
 				{
 					support->plot(m_model->plot()->sizes()->supports() * s, m_model->plot()->colors()->supports(), p);
 				}		
-			}
-			//loads
-			if(m_model->plot()->what()->loads() && !m_load_cases.empty())
-			{
-				m_load_cases[m_model->analysis()->solver()->load_case()]->plot(m_model->plot()->sizes()->loads() * s, m_model->plot()->colors()->loads(), p);
 			}
 		}
 

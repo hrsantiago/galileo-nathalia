@@ -60,16 +60,6 @@ namespace fea
 			{
 				
 			}
-			
-			//integration
-			unsigned Tetra::points(void) const
-			{
-				return 0;
-			}
-			double Tetra::point(double* x, unsigned i) const
-			{
-				return 0;
-			}
 		}
 	}
 }

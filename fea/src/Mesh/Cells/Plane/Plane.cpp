@@ -90,7 +90,7 @@ namespace fea
 				//face
 				glColor4dv(color);
 				glBegin(GL_POLYGON);
-				for(unsigned i = 0; i < element->nodes(); i++)
+				for(unsigned i = 0; i < element->nodes().size(); i++)
 				{
 					if(values)
 					{
@@ -105,7 +105,7 @@ namespace fea
 				//edge
 				glBegin(GL_LINE_LOOP);
 				glColor4dv(mat::inv_color(c));
-				for(unsigned i = 0; i < element->nodes(); i++)
+				for(unsigned i = 0; i < element->nodes().size(); i++)
 				{
 					const double* p = positions ? positions[element->index_node(i)] : element->node(i)->coordinates();
 					glVertex3dv(p);

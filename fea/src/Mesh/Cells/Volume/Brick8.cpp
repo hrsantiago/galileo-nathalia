@@ -1,3 +1,7 @@
+//mat
+#include "misc/util.h"
+
+//fea
 #include "Mesh/Cells/Types.h"
 #include "Mesh/Cells/Volume/Brick8.h"
 
@@ -114,6 +118,31 @@ namespace fea
 				B[7 + 8 * 1] = +(1 - r) * (1 + t) / 8;
 				B[7 + 8 * 2] = +(1 - r) * (1 + s) / 8;
 				return B;
+			}
+			
+			//integration
+			unsigned Brick8::points(void) const
+			{
+				return 8;
+			}
+			double Brick8::point(double* x, unsigned i) const
+			{
+				//quadrature
+				const double* s = mat::gauss_points(2);
+				const double* w = mat::gauss_weights(2);
+				//point
+				switch(i)
+				{
+					case 0: x[0] = s[0]; x[1] = s[0]; x[2] = s[0]; return w[0] * w[0] * w[0];
+					case 1: x[0] = s[0]; x[1] = s[0]; x[2] = s[1]; return w[0] * w[0] * w[1];
+					case 2: x[0] = s[0]; x[1] = s[1]; x[2] = s[0]; return w[0] * w[1] * w[0];
+					case 3: x[0] = s[0]; x[1] = s[1]; x[2] = s[1]; return w[0] * w[1] * w[1];
+					case 4: x[0] = s[1]; x[1] = s[0]; x[2] = s[0]; return w[1] * w[0] * w[0];
+					case 5: x[0] = s[1]; x[1] = s[0]; x[2] = s[1]; return w[1] * w[0] * w[1];
+					case 6: x[0] = s[1]; x[1] = s[1]; x[2] = s[0]; return w[1] * w[1] * w[0];
+					case 7: x[0] = s[1]; x[1] = s[1]; x[2] = s[1]; return w[1] * w[1] * w[1];
+					default: return 0;
+				}
 			}
 		}
 	}

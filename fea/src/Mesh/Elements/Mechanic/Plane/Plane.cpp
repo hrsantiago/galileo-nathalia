@@ -3,11 +3,15 @@
 
 //mat
 #include "misc/stress.h"
+#include "linear/dense.h"
+#include "linear/linear.h"
+#include "linear/matrix.h"
 
 //fea
 #include "Mesh/Mesh.h"
 
 #include "Mesh/Nodes/Dofs.h"
+#include "Mesh/Nodes/Node.h"
 
 #include "Mesh/Cells/Types.h"
 #include "Mesh/Cells/Plane/Plane.h"
@@ -82,48 +86,7 @@ namespace fea
 			//analysis
 			void Plane::apply(void)
 			{
-//				cell
-//				const unsigned nn = cell()->vertices();
-//				displacements
-//				arma::vec u(2 * nn);
-//				state(u.memptr());
-//				strain and stress
-//				double x[2];
-//				arma::mat::fixed<2, 2> J;
-//				arma::mat::fixed<3, 3> C;
-//				arma::mat dNe(nn, 2), dNx(nn, 2), B(3, 2 * nn);
-//				for(unsigned i = 0; i < m_points.size(); i++)
-//				{
-//					point
-//					cell()->point(x, i);
-//					jacobian
-//					cell()->jacobian(this, x, J);
-//					gradient
-//					cell()->gradient(x, dNe);
-//					strain gradient
-//					dNx = dNe * arma::inv(J);
-//					strain_gradient(dNx, B);
-//					material point
-//					points::Material& material_point = ((points::Mechanic*) m_points[i])->m_material_points[0];
-//					arma::vec e(material_point.m_strain_new, 3, false, true);
-//					arma::vec s(material_point.m_stress_new, 3, false, true);
-//					arma::vec sr(material_point.m_stress_residual, 3, false, true);
-//					strain
-//					e = B * u;
-//					stress
-//					if(!m_inelastic)
-//					{
-//						if(i == 0)
-//						{
-//							((materials::Mechanic*) material(0))->elastic_stiffness(material_point, C);
-//						}
-//						s = C * e + sr;
-//					}
-//					else
-//					{
-//						((materials::Mechanic*) material(0))->return_mapping(material_point);
-//					}
-//				}
+				return;
 			}
 			
 			//strain
@@ -143,35 +106,40 @@ namespace fea
 			//formulation
 			double* Plane::internal_force(double* f) const
 			{
-//				cell
-//				const unsigned nn = cell()->vertices();
-//				thickness
-//				const double t = ((cells::Plane*) cell())->thickness();
-//				internal force
-//				double x[2];
-//				arma::mat::fixed<2, 2> J;
-//				arma::mat::fixed<3, 3> C;
-//				arma::vec Fi(f, 2 * nn, false, true);
-//				arma::mat dNe(nn, 2), dNx(nn, 2), B(3, 2 * nn);
-//				memset(f, 0, 2 * nn * sizeof(double));
-//				for(unsigned i = 0; i < m_points.size(); i++)
-//				{
-//					gauss point
-//					const double h = cell()->point(x, i);
-//					jacobian
-//					const double w = cell()->jacobian(this, x, J);
-//					gradient
-//					cell()->gradient(x, dNe);
-//					strain gradient
-//					dNx = dNe * arma::inv(J);
-//					strain_gradient(dNx, B);
-//					material point
-//					points::Material& material_point = ((points::Mechanic*)m_points[i])->m_material_points[0];
-//					stress
-//					arma::vec s(material_point.m_stress_new, 3, false, true);
-//					internal force
-//					Fi += t * w * h * B.t() * s;
-//				}
+				//cell
+				const unsigned n = cell()->vertices();
+				const double t = ((cells::Plane*) cell())->thickness();
+				//data
+				double w, d, p[2], J[4], C[9], e[3], s[3];
+				double u[2 * n], dNe[2 * n], dNx[2 * n], B[6 * n];
+				//state
+				for(unsigned i = 0; i < n; i++)
+				{
+					u[2 * i + 0] = node(i)->state(nodes::dof::translation_x);
+					u[2 * i + 1] = node(i)->state(nodes::dof::translation_y);
+				}
+				//internal force
+				memset(f, 0, 2 * n * sizeof(double));
+				for(unsigned i = 0; i < m_points.size(); i++)
+				{
+					//cell
+					w = cell()->point(p, i);
+					d = cell()->jacobian(J, this, p);
+					//strain gradient
+					((materials::Mechanic*) material())->elastic_stiffness(C, stresses());
+					strain_gradient(B, mat::multiply(dNx, cell()->gradient(dNe, p), mat::inverse(J, 2), n, 2, 2), n);
+					mat::multiply(e, B, u, 3, 2 * n, 1);
+					mat::multiply(s, C, e, 3, 3, 1);
+					//internal force
+					for(unsigned j = 0; j < n; j++)
+					{
+						f[j] = 0;
+						for(unsigned k = 0; k < 3; k++)
+						{
+							f[j] += t * w * d * B[k + 3 * j] * s[k];
+						}
+					}
+				}
 				return f;
 			}
 			double* Plane::inertial_force(double* f) const
@@ -192,18 +160,13 @@ namespace fea
 			}
 			double* Plane::load_edge(double* f, const boundary::loads::Plane_Edge* load) const
 			{
-//				//load
+				//load
 //				const double v = load->value();
-//				//thickness
-//				const double t = ((cells::Plane*) cell())->thickness();
-//				//direction
-//				const double q = load->direction();
-//				//rule
-//				const unsigned r = cell()->rule();
-//				//edge
 //				const unsigned e = load->edge();
-//				//cell
+//				const double q = load->direction();
+				//cell
 //				const unsigned n = cell()->vertices();
+//				const double t = ((cells::Plane*) cell())->thickness();
 //				//gauss points
 //				double p[2];
 //				arma::mat::fixed<2, 2> J;
@@ -274,41 +237,27 @@ namespace fea
 			}
 			double* Plane::stiffness(double* k) const
 			{
-//				cell
-//				const unsigned nn = cell()->vertices();
-//				thickness
-//				const double t = ((cells::Plane*)cell())->thickness();
-//				internal force
-//				double x[2];
-//				arma::mat::fixed<2, 2> J;
-//				arma::mat::fixed<3, 3> C;
-//				arma::mat dNe(nn, 2), dNx(nn, 2), B(3, 2 * nn), K(k, 2 * nn, 2 * nn, false, true);
-//				memset(k, 0, 4 * nn * nn * sizeof(double));
-//				for(unsigned i = 0; i < m_points.size(); i++)
-//				{
-//					gauss point
-//					const double h = cell()->point(x, i);
-//					jacobian
-//					const double w = cell()->jacobian(this, x, J);
-//					gradient
-//					cell()->gradient(x, dNe);
-//					strain gradient
-//					dNx = dNe * arma::inv(J);
-//					strain_gradient(dNx, B);
-//					material point
-//					points::Material& material_point = ((points::Mechanic*)m_points[i])->m_material_points[0];
-//					tangent modulus
-//					if(!m_inelastic && i == 0)
-//					{
-//						((materials::Mechanic*)material(0))->elastic_stiffness(material_point, C);
-//					}
-//					else
-//					{
-//						((materials::Mechanic*)material(0))->tangent_modulus(material_point, C);
-//					}
-//					internal force
-//					K += t * w * h * B.t() * C * B;
-//				}
+				//cell
+				const unsigned n = cell()->vertices();
+				const double t = ((cells::Plane*) cell())->thickness();
+				//data
+				double p[2], J[4], C[9];
+				double dNe[2 * n], dNx[2 * n], B[6 * n];
+				//stiffness
+				memset(k, 0, 4 * n * n * sizeof(double));
+				for(unsigned i = 0; i < m_points.size(); i++)
+				{
+					//cell
+					const double w = cell()->point(p, i);
+					const double d = cell()->jacobian(J, this, p);
+					cell()->gradient(dNe, p);
+					//strain gradient
+					strain_gradient(B, mat::multiply(dNx, dNe, mat::inverse(J, 2), n, 2, 2), n);
+					//material
+					((materials::Mechanic*) material())->elastic_stiffness(C, stresses());
+					//stiffness
+					mat::matrix(k, 2 * n, 2 * n) += t * w * d * mat::matrix(B, 3, 2 * n).transpose() * mat::matrix(C, 3, 3) * mat::matrix(B, 3, 2 * n);
+				}
 				return k;
 			}
 		}

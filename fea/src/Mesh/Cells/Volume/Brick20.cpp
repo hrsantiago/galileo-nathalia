@@ -49,6 +49,16 @@ namespace fea
 			{
 				return B;
 			}
+			
+			//integration
+			unsigned Brick20::points(void) const
+			{
+				return 0;
+			}
+			double Brick20::point(double* x, unsigned i) const
+			{
+				return 0;
+			}
 		}
 	}
 }

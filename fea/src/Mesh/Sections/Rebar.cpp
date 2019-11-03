@@ -2,9 +2,6 @@
 #include <cmath>
 #include <GL/gl.h>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Mesh/Sections/Rebar.h"
 

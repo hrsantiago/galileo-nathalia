@@ -9,9 +9,23 @@
 //fea
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Node.h"
-#include "Mesh/Cells/Cells.h"
 #include "Mesh/Sections/Section.h"
 #include "Mesh/Elements/Element.h"
+
+#include "Mesh/Cells/Cell.h"
+#include "Mesh/Cells/Types.h"
+#include "Mesh/Cells/Line/Bar.h"
+#include "Mesh/Cells/Line/Beam.h"
+#include "Mesh/Cells/Plane/Tri3.h"
+#include "Mesh/Cells/Plane/Tri6.h"
+#include "Mesh/Cells/Plane/Quad4.h"
+#include "Mesh/Cells/Plane/Quad8.h"
+#include "Mesh/Cells/Plane/Quad9.h"
+#include "Mesh/Cells/Volume/Tetra4.h"
+#include "Mesh/Cells/Volume/Brick8.h"
+#include "Mesh/Cells/Volume/Tetra10.h"
+#include "Mesh/Cells/Volume/Brick20.h"
+#include "Mesh/Cells/Volume/Brick27.h"
 
 namespace fea
 {
@@ -20,7 +34,7 @@ namespace fea
 		namespace cells
 		{
 			//constructors
-			Cell::Cell(void) : m_rule(2), m_label("Cell")
+			Cell::Cell(void) : m_label("Cell")
 			{
 				return;
 			}
@@ -87,7 +101,8 @@ namespace fea
 			//index
 			unsigned Cell::index(void) const
 			{
-				return distance(m_mesh->m_cells.begin(), find(m_mesh->m_cells.begin(), m_mesh->m_cells.end(), this));
+				const std::vector<cells::Cell*>& list = m_mesh->cells();
+				return distance(list.begin(), find(list.begin(), list.end(), this));
 			}
 			
 			//name
@@ -134,15 +149,6 @@ namespace fea
 				return m_mesh;
 			}
 			
-			unsigned Cell::rule(void) const
-			{
-				return m_rule;
-			}
-			unsigned Cell::rule(unsigned rule)
-			{
-				return m_rule = rule;
-			}
-			
 			const char* Cell::label(void) const
 			{
 				return m_label;
@@ -152,43 +158,7 @@ namespace fea
 				return (const char*) strcpy(m_label, label);
 			}
 			
-			unsigned Cell::max_rule(void)
-			{
-				return m_max_rule;
-			}
-			unsigned Cell::max_nodes(void)
-			{
-				return m_max_nodes;
-			}
-
 			//geometry
-			double Cell::mass(const elements::Element* element, double r) const
-			{
-				switch(dimension())
-				{
-					case 1:
-					{
-						const double L = edge(element, 0);
-						const double A = ((const Line*) this)->section()->area();
-						return r * L * A;
-					}
-					case 2:
-					{
-						const double A = face(element, 0);
-						const double t = ((const Plane*) this)->thickness();
-						return r * t * A;
-					}
-					case 3:
-					{
-						double J[9], p[3];
-						memset(p, 0, 3 * sizeof(double));
-						const double j = jacobian(J, element, p);
-						return 8 * r * j;
-					}
-					default:
-						return 0;
-				}
-			}
 			double Cell::edge(const elements::Element* element, unsigned e) const
 			{
 				double l = 0;
@@ -214,14 +184,42 @@ namespace fea
 				}
 				return A;
 			}
+			double Cell::volume(const elements::Element* element) const
+			{
+				switch(dimension())
+				{
+					case 1:
+					{
+						const double L = edge(element, 0);
+						const double A = ((const Line*) this)->section()->area();
+						return L * A;
+					}
+					case 2:
+					{
+						const double A = face(element, 0);
+						const double t = ((const Plane*) this)->thickness();
+						return t * A;
+					}
+					case 3:
+					{
+						double J[9], p[3];
+						memset(p, 0, 3 * sizeof(double));
+						const double j = jacobian(J, element, p);
+						return 8 * j;
+					}
+					default:
+						return 0;
+				}
+			}
+			
 			double Cell::jacobian(double* J, const elements::Element* element, const double* p) const
 			{
 				//sizes
 				const unsigned nv = vertices();
 				const unsigned nd = dimension();
 				//points
-				double Pg[3 * m_max_nodes];
-				double dN[3 * m_max_nodes];
+				double Pg[nd * nv];
+				double dN[nd * nv];
 				for(unsigned i = 0; i < nv; i++)
 				{
 					const double* x = element->node(i)->coordinates();
@@ -231,7 +229,7 @@ namespace fea
 					}
 				}
 				//return
-				return mat::det(mat::multiply(J, Pg, gradient(dN, p), nd, nv, nd), nd);
+				return mat::determinant(mat::multiply(J, Pg, gradient(dN, p), nd, nv, nd), nd);
 			}
 			
 			//analysis

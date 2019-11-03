@@ -73,11 +73,11 @@ namespace fea
 			Load_Case* load_case(unsigned) const;
 			Dependency* dependency(unsigned) const;
 			
-			//sizes
-			unsigned initials(void) const;
-			unsigned supports(void) const;
-			unsigned load_cases(void) const;
-			unsigned dependencies(void) const;
+			//lists
+			const std::vector<Initial*>& initials(void) const;
+			const std::vector<Support*>& supports(void) const;
+			const std::vector<Load_Case*>& load_cases(void) const;
+			const std::vector<Dependency*>& dependencies(void) const;
 
 			//add
 			Initial* add_initial(unsigned, mesh::nodes::dof, double, double);
@@ -115,7 +115,8 @@ namespace fea
 			void finish(void) const;
 
 			//results
-			void plot(double, const double** = nullptr) const;
+			void plot_loads(double, const double** = nullptr) const;
+			void plot_supports(double, const double** = nullptr) const;
 
 		protected:
 			//attributes

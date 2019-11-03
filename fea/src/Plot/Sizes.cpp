@@ -5,7 +5,7 @@ namespace fea
 	namespace plot
 	{
 		//constructors
-		Sizes::Sizes(void)
+		Sizes::Sizes(void) : m_loads(0.10), m_joints(0.05), m_supports(0.10)
 		{
 			return;
 		}
@@ -70,9 +70,10 @@ namespace fea
 		//config
 		void Sizes::reset(void)
 		{
-			m_loads = 0.05;
-			m_joints = 0.03;
-			m_supports = 0.03;
+			m_loads = 0.10;
+			m_joints = 0.05;
+			m_supports = 0.10;
 		}
 	}
 }
+

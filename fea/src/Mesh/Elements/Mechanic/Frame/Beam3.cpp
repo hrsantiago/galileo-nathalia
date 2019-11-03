@@ -3,8 +3,12 @@
 #include <cstring>
 
 //mat
+#include "misc/util.h"
 #include "misc/stress.h"
 #include "linear/lin3.h"
+#include "linear/vec3.h"
+#include "linear/mat3.h"
+#include "linear/quat.h"
 #include "linear/dense.h"
 #include "linear/linear.h"
 #include "linear/vector.h"
@@ -168,16 +172,16 @@ namespace fea
 				const mat::vec3 s1 = (Xj - Xi) / L;
 				const mat::vec3 s3 = m_orientation;
 				const mat::vec3 s2 = mat::cross(s3, s1);
-				//nodal rotator
-				const mat::mat3 Ri = node(0)->rotation_tensor();
-				const mat::mat3 Rj = node(1)->rotation_tensor();
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
 				//nodal triad
-				const mat::vec3 ri1 = Ri * s1;
-				const mat::vec3 ri2 = Ri * s2;
-				const mat::vec3 ri3 = Ri * s3;
-				const mat::vec3 rj1 = Rj * s1;
-				const mat::vec3 rj2 = Rj * s2;
-				const mat::vec3 rj3 = Rj * s3;
+				const mat::vec3 ri1 = qi.rotate(s1);
+				const mat::vec3 ri2 = qi.rotate(s2);
+				const mat::vec3 ri3 = qi.rotate(s3);
+				const mat::vec3 rj1 = qj.rotate(s1);
+				const mat::vec3 rj2 = qj.rotate(s2);
+				const mat::vec3 rj3 = qj.rotate(s3);
 				//local triad
 				const mat::vec3 t1 = !m_geometric ? s1 : (xj - xi) / l;
 				const mat::vec3 t2 = !m_geometric ? s2 : mat::cross(ri3 + rj3, t1).normalize();
@@ -285,7 +289,8 @@ namespace fea
 				//data
 				mat::clean(m_f, 6);
 				mat::clean(m_k, 36);
-				double x, e[3], s[3], sr[3], B[18], C[9];
+				const unsigned np = cell()->points();
+				double e[3], s[3], sr[3], B[18], C[9];
 				//matrices
 				mat::vector sm(s, 3), fm(m_f, 6);
 				mat::matrix Bm(B, 6, 3), Cm(C, 3, 3), Km(m_k, 6, 6);
@@ -295,10 +300,10 @@ namespace fea
 				//length
 				const double L = (Xj - Xi).norm();
 				//points
-				for(unsigned i = 0; i < cell()->rule(); i++)
+				const double* xg = mat::gauss_points(np);
+				const double* wg = mat::gauss_points(np);
+				for(unsigned i = 0; i < np; i++)
 				{
-					//point
-					const double p = cell()->point(&x, i);
 					//fibers
 					for(points::Fiber& fiber : ((points::Section*) m_points[i])->m_fibers)
 					{
@@ -307,12 +312,12 @@ namespace fea
 						const double y = fiber.m_position_y;
 						const double z = fiber.m_position_z;
 						//kinematic matrix
-						B[0] = 1 / L;						B[ 6] = 0;		B[12] = 0;
-						B[1] = y / L * (4 - 3 * (x + 1));	B[ 7] = 0;		B[13] = 0;
-						B[2] = y / L * (2 - 3 * (x + 1));	B[ 8] = 0;		B[14] = 0;
-						B[3] = 0;							B[ 9] = -z / L;	B[15] = +y / L;
-						B[4] = z / L * (4 - 3 * (x + 1));	B[10] = 0;		B[16] = 0;
-						B[5] = z / L * (2 - 3 * (x + 1));	B[11] = 0;		B[17] = 0;
+						B[0] = 1 / L;							B[ 6] = 0;		B[12] = 0;
+						B[1] = y / L * (4 - 3 * (xg[i] + 1));	B[ 7] = 0;		B[13] = 0;
+						B[2] = y / L * (2 - 3 * (xg[i] + 1));	B[ 8] = 0;		B[14] = 0;
+						B[3] = 0;								B[ 9] = -z / L;	B[15] = +y / L;
+						B[4] = z / L * (4 - 3 * (xg[i] + 1));	B[10] = 0;		B[16] = 0;
+						B[5] = z / L * (2 - 3 * (xg[i] + 1));	B[11] = 0;		B[17] = 0;
 						//residual stress
 						sr[0] = sr[1] = sr[2] = 0;
 						//strain
@@ -322,9 +327,9 @@ namespace fea
 						//return mapping
 						((materials::Mechanic*) material())->return_mapping(s, C, e, sr, fiber.m_point);
 						//internal force
-						fm += L * p * a / 2 * Bm * sm;
+						fm += L * wg[i] * a / 2 * Bm * sm;
 						//stiffness
-						Km += L * p * a / 2 * mat::mix(Bm, Cm, false);
+//						Km += L * p * a / 2 * mat::mix(Bm, Cm, false);
 					}
 				}
 			}
@@ -344,9 +349,9 @@ namespace fea
 				const double E = ((materials::Mechanic*) material(0))->elastic_modulus();
 				//section
 				const double As = ((cells::Line*) cell())->section()->area();
-				const double Ix = ((cells::Line*) cell())->section()->inercia_x();
-				const double Iy = ((cells::Line*) cell())->section()->inercia_y();
-				const double Iz = ((cells::Line*) cell())->section()->inercia_z();
+				const double Ix = ((cells::Line*) cell())->section()->inertia_x();
+				const double Iy = ((cells::Line*) cell())->section()->inertia_y();
+				const double Iz = ((cells::Line*) cell())->section()->inertia_z();
 				//stiffness parameters
 				const double ka = E * As / L;
 				const double kt = G * Ix / L;
@@ -390,12 +395,12 @@ namespace fea
 				const mat::vec3 s1 = (Xj - Xi) / L;
 				const mat::vec3 s3 = m_orientation;
 				const mat::vec3 s2 = mat::cross(s3, s1);
-				//nodal rotator
-				const mat::mat3 Ri = node(0)->rotation_tensor();
-				const mat::mat3 Rj = node(1)->rotation_tensor();
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
 				//nodal triad
-				const mat::vec3 ri3 = Ri * s3;
-				const mat::vec3 rj3 = Rj * s3;
+				const mat::vec3 ri3 = qi.rotate(s3);
+				const mat::vec3 rj3 = qj.rotate(s3);
 				//local triad
 				const mat::vec3 t1 = !m_geometric ? s1 : (xj - xi) / l;
 				const mat::vec3 t2 = !m_geometric ? s2 : mat::cross(ri3 + rj3, t1).normalize();
@@ -533,7 +538,78 @@ namespace fea
 			
 			double* Beam3::inertia(double* m) const
 			{
-				return (double*) memset(m, 0, 144 * sizeof(double));
+				//kinematics
+				double pi[3], pj[3];
+				const mat::vec3 xi = node(0)->position(pi);
+				const mat::vec3 xj = node(1)->position(pj);
+				const mat::vec3 Xi = node(0)->coordinates();
+				const mat::vec3 Xj = node(1)->coordinates();
+				//length
+				const double L = (Xj - Xi).norm();
+				const double l = (xj - xi).norm();
+				//global triad
+				const mat::vec3 e1 = {1, 0, 0};
+				const mat::vec3 e2 = {0, 1, 0};
+				const mat::vec3 e3 = {0, 0, 1};
+				//initial triad
+				const mat::vec3 s1 = (Xj - Xi) / L;
+				const mat::vec3 s3 = m_orientation;
+				const mat::vec3 s2 = mat::cross(s3, s1);
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
+				//nodal triad
+				const mat::vec3 ri3 = qi.rotate(s3);
+				const mat::vec3 rj3 = qj.rotate(s3);
+				//local triad
+				const mat::vec3 t1 = !m_geometric ? s1 : (xj - xi) / l;
+				const mat::vec3 t2 = !m_geometric ? s2 : mat::cross(ri3 + rj3, t1).normalize();
+				const mat::vec3 t3 = !m_geometric ? s3 : mat::cross(t1, t2);
+				//material
+				const double r = material()->specific_mass();
+				//section
+				const double A = ((cells::Line*) cell())->section()->area();
+				const double Ix = ((cells::Line*) cell())->section()->inertia_x();
+				const double Iy = ((cells::Line*) cell())->section()->inertia_y();
+				const double Iz = ((cells::Line*) cell())->section()->inertia_z();
+				//inertia
+				double ml[144];
+				mat::clean(ml, 144);
+				ml[ 0 + 12 *  0] = ml[ 6 + 12 *  6] = r * A * l / 3;
+				ml[ 0 + 12 *  6] = ml[ 6 + 12 *  0] = r * A * l / 6;
+				ml[ 3 + 12 *  3] = ml[ 9 + 12 *  9] = r * Ix * l / 3;
+				ml[ 3 + 12 *  9] = ml[ 9 + 12 *  3] = r * Ix * l / 6;
+				ml[ 1 + 12 *  7] = ml[ 7 + 12 *  1] = r * (+9 * A * l - 84 * Iz / l) / 70;
+				ml[ 2 + 12 *  8] = ml[ 8 + 12 *  2] = r * (+9 * A * l - 84 * Iy / l) / 70;
+				ml[ 1 + 12 *  1] = ml[ 7 + 12 *  7] = r * (+13 * A * l + 42 * Iz / l) / 35;
+				ml[ 2 + 12 *  2] = ml[ 8 + 12 *  8] = r * (+13 * A * l + 42 * Iy / l) / 35;
+				ml[ 1 + 12 *  5] = ml[ 5 + 12 *  1] = r * (+11 * A * l * l + 21 * Iz) / 210;
+				ml[ 1 + 12 * 11] = ml[11 + 12 *  1] = r * (-13 * A * l * l + 42 * Iz) / 420;
+				ml[ 2 + 12 *  4] = ml[ 4 + 12 *  2] = r * (-11 * A * l * l - 21 * Iy) / 210;
+				ml[ 2 + 12 * 10] = ml[10 + 12 *  2] = r * (+13 * A * l * l - 42 * Iy) / 420;
+				ml[ 4 + 12 *  8] = ml[ 8 + 12 *  4] = r * (-13 * A * l * l + 42 * Iy) / 420;
+				ml[ 5 + 12 *  7] = ml[ 7 + 12 *  5] = r * (+13 * A * l * l - 42 * Iz) / 420;
+				ml[ 7 + 12 * 11] = ml[11 + 12 *  7] = r * (-11 * A * l * l - 21 * Iz) / 210;
+				ml[ 8 + 12 * 10] = ml[10 + 12 *  8] = r * (+11 * A * l * l + 21 * Iy) / 210;
+				ml[ 4 + 12 *  4] = ml[10 + 12 * 10] = r * (A * l * l * l + 14 * Iy * l) / 105;
+				ml[ 5 + 12 *  5] = ml[11 + 12 * 11] = r * (A * l * l * l + 14 * Iz * l) / 105;
+				ml[ 4 + 12 * 10] = ml[10 + 12 *  4] = r * (-3 * A * l * l * l - 14 * Iy * l) / 420;
+				ml[ 5 + 12 * 11] = ml[11 + 12 *  5] = r * (-3 * A * l * l * l - 14 * Iz * l) / 420;
+				//rotation
+				double G[144];
+				mat::clean(G, 144);
+				const mat::mat3 R = t1.outer(e1) + t2.outer(e2) + t3.outer(e3);
+				for(unsigned i = 0; i < 3; i++)
+				{
+					for(unsigned j = 0; j < 3; j++)
+					{
+						for(unsigned k = 0; k < 4; k++)
+						{
+							G[39 * k + 12 * j + i] = R(i, j);
+						}
+					}
+				}
+				return mat::multisym(m, G, ml, 12, 12);
 			}
 			double* Beam3::damping(double* c) const
 			{
@@ -554,12 +630,12 @@ namespace fea
 				const mat::vec3 s1 = (Xj - Xi) / L;
 				const mat::vec3 s3 = m_orientation;
 				const mat::vec3 s2 = mat::cross(s3, s1);
-				//nodal rotator
-				const mat::mat3 Ri = node(0)->rotation_tensor();
-				const mat::mat3 Rj = node(1)->rotation_tensor();
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
 				//nodal triad
-				const mat::vec3 ri3 = Ri * s3;
-				const mat::vec3 rj3 = Rj * s3;
+				const mat::vec3 ri3 = qi.rotate(s3);
+				const mat::vec3 rj3 = qj.rotate(s3);
 				//local triad
 				const mat::vec3 t1 = !m_geometric ? s1 : (xj - xi) / l;
 				const mat::vec3 t2 = !m_geometric ? s2 : mat::cross(ri3 + rj3, t1).normalize();

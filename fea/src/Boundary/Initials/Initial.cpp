@@ -1,3 +1,6 @@
+//std
+#include <algorithm>
+
 //mat
 #include "misc/util.h"
 
@@ -78,14 +81,8 @@ namespace fea
 		//index
 		unsigned Initial::index(void) const
 		{
-			for(unsigned i = 0; i < m_boundary->initials(); i++)
-			{
-				if(m_boundary->initial(i) == this)
-				{
-					return i;
-				}
-			}
-			return 0;
+			const std::vector<Initial*>& list = m_boundary->initials();
+			return std::distance(list.begin(), std::find(list.begin(), list.end(), this));
 		}
 		unsigned Initial::index_node(void) const
 		{
@@ -96,7 +93,7 @@ namespace fea
 		bool Initial::check(void) const
 		{
 			//check node
-			if(m_node >= m_boundary->model()->mesh()->nodes())
+			if(m_node >= m_boundary->model()->mesh()->nodes().size())
 			{
 				printf("Initial %04d has out of range node!\n", index());
 				return false;
@@ -107,7 +104,7 @@ namespace fea
 		{
 			//set dof
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+			const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 			m_dof = node->m_dof[p];
 		}
 		void Initial::add_dof(void) const
@@ -120,7 +117,7 @@ namespace fea
 		{
 			//node
 			const mesh::nodes::Node* node = m_boundary->model()->mesh()->node(m_node);
-			const unsigned char p = mat::bit_find(node->m_dof_types, (unsigned) m_dof_type);
+			const unsigned char p = mat::bit_index(node->m_dof_types, (unsigned) m_dof_type);
 			//solver
 			analysis::solvers::Solver* solver = m_boundary->model()->analysis()->solver();
 			const unsigned solver_set = solver->state_set();

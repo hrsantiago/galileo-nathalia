@@ -124,7 +124,7 @@ namespace fea
 			//break criterion
 			bool Steel::break_criterion(const double* e, unsigned t) const
 			{
-				return mat::norm(e, mat::bit_find(t, (unsigned) mat::stress::last)) > m_break_strain;
+				return mat::norm(e, mat::bit_count(t)) > m_break_strain;
 			}
 
 			//yield criterion

@@ -103,21 +103,21 @@ namespace fea
 			{
 				return m_height;
 			}
-			double Box::inercia_y(void) const
+			double Box::inertia_y(void) const
 			{
 				const double w = m_width;
 				const double h = m_height;
 				const double t = m_thickness;
 				return t * pow(w, 3) / 6 + (h - 2 * t) * (pow(t, 3) / 6 + t * pow(w - t, 2) / 2);
 			}
-			double Box::inercia_z(void) const
+			double Box::inertia_z(void) const
 			{
 				const double w = m_width;
 				const double h = m_height;
 				const double t = m_thickness;
 				return t * pow(h, 3) / 6 + (w - 2 * t) * (pow(t, 3) / 6 + t * pow(h - t, 2) / 2);
 			}
-			double Box::inercia_w(void) const
+			double Box::inertia_w(void) const
 			{
 				const double w = m_width;
 				const double h = m_height;

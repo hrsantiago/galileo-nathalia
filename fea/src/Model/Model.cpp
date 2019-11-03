@@ -20,7 +20,7 @@
 #include "Topology/Topology.h"
 
 #include "Analysis/Analysis.h"
-#include "Analysis/Solvers/Solvers.h"
+#include "Analysis/Solvers/Solver.h"
 
 namespace fea
 {
@@ -194,10 +194,12 @@ namespace fea
 		//results
 		void Model::plot(double s, const double** p, const double* vn, const double** ve) const
 		{
-			//plot boundary
-			m_boundary->plot(s, p);
-			//plot mesh
-			m_mesh->plot(s, p, vn, ve);
+			//plot
+			m_boundary->plot_supports(s, p);
+			m_mesh->plot_elements(s, p, vn, ve);
+			m_mesh->plot_joints(s, p, vn, ve);
+			m_mesh->plot_nodes(s, p, vn, ve);
+			m_boundary->plot_loads(s, p);
 			//clear color
 			glClearColor(
 				m_plot->colors()->back()[0], 

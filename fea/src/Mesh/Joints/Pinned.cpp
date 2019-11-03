@@ -5,7 +5,6 @@
 #include <GL/gl.h>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 #include "linear/dense.h"
 

@@ -5,6 +5,10 @@
 #include <GL/gl.h>
 
 //mat
+#include "misc/util.h"
+#include "linear/quat.h"
+#include "linear/vec3.h"
+#include "linear/mat3.h"
 #include "linear/lin3.h"
 
 //fea
@@ -212,16 +216,16 @@ namespace fea
 				const mat::vec3 xj = node(1)->position(pj);
 				const mat::vec3 Xi = node(0)->coordinates();
 				const mat::vec3 Xj = node(1)->coordinates();
-				//nodal tensors
-				const mat::mat3 Ri = node(0)->rotation_tensor();
-				const mat::mat3 Rj = node(1)->rotation_tensor();
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
 				//nodal triads
-				const mat::vec3 u1 = Ri * s1;
-				const mat::vec3 u2 = Ri * s2;
-				const mat::vec3 u3 = Ri * s3;
-				const mat::vec3 e1 = Rj * s1;
-				const mat::vec3 e2 = Rj * s2;
-				const mat::vec3 e3 = Rj * s3;
+				const mat::vec3 u1 = qi.rotate(s1);
+				const mat::vec3 u2 = qi.rotate(s2);
+				const mat::vec3 u3 = qi.rotate(s3);
+				const mat::vec3 e1 = qj.rotate(s1);
+				const mat::vec3 e2 = qj.rotate(s2);
+				const mat::vec3 e3 = qj.rotate(s3);
 				//rotation norm
 				const double c1 = mat::dot(e1, u1);
 				const double c2 = mat::dot(e2, u2);
@@ -341,16 +345,16 @@ namespace fea
 				double pi[3], pj[3];
 				const mat::vec3 xi = node(0)->position(pi);
 				const mat::vec3 xj = node(1)->position(pj);
-				//nodal rotation
-				const mat::mat3 Ri = node(0)->rotation_tensor();
-				const mat::mat3 Rj = node(1)->rotation_tensor();
-				//nodal triad
-				const mat::vec3 u1 = Ri * s1;
-				const mat::vec3 u2 = Ri * s2;
-				const mat::vec3 u3 = Ri * s3;
-				const mat::vec3 e1 = Rj * s1;
-				const mat::vec3 e2 = Rj * s2;
-				const mat::vec3 e3 = Rj * s3;
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
+				//nodal triads
+				const mat::vec3 u1 = qi.rotate(s1);
+				const mat::vec3 u2 = qi.rotate(s2);
+				const mat::vec3 u3 = qi.rotate(s3);
+				const mat::vec3 e1 = qj.rotate(s1);
+				const mat::vec3 e2 = qj.rotate(s2);
+				const mat::vec3 e3 = qj.rotate(s3);
 				//rotation norm
 				const double c1 = mat::dot(e1, u1);
 				const double c2 = mat::dot(e2, u2);
@@ -409,16 +413,16 @@ namespace fea
 				double pi[3], pj[3];
 				const mat::vec3 xi = node(0)->position(pi);
 				const mat::vec3 xj = node(1)->position(pj);
-				//nodal rotation
-				const mat::mat3 Ri = node(0)->rotation_tensor();
-				const mat::mat3 Rj = node(1)->rotation_tensor();
-				//nodal triad
-				const mat::vec3 u1 = Ri * s1;
-				const mat::vec3 u2 = Ri * s2;
-				const mat::vec3 u3 = Ri * s3;
-				const mat::vec3 e1 = Rj * s1;
-				const mat::vec3 e2 = Rj * s2;
-				const mat::vec3 e3 = Rj * s3;
+				//nodal quaternions
+				const mat::quat qi = node(0)->quaternion();
+				const mat::quat qj = node(1)->quaternion();
+				//nodal triads
+				const mat::vec3 u1 = qi.rotate(s1);
+				const mat::vec3 u2 = qi.rotate(s2);
+				const mat::vec3 u3 = qi.rotate(s3);
+				const mat::vec3 e1 = qj.rotate(s1);
+				const mat::vec3 e2 = qj.rotate(s2);
+				const mat::vec3 e3 = qj.rotate(s3);
 				//rotation norm
 				const double c1 = mat::dot(e1, u1);
 				const double c2 = mat::dot(e2, u2);
@@ -511,37 +515,17 @@ namespace fea
 			}
 			
 			//results
-			void Hinge::plot(double size, const double* color, const double** positions) const
+			void Hinge::plot(double, const double* color, const double** positions) const
 			{
 				//configuration
-				const mat::vec3 ah = m_axis;
-				const mat::vec3 ti = positions ? positions[m_nodes[0]] + 3 : nullptr;
-				const mat::vec3 tj = positions ? positions[m_nodes[1]] + 3 : nullptr;
-				const mat::vec3 pi = positions ? positions[m_nodes[0]] : node(0)->coordinates();
-				const mat::vec3 pj = positions ? positions[m_nodes[1]] : node(1)->coordinates();
-				//rotation
-				const mat::vec3 ai = positions ? ti.rotation() * ah : ah;
-				const mat::vec3 aj = positions ? ti.rotation() * ah : ah;
-				//points
-				const mat::vec3 pi1 = pi - size * ai;
-				const mat::vec3 pi2 = pi + size * ai;
-				const mat::vec3 pj1 = pj - size * aj;
-				const mat::vec3 pj2 = pj + size * aj;
-				//setup
+				const double* pi = positions ? positions[m_nodes[0]] : node(0)->coordinates();
+				const double* pj = positions ? positions[m_nodes[1]] : node(1)->coordinates();
+				//plot
 				glLineWidth(2);
 				glColor4dv(color);
-				//plot
 				glBegin(GL_LINE_STRIP);
-				glVertex3dv(pi.mem());
-				glVertex3dv(pj.mem());
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				glVertex3dv(pi1.mem());
-				glVertex3dv(pi2.mem());
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				glVertex3dv(pj1.mem());
-				glVertex3dv(pj2.mem());
+					glVertex3dv(pi);
+					glVertex3dv(pj);
 				glEnd();
 			}
 		}

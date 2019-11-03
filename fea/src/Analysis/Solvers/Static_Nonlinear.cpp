@@ -13,8 +13,8 @@
 #include "Analysis/Solvers/Types.h"
 #include "Analysis/Solvers/Watch_Dof.h"
 #include "Analysis/Assembler/Assembler.h"
-#include "Analysis/Strategies/Strategies.h"
 #include "Analysis/Solvers/Static_Nonlinear.h"
+#include "Analysis/Strategies/Arc_Length_Cylindric.h"
 
 namespace fea
 {
@@ -48,7 +48,7 @@ namespace fea
 			void Static_Nonlinear::load(FILE* file)
 			{
 				//base call
-				Solver::load(file);
+				Eigen::load(file);
 				Nonlinear::load(file);
 				//load
 				strategies::type type;
@@ -67,7 +67,7 @@ namespace fea
 			void Static_Nonlinear::save(FILE* file) const
 			{
 				//base call
-				Solver::save(file);
+				Eigen::save(file);
 				Nonlinear::save(file);
 				//save
 				fprintf(file, "%01d %01d %01d %+.6e %+.6e %+.6e %+.6e %+.6e %02d\n", 
@@ -106,6 +106,15 @@ namespace fea
 			bool Static_Nonlinear::branch_switch(bool branch_switch) 
 			{
 				return m_branch_switch = branch_switch;
+			}
+			
+			double Static_Nonlinear::tolerance(void) const
+			{
+				return Nonlinear::m_tolerance;
+			}
+			double Static_Nonlinear::tolerance(double tolerance)
+			{
+				return Nonlinear::m_tolerance = Eigen::m_tolerance = tolerance;
 			}
 			
 			double Static_Nonlinear::load_min(void) const 
@@ -223,14 +232,14 @@ namespace fea
 					(unsigned) solvers::force::Fi |
 					(unsigned) solvers::force::Fr |
 					(unsigned) solvers::force::Fd |
-					(m_branch_switch || m_frequencies ? (unsigned) solvers::force::k : 0);
+					(m_frequencies || m_branch_switch ? (unsigned) solvers::force::k : 0);
 			}
 			unsigned Static_Nonlinear::tangent_set(void) const 
 			{
 				return
 					(unsigned) solvers::tangent::K |
-					(m_frequencies ?   (unsigned) solvers::tangent::M : 0) |
-					(m_branch_switch ? (unsigned) solvers::tangent::f : 0);
+					(m_frequencies ? (unsigned) solvers::tangent::M : 0) |
+					(m_frequencies || m_branch_switch ? (unsigned) solvers::tangent::f : 0);
 			}
 
 			//analysis
@@ -241,7 +250,7 @@ namespace fea
 				m_step = 0;
 				//assembler
 				assembler = m_analysis->assembler();
-				//assembly dead and reference loads
+				//assembly external loads
 				assembler->assembly_dead_force();
 				assembler->assembly_reference_force();
 				//initials
@@ -338,26 +347,27 @@ namespace fea
 			{
 				if(m_frequencies)
 				{
-					const Assembler* assembler = m_analysis->assembler();
-					assembler->assembly_inertia();
+//					assembler->assembly_inertia();
+//					assembler->assembly_stiffness();
+//					eigen_gen();
 					assembler->assembly_stiffness();
-//					const arma::mat M = arma::mat(m_M);
-//					const arma::mat K = arma::mat(m_K);
-//					const arma::mat S = inv(M) * K;
-//					arma::eig_sym(m_k, S);
+					eigen_std();
 				}
 			}
 			void Static_Nonlinear::run_branch_switch(void) 
 			{
 				if(m_branch_switch && m_bifurcation_count < m_bifurcation_track)
 				{
-//					arma::eig_sym(m_k, m_f, arma::mat(m_K));
-//					if(m_k[0] < 0 && abs(arma::dot(m_Fru, m_f.col(0))) < m_tolerance * arma::norm(m_Fru))
-//					{
-//						m_bifurcation_count++;
-//						m_du += m_mode_injection * arma::norm(m_du) * m_f.col(0);
-//						printf("\tBifurcation point founded: Following secondary path!\n");
-//					}
+					eigen_std();
+					if(m_k[0] < 0)
+					{
+						m_bifurcation_count++;
+						for(unsigned i = 0; i < n; i++)
+						{
+							m_du[i] += m_mode_injection * m_f[i];
+						}
+						printf("\tBifurcation point founded: Following secondary path!\n");
+					}
 				}
 			}
 			
@@ -392,15 +402,15 @@ namespace fea
 			
 			void Static_Nonlinear::record(void) 
 			{
-				//record dof & load
+				//record load
 				char formatter[200];
 				sprintf(formatter, "%+.6e\n", m_l);
 				m_results[0] += formatter;
 				//record frequencies
-				const unsigned nz = m_analysis->assembler()->dof_nonzero();
 				if(m_frequencies)
 				{
-					for(unsigned i = 0; i < nz; i++)
+					n = assembler->dof_unknow();
+					for(unsigned i = 0; i < n; i++)
 					{
 						sprintf(formatter, "%+.6e ", m_k[i]);
 						m_results[1] += formatter;

@@ -54,10 +54,6 @@ namespace fea
 
 				//geometry
 				virtual double jacobian(double*, const elements::Element*, const double*) const override;
-				
-				//integration
-				virtual unsigned points(void) const override;
-				virtual double point(double*, unsigned) const override;
 
 				//mesh
 				static void refine(unsigned, unsigned);

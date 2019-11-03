@@ -28,10 +28,6 @@ namespace fea
 				
 				virtual void gradient(double*, unsigned, double) const override;
 				virtual void gradient(double*, unsigned, double, double) const override;
-				
-				//integration
-				virtual unsigned points(void) const override;
-				virtual double point(double*, unsigned) const override;
 			};
 		}
 	}

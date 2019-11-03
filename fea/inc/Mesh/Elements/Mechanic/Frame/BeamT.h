@@ -8,24 +8,29 @@ namespace fea
 	{
 		namespace elements
 		{
-			class Rope : public Frame
+			class BeamT : public Frame
 			{
 			public:
 				//friends
 				friend class Element;
 
 			protected:
-				//contructors
-				Rope(void);
+				//constructors
+				BeamT(void);
 
-				//destructors
-				virtual ~Rope(void) override;
+				//destructor
+				virtual ~BeamT(void) override;
 				
 				//serialization
 				virtual void load(FILE*) override;
 				virtual void save(FILE*) const override;
 
 			public:
+				//data
+				const double* orientation(void) const;
+				const double* orientation(const double*);
+				const double* orientation(double, double, double);
+
 				//types
 				virtual unsigned cells(void) const override;
 				virtual unsigned loads(void) const override;
@@ -34,35 +39,30 @@ namespace fea
 				virtual unsigned dofs(unsigned) const override;
 				virtual elements::type type(void) const override;
 
-				//data
-				static bool strain(void);
-				static bool strain(bool);
-				
-				double residual_stress(void) const;
-				double residual_stress(double);
-
 			protected:
 				//analysis
+				virtual bool symmetric(void) const override;
+
 				virtual void apply(void) override;
 				
+				virtual bool check(void) const override;
+				virtual void prepare(void) override;
+
 				virtual void record(void) override;
 
 				//formulation
-				virtual double* internal_force(double*) const override;
 				virtual double* inertial_force(double*) const override;
-
+				virtual double* internal_force(double*) const override;
 				virtual double* reference_force(double*, const boundary::loads::Element*) const override;
-
+				
 				virtual double* inertia(double*) const override;
 				virtual double* damping(double*) const override;
 				virtual double* stiffness(double*) const override;
-
-				//attributes
-				static bool m_strain;
 				
-				double m_f;
-				double m_k;
-				double m_sr;
+				//attributes
+				double m_f[6];
+				double m_k[36];
+				double m_orientation[3];
 			};
 		}
 	}

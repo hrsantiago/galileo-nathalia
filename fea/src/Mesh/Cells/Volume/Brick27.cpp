@@ -115,6 +115,16 @@ namespace fea
 				B[7 + 8 * 2] = +(1 - r) * (1 + s) / 8;
 				return B;
 			}
+			
+			//integration
+			unsigned Brick27::points(void) const
+			{
+				return 0;
+			}
+			double Brick27::point(double* x, unsigned i) const
+			{
+				return 0;
+			}
 		}
 	}
 }

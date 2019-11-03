@@ -94,23 +94,6 @@ namespace fea
 					case 5: dp[0] = +1;	dp[1] = +0;	dp[2] = +0;	dp[3] = +0;	dp[4] = +1;	dp[5] = +0;	break;
 				}
 			}
-			
-			//integration
-			unsigned Brick::points(void) const
-			{
-				return m_rule * m_rule * m_rule;
-			}
-			double Brick::point(double* x, unsigned i) const
-			{
-				double w[3];
-				const unsigned a = i % m_rule;
-				const unsigned b = ((i - a) / m_rule) % m_rule;
-				const unsigned c = (i - m_rule * b - a) / (m_rule * m_rule);
-				mat::gauss_point(x[0], w[0], m_rule, a);
-				mat::gauss_point(x[1], w[1], m_rule, b);
-				mat::gauss_point(x[2], w[2], m_rule, c);
-				return w[0] * w[1] * w[2];
-			}
 		}
 	}
 }

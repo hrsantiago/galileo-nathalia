@@ -50,6 +50,9 @@ namespace fea
 				static bool strain(void);
 				static bool strain(bool);
 				
+				double length(void) const;
+				double length(double);
+				
 				double residual_stress(void) const;
 				double residual_stress(double);
 
@@ -75,6 +78,7 @@ namespace fea
 				bool m_cable;
 				static bool m_strain;
 				
+				double m_l;
 				double m_f;
 				double m_k;
 				double m_sr;

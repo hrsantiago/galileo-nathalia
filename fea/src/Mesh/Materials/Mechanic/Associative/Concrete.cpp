@@ -127,7 +127,7 @@ namespace fea
 			//break criterion
 			bool Concrete::break_criterion(const double* e, unsigned t) const
 			{
-				return mat::norm(e, mat::bit_find(t, (unsigned) mat::stress::last)) > m_break_strain;
+				return mat::norm(e, mat::bit_count(t)) > m_break_strain;
 			}
 
 			//yield criterion
@@ -154,7 +154,7 @@ namespace fea
 				const double sb = m_yield_stress_biaxial;
 				const double sc = m_yield_stress_compression;
 				//componentes
-				const unsigned n = mat::bit_find(t, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(t);
 				//parameters
 				const double C = (3 * sb * st - sb * sc - 2 * sc * st) / (sc + st) / (2 * sb - sc) / (2 * sb + st);
 				const double B = (st - sc) * (4 * sb * sb + sc * st - sb * (sc + st)) / (sc + st) / (2 * sb - sc) / (2 * sb + st);
@@ -171,7 +171,7 @@ namespace fea
 				const double sb = m_yield_stress_biaxial;
 				const double sc = m_yield_stress_compression;
 				//componentes
-				const unsigned n = mat::bit_find(t, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(t);
 				//parameters
 				const double C = (3 * sb * st - sb * sc - 2 * sc * st) / (sc + st) / (2 * sb - sc) / (2 * sb + st);
 				//yield hessian

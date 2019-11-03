@@ -86,12 +86,11 @@ namespace fea
 				//index
 				unsigned index(void) const;
 
-				//moviment
+				//kinematics
 				double* position(double*) const;
-				double* rotation(double*, unsigned = 0) const;
-				double* displacement(double*, unsigned = 0) const;
-
-				const double* rotation_tensor(void) const;
+				const double* quaternion(void) const;
+				const double* rotation(unsigned = 0) const;
+				const double* translation(unsigned = 0) const;
 
 				//state
 				double state(dof, unsigned = 1) const;
@@ -142,9 +141,8 @@ namespace fea
 				unsigned m_dof_types;
 				std::vector<unsigned> m_dof;
 
-				double m_rotation_old[9];
-				double m_rotation_new[9];
-
+				double* m_quat_new;
+				double* m_quat_old;
 				double* m_state_old;
 				double* m_state_new;
 				double* m_velocity_old;

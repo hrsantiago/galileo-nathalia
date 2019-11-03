@@ -2,9 +2,6 @@
 #include <cmath>
 #include <GL/gl.h>
 
-//mat
-#include "misc/defs.h"
-
 //fea
 #include "Mesh/Sections/Types.h"
 #include "Mesh/Sections/Rectangle.h"
@@ -89,19 +86,19 @@ namespace fea
 			{
 				return m_height;
 			}
-			double Rectangle::inercia_y(void) const
+			double Rectangle::inertia_y(void) const
 			{
 				const double w = m_width;
 				const double h = m_height;
 				return h * pow(w, 3) / 12;
 			}
-			double Rectangle::inercia_z(void) const
+			double Rectangle::inertia_z(void) const
 			{
 				const double w = m_width;
 				const double h = m_height;
 				return w * pow(h, 3) / 12;
 			}
-			double Rectangle::inercia_w(void) const
+			double Rectangle::inertia_w(void) const
 			{
 				const double a = std::min(m_width, m_height);
 				const double b = std::max(m_width, m_height);

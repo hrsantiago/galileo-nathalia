@@ -5,8 +5,21 @@
 #include "Mesh/Elements/Element.h"
 
 #include "Boundary/Boundary.h"
-#include "Boundary/Loads/Loads.h"
+#include "Boundary/Loads/Load.h"
+#include "Boundary/Loads/Types.h"
 #include "Boundary/Cases/Load_Case.h"
+#include "Boundary/Loads/Nodes/Node.h"
+#include "Boundary/Loads/Elements/Element.h"
+#include "Boundary/Loads/Elements/Mechanic/Mechanic.h"
+#include "Boundary/Loads/Elements/Mechanic/Frame/Axial.h"
+#include "Boundary/Loads/Elements/Mechanic/Frame/Shear.h"
+#include "Boundary/Loads/Elements/Mechanic/Frame/Torsion.h"
+#include "Boundary/Loads/Elements/Mechanic/Frame/Bending.h"
+#include "Boundary/Loads/Elements/Mechanic/Plane/Plane_Edge.h"
+#include "Boundary/Loads/Elements/Mechanic/Plane/Plane_Face.h"
+#include "Boundary/Loads/Elements/Mechanic/Solid/Solid_Edge.h"
+#include "Boundary/Loads/Elements/Mechanic/Solid/Solid_Face.h"
+#include "Boundary/Loads/Elements/Mechanic/Solid/Solid_Body.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Solver.h"
@@ -129,7 +142,7 @@ namespace fea
 			{
 				for(unsigned i = 0; i < m_elements.size(); i++)
 				{
-					if(m_elements[i] >= m_boundary->model()->mesh()->elements())
+					if(m_elements[i] >= m_boundary->model()->mesh()->elements().size())
 					{
 						printf("Element load %02d has elements out of range\n", index());
 						return false;

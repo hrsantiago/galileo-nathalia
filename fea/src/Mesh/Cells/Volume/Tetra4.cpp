@@ -115,6 +115,19 @@ namespace fea
 				B[7 + 8 * 2] = +(1 - r) * (1 + s) / 8;
 				return B;
 			}
+			
+			//integration
+			unsigned Tetra4::points(void) const
+			{
+				return 1;
+			}
+			double Tetra4::point(double* x, unsigned i) const
+			{
+				x[0] = 0;
+				x[1] = 0;
+				x[2] = 0;
+				return 2;
+			}
 		}
 	}
 }

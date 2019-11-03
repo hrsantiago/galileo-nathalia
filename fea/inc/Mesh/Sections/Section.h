@@ -82,10 +82,10 @@ namespace fea
 				virtual double warping(double, double) const;
 				virtual double warping_y(double, double) const;
 				virtual double warping_z(double, double) const;
-				virtual double inercia_y(void) const = 0;
-				virtual double inercia_z(void) const = 0;
-				virtual double inercia_x(void) const;
-				virtual double inercia_w(void) const = 0;
+				virtual double inertia_y(void) const = 0;
+				virtual double inertia_z(void) const = 0;
+				virtual double inertia_x(void) const;
+				virtual double inertia_w(void) const = 0;
 				virtual double centroid_y(void) const = 0;
 				virtual double centroid_z(void) const = 0;
 				virtual double elastic_modulus_y(void) const;

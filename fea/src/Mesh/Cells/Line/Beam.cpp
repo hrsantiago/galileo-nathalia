@@ -1,3 +1,6 @@
+//mat
+#include "misc/util.h"
+
 //fea
 #include "Mesh/Cells/Types.h"
 #include "Mesh/Cells/Line/Beam.h"
@@ -47,7 +50,7 @@ namespace fea
 				N[3] = (1 + r) / 2;
 				N[2] = (1 - r) * (1 - r * r) / 4;
 				N[5] = (1 + r) * (r * r - 1) / 4;
-				N[1] = (2 - 3 * r + r * r * r) / 4;
+				N[1] = 	(2 - 3 * r + r * r * r) / 4;
 				N[4] = (2 + 3 * r - r * r * r) / 4;
 				return N;
 			}
@@ -63,6 +66,25 @@ namespace fea
 				B[2] = (3 * r * r - 2 * r - 1) / 4;
 				B[5] = (3 * r * r + 2 * r - 1) / 4;
 				return B;
+			}
+			
+			//integration
+			unsigned Beam::points(void) const
+			{
+				return 2;
+			}
+			double Beam::point(double* x, unsigned i) const
+			{
+				//quadrature
+				const double* s = mat::gauss_points(2);
+				const double* w = mat::gauss_weights(2);
+				//point
+				switch(i)
+				{
+					case 0: x[0] = s[0]; return w[0];
+					case 1: x[0] = s[1]; return w[1];
+					default: return 0;
+				}
 			}
 		}
 	}

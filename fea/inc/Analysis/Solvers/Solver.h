@@ -172,18 +172,18 @@ namespace fea
 				virtual void record(void) = 0;
 				virtual void finish(void) const = 0;
 				
-				//linear solver
+				//linear
 				void lindel(void);
 				bool lindec(const double*);
 				bool linsub(double*, const double*, const double*);
-				double* linsolve(double*, const double*, const double*);
+				bool linsolve(double*, const double*, const double*);
 				
 				//attributes
 				static Analysis* m_analysis;
 
 				bool m_dead;
 
-				void* m_sym;				
+				void* m_sym;
 				void* m_num;
 				
 				unsigned m_step;

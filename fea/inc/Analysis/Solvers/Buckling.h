@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Analysis/Solvers/Solver.h"
+#include "Analysis/Solvers/Eigen.h"
 
 namespace fea
 {
@@ -8,7 +8,7 @@ namespace fea
 	{
 		namespace solvers
 		{
-			class Buckling : public Solver
+			class Buckling : public Eigen
 			{
 			public:
 				//friends
@@ -29,10 +29,6 @@ namespace fea
 				//type
 				virtual solvers::type type(void) const override;
 
-				//data
-				double scale(void) const;
-				double scale(double);
-
 				//sets
 				virtual unsigned state_set(void) const override;
 				virtual unsigned force_set(void) const override;
@@ -46,9 +42,6 @@ namespace fea
 				
 				virtual void record(void) override;
 				virtual void finish(void) const override;
-				
-				//attributes
-				double m_scale;
 			};
 		}
 	}

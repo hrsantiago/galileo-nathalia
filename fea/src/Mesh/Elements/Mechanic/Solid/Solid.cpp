@@ -13,17 +13,12 @@
 
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Nodes/Node.h"
-
 #include "Mesh/Cells/Types.h"
-#include "Mesh/Cells/Cells.h"
-#include "Mesh/Cells/Volume/Volume.h"
-
-#include "Mesh/Materials/Mechanic/Mechanic.h"
-
 #include "Mesh/Elements/Types.h"
-#include "Mesh/Elements/Mechanic/Solid/Solid.h"
-
+#include "Mesh/Cells/Volume/Volume.h"
 #include "Mesh/Points/Mechanic/Mechanic.h"
+#include "Mesh/Materials/Mechanic/Mechanic.h"
+#include "Mesh/Elements/Mechanic/Solid/Solid.h"
 
 #include "Boundary/Loads/Types.h"
 #include "Boundary/Loads/Elements/Mechanic/Solid/Solid_Edge.h"
@@ -162,75 +157,75 @@ namespace fea
 			}
 			double* Solid::internal_force(double* f) const
 			{
-				//cell
-				const unsigned n = cell()->vertices();
-				const unsigned m = cells::Cell::max_nodes();
-				//stress
-				const unsigned t = 
-					(unsigned) mat::stress::sxx |
-					(unsigned) mat::stress::syy |
-					(unsigned) mat::stress::szz |
-					(unsigned) mat::stress::sxy |
-					(unsigned) mat::stress::sxz |
-					(unsigned) mat::stress::syz ;
-				//data
-				double p[3], u[3], e[6];
-				double s[6], J[9], B[18 * m];
-				double C[36], dNe[3 * m], dNx[3 * m];
-				memset(f, 0, 3 * n * sizeof(double));
-				//stiffness
-				((materials::Mechanic*) material())->elastic_stiffness(C, t);
-				//points
-				for(unsigned i = 0; i < m_points.size(); i++)
-				{
-					//point
-					const double h = cell()->point(p, i);
-					//jacobian
-					const double w = cell()->jacobian(J, this, p);
-					//gradient
-					mat::multiply(dNx, cell()->gradient(dNe, p), mat::inv(J, 3), n, 3, 3);
-					//strains
-					mat::clean(e, 6);
-					for(unsigned j = 0; j < n; j++)
-					{
-						//displacements
-						node(j)->displacement(u);
-						//kinematic matrix
-						B[0 + 6 * 1 + 18 * j] = 0;
-						B[0 + 6 * 2 + 18 * j] = 0;
-						B[1 + 6 * 0 + 18 * j] = 0;
-						B[1 + 6 * 2 + 18 * j] = 0;
-						B[2 + 6 * 0 + 18 * j] = 0;
-						B[2 + 6 * 1 + 18 * j] = 0;
-						B[3 + 6 * 2 + 18 * j] = 0;
-						B[4 + 6 * 1 + 18 * j] = 0;
-						B[5 + 6 * 0 + 18 * j] = 0;
-						B[0 + 6 * 0 + 18 * j] = dNx[j + n * 0];
-						B[1 + 6 * 1 + 18 * j] = dNx[j + n * 1];
-						B[2 + 6 * 2 + 18 * j] = dNx[j + n * 2];
-						B[3 + 6 * 0 + 18 * j] = dNx[j + n * 1];
-						B[3 + 6 * 1 + 18 * j] = dNx[j + n * 0];
-						B[4 + 6 * 0 + 18 * j] = dNx[j + n * 2];
-						B[4 + 6 * 2 + 18 * j] = dNx[j + n * 0];
-						B[5 + 6 * 1 + 18 * j] = dNx[j + n * 2];
-						B[5 + 6 * 2 + 18 * j] = dNx[j + n * 1];
-						//strains
-						mat::multiply(e, B + 18 * j, u, 6, 3, 1, true);
-					}
-					//stress
-					mat::multiply(s, C, e, 6, 6);
-					//internal force
-					for(unsigned j = 0; j < n; j++)
-					{
-						for(unsigned k = 0; k < 3; k++)
-						{
-							for(unsigned q = 0; q < 6; q++)
-							{
-								f[3 * j + k] += w * h * B[q + 6 * k + 18 * j] * s[q];
-							}
-						}
-					}
-				}
+//				//cell
+//				const unsigned n = cell()->vertices();
+//				const unsigned m = cells::Cell::max_nodes();
+//				//stress
+//				const unsigned t = 
+//					(unsigned) mat::stress::sxx |
+//					(unsigned) mat::stress::syy |
+//					(unsigned) mat::stress::szz |
+//					(unsigned) mat::stress::sxy |
+//					(unsigned) mat::stress::sxz |
+//					(unsigned) mat::stress::syz ;
+//				//data
+//				double p[3], e[6];
+//				double s[6], J[9], B[18 * m];
+//				double C[36], dNe[3 * m], dNx[3 * m];
+//				memset(f, 0, 3 * n * sizeof(double));
+//				//stiffness
+//				((materials::Mechanic*) material())->elastic_stiffness(C, t);
+//				//points
+//				for(unsigned i = 0; i < m_points.size(); i++)
+//				{
+//					//point
+//					const double h = cell()->point(p, i);
+//					//jacobian
+//					const double w = cell()->jacobian(J, this, p);
+//					//gradient
+//					mat::multiply(dNx, cell()->gradient(dNe, p), mat::inv(J, 3), n, 3, 3);
+//					//strains
+//					mat::clean(e, 6);
+//					for(unsigned j = 0; j < n; j++)
+//					{
+//						//displacements
+//						const double* u = node(j)->translation();
+//						//kinematic matrix
+//						B[0 + 6 * 1 + 18 * j] = 0;
+//						B[0 + 6 * 2 + 18 * j] = 0;
+//						B[1 + 6 * 0 + 18 * j] = 0;
+//						B[1 + 6 * 2 + 18 * j] = 0;
+//						B[2 + 6 * 0 + 18 * j] = 0;
+//						B[2 + 6 * 1 + 18 * j] = 0;
+//						B[3 + 6 * 2 + 18 * j] = 0;
+//						B[4 + 6 * 1 + 18 * j] = 0;
+//						B[5 + 6 * 0 + 18 * j] = 0;
+//						B[0 + 6 * 0 + 18 * j] = dNx[j + n * 0];
+//						B[1 + 6 * 1 + 18 * j] = dNx[j + n * 1];
+//						B[2 + 6 * 2 + 18 * j] = dNx[j + n * 2];
+//						B[3 + 6 * 0 + 18 * j] = dNx[j + n * 1];
+//						B[3 + 6 * 1 + 18 * j] = dNx[j + n * 0];
+//						B[4 + 6 * 0 + 18 * j] = dNx[j + n * 2];
+//						B[4 + 6 * 2 + 18 * j] = dNx[j + n * 0];
+//						B[5 + 6 * 1 + 18 * j] = dNx[j + n * 2];
+//						B[5 + 6 * 2 + 18 * j] = dNx[j + n * 1];
+//						//strains
+//						mat::multiply(e, B + 18 * j, u, 6, 3, 1, true);
+//					}
+//					//stress
+//					mat::multiply(s, C, e, 6, 6);
+//					//internal force
+//					for(unsigned j = 0; j < n; j++)
+//					{
+//						for(unsigned k = 0; k < 3; k++)
+//						{
+//							for(unsigned q = 0; q < 6; q++)
+//							{
+//								f[3 * j + k] += w * h * B[q + 6 * k + 18 * j] * s[q];
+//							}
+//						}
+//					}
+//				}
 				//return
 				return f;
 			}
@@ -288,45 +283,45 @@ namespace fea
 			}
 			double* Solid::face_force(double* f, const boundary::loads::Solid_Face* load) const
 			{
-				//load
-				const double v = load->value();
-				const unsigned e = load->face();
-				const double* q = load->direction();
-				//cell
-				const unsigned r = cell()->rule();
-				const unsigned n = cell()->vertices();
-				//gauss points
-				double p[3], J[9], g[6];
-				double N[n], s[r], w[r];
-				double du[3], dv[3], dn[3];
-				//external force
-				memset(f, 0, 3 * n * sizeof(double));
-				for(unsigned i = 0; i < r; i++)
-				{
-					for(unsigned j = 0; j < r; j++)
-					{
-						//point
-						mat::gauss_point(s[0], w[0], r, i);
-						mat::gauss_point(s[1], w[1], r, j);
-						//face
-						cell()->face(p, e, s[0], s[1]);
-						//shape
-						cell()->function(N, p);
-						//jacobian
-						cell()->jacobian(J, this, p);
-						cell()->gradient(g, e, s[0], s[1]);
-						mat::multiply(du, J, g + 0, 3, 3);
-						mat::multiply(dv, J, g + 3, 3, 3);
-						const double h = mat::norm(mat::cross(dn, du, dv), 3);
-						//contribution
-						for(unsigned k = 0; k < n; k++)
-						{
-							f[3 * k + 2] += v * h * w[0] * w[1] * N[k] * sin(q[1]);
-							f[3 * k + 0] += v * h * w[0] * w[1] * N[k] * cos(q[1]) * cos(q[0]);
-							f[3 * k + 1] += v * h * w[0] * w[1] * N[k] * cos(q[1]) * sin(q[0]);
-						}
-					}
-				}
+//				//load
+//				const double v = load->value();
+//				const unsigned e = load->face();
+//				const double* q = load->direction();
+//				//cell
+//				const unsigned r = cell()->rule();
+//				const unsigned n = cell()->vertices();
+//				//gauss points
+//				double p[3], J[9], g[6];
+//				double N[n], s[r], w[r];
+//				double du[3], dv[3], dn[3];
+//				//external force
+//				memset(f, 0, 3 * n * sizeof(double));
+//				for(unsigned i = 0; i < r; i++)
+//				{
+//					for(unsigned j = 0; j < r; j++)
+//					{
+//						//point
+//						mat::gauss_point(s[0], w[0], r, i);
+//						mat::gauss_point(s[1], w[1], r, j);
+//						//face
+//						cell()->face(p, e, s[0], s[1]);
+//						//shape
+//						cell()->function(N, p);
+//						//jacobian
+//						cell()->jacobian(J, this, p);
+//						cell()->gradient(g, e, s[0], s[1]);
+//						mat::multiply(du, J, g + 0, 3, 3);
+//						mat::multiply(dv, J, g + 3, 3, 3);
+//						const double h = mat::norm(mat::cross(dn, du, dv), 3);
+//						//contribution
+//						for(unsigned k = 0; k < n; k++)
+//						{
+//							f[3 * k + 2] += v * h * w[0] * w[1] * N[k] * sin(q[1]);
+//							f[3 * k + 0] += v * h * w[0] * w[1] * N[k] * cos(q[1]) * cos(q[0]);
+//							f[3 * k + 1] += v * h * w[0] * w[1] * N[k] * cos(q[1]) * sin(q[0]);
+//						}
+//					}
+//				}
 				//return
 				return f;
 			}
@@ -377,69 +372,69 @@ namespace fea
 			}
 			double* Solid::stiffness(double* k) const
 			{
-				//cell
-				const unsigned n = cell()->vertices();
-				const unsigned m = cells::Cell::max_nodes();
-				//stress
-				const unsigned t = 
-					(unsigned) mat::stress::sxx |
-					(unsigned) mat::stress::syy |
-					(unsigned) mat::stress::szz |
-					(unsigned) mat::stress::sxy |
-					(unsigned) mat::stress::sxz |
-					(unsigned) mat::stress::syz ;
-				//data
-				double p[3], J[9], B[18 * m];
-				double C[36], dNe[3 * m], dNx[3 * m];
-				memset(k, 0, 9 * n * n * sizeof(double));
-				//stiffness
-				((materials::Mechanic*) material())->elastic_stiffness(C, t);
-				//points
-				for(unsigned i = 0; i < m_points.size(); i++)
-				{
-					//point
-					const double h = cell()->point(p, i);
-					//jacobian
-					const double w = cell()->jacobian(J, this, p);
-					//gradient
-					mat::multiply(dNx, cell()->gradient(dNe, p), mat::inv(J, 3), n, 3, 3);
-					//kinematic matrix
-					for(unsigned j = 0; j < n; j++)
-					{
-						B[0 + 6 * 1 + 18 * j] = 0;
-						B[0 + 6 * 2 + 18 * j] = 0;
-						B[1 + 6 * 0 + 18 * j] = 0;
-						B[1 + 6 * 2 + 18 * j] = 0;
-						B[2 + 6 * 0 + 18 * j] = 0;
-						B[2 + 6 * 1 + 18 * j] = 0;
-						B[3 + 6 * 2 + 18 * j] = 0;
-						B[4 + 6 * 1 + 18 * j] = 0;
-						B[5 + 6 * 0 + 18 * j] = 0;
-						B[0 + 6 * 0 + 18 * j] = dNx[j + n * 0];
-						B[1 + 6 * 1 + 18 * j] = dNx[j + n * 1];
-						B[2 + 6 * 2 + 18 * j] = dNx[j + n * 2];
-						B[3 + 6 * 0 + 18 * j] = dNx[j + n * 1];
-						B[3 + 6 * 1 + 18 * j] = dNx[j + n * 0];
-						B[4 + 6 * 0 + 18 * j] = dNx[j + n * 2];
-						B[4 + 6 * 2 + 18 * j] = dNx[j + n * 0];
-						B[5 + 6 * 1 + 18 * j] = dNx[j + n * 2];
-						B[5 + 6 * 2 + 18 * j] = dNx[j + n * 1];
-					}
-					//stiffness
-					for(unsigned ci = 0; ci < 3 * n; ci++)
-					{
-						for(unsigned cj = 0; cj < 3 * n; cj++)
-						{
-							for(unsigned di = 0; di < 6; di++)
-							{
-								for(unsigned dj = 0; dj < 6; dj++)
-								{
-									k[ci + 3 * n * cj] += w * h * B[di + 6 * ci] * B[dj + 6 * cj] * C[di + 6 * dj];
-								}
-							}
-						}
-					}
-				}
+//				//cell
+//				const unsigned n = cell()->vertices();
+//				const unsigned m = cells::Cell::max_nodes();
+//				//stress
+//				const unsigned t = 
+//					(unsigned) mat::stress::sxx |
+//					(unsigned) mat::stress::syy |
+//					(unsigned) mat::stress::szz |
+//					(unsigned) mat::stress::sxy |
+//					(unsigned) mat::stress::sxz |
+//					(unsigned) mat::stress::syz ;
+//				//data
+//				double p[3], J[9], B[18 * m];
+//				double C[36], dNe[3 * m], dNx[3 * m];
+//				memset(k, 0, 9 * n * n * sizeof(double));
+//				//stiffness
+//				((materials::Mechanic*) material())->elastic_stiffness(C, t);
+//				//points
+//				for(unsigned i = 0; i < m_points.size(); i++)
+//				{
+//					//point
+//					const double h = cell()->point(p, i);
+//					//jacobian
+//					const double w = cell()->jacobian(J, this, p);
+//					//gradient
+//					mat::multiply(dNx, cell()->gradient(dNe, p), mat::inv(J, 3), n, 3, 3);
+//					//kinematic matrix
+//					for(unsigned j = 0; j < n; j++)
+//					{
+//						B[0 + 6 * 1 + 18 * j] = 0;
+//						B[0 + 6 * 2 + 18 * j] = 0;
+//						B[1 + 6 * 0 + 18 * j] = 0;
+//						B[1 + 6 * 2 + 18 * j] = 0;
+//						B[2 + 6 * 0 + 18 * j] = 0;
+//						B[2 + 6 * 1 + 18 * j] = 0;
+//						B[3 + 6 * 2 + 18 * j] = 0;
+//						B[4 + 6 * 1 + 18 * j] = 0;
+//						B[5 + 6 * 0 + 18 * j] = 0;
+//						B[0 + 6 * 0 + 18 * j] = dNx[j + n * 0];
+//						B[1 + 6 * 1 + 18 * j] = dNx[j + n * 1];
+//						B[2 + 6 * 2 + 18 * j] = dNx[j + n * 2];
+//						B[3 + 6 * 0 + 18 * j] = dNx[j + n * 1];
+//						B[3 + 6 * 1 + 18 * j] = dNx[j + n * 0];
+//						B[4 + 6 * 0 + 18 * j] = dNx[j + n * 2];
+//						B[4 + 6 * 2 + 18 * j] = dNx[j + n * 0];
+//						B[5 + 6 * 1 + 18 * j] = dNx[j + n * 2];
+//						B[5 + 6 * 2 + 18 * j] = dNx[j + n * 1];
+//					}
+//					//stiffness
+//					for(unsigned ci = 0; ci < 3 * n; ci++)
+//					{
+//						for(unsigned cj = 0; cj < 3 * n; cj++)
+//						{
+//							for(unsigned di = 0; di < 6; di++)
+//							{
+//								for(unsigned dj = 0; dj < 6; dj++)
+//								{
+//									k[ci + 3 * n * cj] += w * h * B[di + 6 * ci] * B[dj + 6 * cj] * C[di + 6 * dj];
+//								}
+//							}
+//						}
+//					}
+//				}
 				//return
 				return k;
 			}

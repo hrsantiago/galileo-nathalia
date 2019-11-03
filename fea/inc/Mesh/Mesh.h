@@ -57,13 +57,6 @@ namespace fea
 		{
 		public:
 			//friends
-			friend class nodes::Node;
-			friend class cells::Cell;
-			friend class joints::Joint;
-			friend class sections::Section;
-			friend class elements::Element;
-			friend class materials::Material;
-			
 			friend class models::Model;
 			friend class boundary::Boundary;
 			friend class analysis::Assembler;
@@ -108,13 +101,13 @@ namespace fea
 			double size(void) const;
 			double limit(unsigned, bool) const;
 
-			//sizes
-			unsigned nodes(void) const;
-			unsigned cells(void) const;
-			unsigned joints(void) const;
-			unsigned sections(void) const;
-			unsigned elements(void) const;
-			unsigned materials(void) const;
+			//lists
+			const std::vector<nodes::Node*>& nodes(void) const;
+			const std::vector<cells::Cell*>& cells(void) const;
+			const std::vector<joints::Joint*>& joints(void) const;
+			const std::vector<sections::Section*>& sections(void) const;
+			const std::vector<elements::Element*>& elements(void) const;
+			const std::vector<materials::Material*>& materials(void) const;
 
 			//add
 			nodes::Node* add_node(const double*);
@@ -150,7 +143,9 @@ namespace fea
 			void apply_dof(void) const;
 			
 			//results
-			void plot(double, const double** = nullptr, const double* = nullptr, const double** = nullptr) const;
+			void plot_nodes(double, const double** = nullptr, const double* = nullptr, const double** = nullptr) const;
+			void plot_joints(double, const double** = nullptr, const double* = nullptr, const double** = nullptr) const;
+			void plot_elements(double, const double** = nullptr, const double* = nullptr, const double** = nullptr) const;
 
 			//attributes
 			static models::Model* m_model;

@@ -77,8 +77,7 @@ namespace fea
 				}
 				else
 				{
-					elastic_flexibility(C, t);
-					return mat::inv(C, mat::bit_find(t, (unsigned) mat::stress::last));
+					return mat::inverse(elastic_flexibility(C, t), mat::bit_count(t));
 				}
 			}
 			double* Mechanic::elastic_flexibility(double* D, unsigned t) const
@@ -118,7 +117,7 @@ namespace fea
 			{
 				//components
 				const unsigned t = mp.m_stress_types;
-				const unsigned n = mat::bit_find(t, (unsigned) mat::stress::last);
+				const unsigned n = mat::bit_count(t);
 				//stress
 				double ee[6], se[6], C[36];
 				const double* ep = mp.m_plastic_strain_new;

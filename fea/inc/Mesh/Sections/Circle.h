@@ -43,9 +43,9 @@ namespace fea
 				virtual double area(void) const override;
 				virtual double width(void) const override;
 				virtual double height(void) const override;
-				virtual double inercia_y(void) const override;
-				virtual double inercia_z(void) const override;
-				virtual double inercia_w(void) const override;
+				virtual double inertia_y(void) const override;
+				virtual double inertia_z(void) const override;
+				virtual double inertia_w(void) const override;
 				virtual double centroid_y(void) const override;
 				virtual double centroid_z(void) const override;
 				virtual double plastic_modulus_y(void) const override;

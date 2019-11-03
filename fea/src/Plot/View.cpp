@@ -2,7 +2,6 @@
 #include <cstring>
 
 //mat
-#include "misc/defs.h"
 #include "linear/dense.h"
 
 //fea

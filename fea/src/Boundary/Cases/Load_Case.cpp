@@ -108,7 +108,7 @@ namespace fea
 		//index
 		unsigned Load_Case::index(void) const
 		{
-			for(unsigned i = 0; i < m_boundary->load_cases(); i++)
+			for(unsigned i = 0; i < m_boundary->load_cases().size(); i++)
 			{
 				if(m_boundary->load_case(i) == this)
 				{

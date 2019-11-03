@@ -58,6 +58,7 @@ namespace fea
 			unsigned Dynamic_Linear::force_set(void) const
 			{
 				return 
+					(unsigned) solvers::force::R | 
 					(unsigned) solvers::force::Fi | 
 					(unsigned) solvers::force::Fn | 
 					(unsigned) solvers::force::Fe;

@@ -4,6 +4,10 @@
 //suitesparse
 #include <umfpack.h>
 
+//mat
+#include "linear/sparse.h"
+#include "linear/linear.h"
+
 //fea
 #include "Model/Model.h"
 
@@ -13,10 +17,23 @@
 #include "Boundary/Boundary.h"
 
 #include "Analysis/Analysis.h"
-#include "Analysis/Solvers/Types.h"
-#include "Analysis/Solvers/Solvers.h"
-#include "Analysis/Solvers/Watch_Dof.h"
 #include "Analysis/Assembler/Assembler.h"
+
+#include "Analysis/Solvers/Time.h"
+#include "Analysis/Solvers/Types.h"
+#include "Analysis/Solvers/State.h"
+#include "Analysis/Solvers/Modal.h"
+#include "Analysis/Solvers/Solver.h"
+#include "Analysis/Solvers/Minimum.h"
+#include "Analysis/Solvers/Buckling.h"
+#include "Analysis/Solvers/Watch_Dof.h"
+#include "Analysis/Solvers/Nonlinear.h"
+#include "Analysis/Solvers/Static_Linear.h"
+#include "Analysis/Solvers/Dynamic_Linear.h"
+#include "Analysis/Solvers/Transient_Linear.h"
+#include "Analysis/Solvers/Static_Nonlinear.h"
+#include "Analysis/Solvers/Dynamic_Nonlinear.h"
+#include "Analysis/Solvers/Transient_Nonlinear.h"
 
 namespace fea
 {
@@ -45,32 +62,32 @@ namespace fea
 			//destructor
 			Solver::~Solver(void)
 			{
-				delete[] m_f; 
-				delete[] m_K; 
-				delete[] m_C; 
+				delete[] m_f;
+				delete[] m_K;
+				delete[] m_C;
 				delete[] m_M;
-				delete[] m_u; 
-				delete[] m_v; 
-				delete[] m_a; 
-				delete[] m_r; 
-				delete[] m_R; 
-				delete[] m_k; 
-				delete[] m_du; 
-				delete[] m_dv; 
-				delete[] m_da; 
-				delete[] m_dut; 
-				delete[] m_ddu; 
-				delete[] m_Fiu; 
-				delete[] m_Fik; 
-				delete[] m_Fnu; 
-				delete[] m_Fnk; 
-				delete[] m_Feu; 
-				delete[] m_Fek; 
-				delete[] m_Fru; 
-				delete[] m_Frk; 
-				delete[] m_Fdu; 
+				delete[] m_u;
+				delete[] m_v;
+				delete[] m_a;
+				delete[] m_r;
+				delete[] m_R;
+				delete[] m_k;
+				delete[] m_du;
+				delete[] m_dv;
+				delete[] m_da;
+				delete[] m_dut;
+				delete[] m_ddu;
+				delete[] m_Fiu;
+				delete[] m_Fik;
+				delete[] m_Fnu;
+				delete[] m_Fnk;
+				delete[] m_Feu;
+				delete[] m_Fek;
+				delete[] m_Fru;
+				delete[] m_Frk;
+				delete[] m_Fdu;
 				delete[] m_Fdk;
-				delete[] m_ddur; 
+				delete[] m_ddur;
 				delete[] m_ddut;
 				delete m_watch_dof;
 			}
@@ -416,8 +433,8 @@ namespace fea
 			bool Solver::check(void) const
 			{
 				//sizes
-				const unsigned nn = m_analysis->model()->mesh()->nodes();
-				const unsigned nl = m_analysis->model()->boundary()->load_cases();
+				const unsigned nn = m_analysis->model()->mesh()->nodes().size();
+				const unsigned nl = m_analysis->model()->boundary()->load_cases().size();
 				//check watch dof
 				if(m_watch_dof->m_node >= nn)
 				{
@@ -464,7 +481,7 @@ namespace fea
 				return false;
 			}
 			
-			//linear solver
+			//linear
 			void Solver::lindel(void)
 			{
 				umfpack_di_free_numeric(&m_num);
@@ -494,26 +511,26 @@ namespace fea
 				//substitution
 				return umfpack_di_solve(UMFPACK_A, c, r, K, x, f, m_num, nullptr, nullptr) == UMFPACK_OK;
 			}
-			double* Solver::linsolve(double* x, const double* K, const double* f)
+			bool Solver::linsolve(double* x, const double* K, const double* f)
 			{
 				//data
+				bool test = false;
 				const int* c = m_analysis->assembler()->m_col_map;
 				const int* r = m_analysis->assembler()->m_row_map;
 				const unsigned n = m_analysis->assembler()->m_dof_unknow;
 				//solve
-				bool t = false;
 				if(umfpack_di_symbolic(n, n, c, r, K, &m_sym, nullptr, nullptr) == UMFPACK_OK)
 				{
 					if(umfpack_di_numeric(c, r, K, m_sym, &m_num, nullptr, nullptr) == UMFPACK_OK)
 					{
-						t = umfpack_di_solve(UMFPACK_A, c, r, K, x, f, m_num, nullptr, nullptr) == UMFPACK_OK;
+						test = umfpack_di_solve(UMFPACK_A, c, r, K, x, f, m_num, nullptr, nullptr) == UMFPACK_OK;
 					}
 				}
 				//free memory
 				umfpack_di_free_numeric(&m_num);
 				umfpack_di_free_symbolic(&m_sym);
 				//return
-				return t ? x : nullptr;
+				return test;
 			}
 			
 			//static attributes

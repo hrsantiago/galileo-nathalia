@@ -14,7 +14,7 @@ namespace fea
 			Generic::Generic(void) :
 			m_area(1.00e-2),
 			m_width(1.00e-1), m_height(1.00e-1),
-			m_inercia_x(1.42e-5), m_inercia_y(8.33e-6), m_inercia_z(8.33e-6),
+			m_inertia_x(1.42e-5), m_inertia_y(8.33e-6), m_inertia_z(8.33e-6),
 			m_centroid_y(5.00e-2), m_centroid_z(5.00e-2),
 			m_plastic_modulus_y(2.50e-4), m_plastic_modulus_z(2.50e-4),
 			m_shear_coefficient_y(8.33e-1), m_shear_coefficient_z(8.33e-1),
@@ -37,9 +37,9 @@ namespace fea
 							&m_area,
 							&m_width,
 							&m_height,
-							&m_inercia_x,
-							&m_inercia_y,
-							&m_inercia_z,
+							&m_inertia_x,
+							&m_inertia_y,
+							&m_inertia_z,
 							&m_centroid_y,
 							&m_centroid_z,
 							&m_plastic_modulus_y,
@@ -56,9 +56,9 @@ namespace fea
 							 m_area,
 							 m_width,
 							 m_height,
-							 m_inercia_x,
-							 m_inercia_y,
-							 m_inercia_z,
+							 m_inertia_x,
+							 m_inertia_y,
+							 m_inertia_z,
 							 m_centroid_y,
 							 m_centroid_z,
 							 m_plastic_modulus_y,
@@ -96,17 +96,17 @@ namespace fea
 			{
 				return m_centroid_z = cz;
 			}
-			double Generic::inercia_x(double Ix)
+			double Generic::inertia_x(double Ix)
 			{
-				return m_inercia_x = Ix;
+				return m_inertia_x = Ix;
 			}
-			double Generic::inercia_y(double Iy)
+			double Generic::inertia_y(double Iy)
 			{
-				return m_inercia_y = Iy;
+				return m_inertia_y = Iy;
 			}
-			double Generic::inercia_z(double Iz)
+			double Generic::inertia_z(double Iz)
 			{
-				return m_inercia_z = Iz;
+				return m_inertia_z = Iz;
 			}
 			double Generic::plastic_modulus_y(double Wy)
 			{
@@ -147,21 +147,21 @@ namespace fea
 			{
 				return m_height;
 			}
-			double Generic::inercia_x(void) const
+			double Generic::inertia_x(void) const
 			{
-				return m_inercia_x;
+				return m_inertia_x;
 			}
-			double Generic::inercia_y(void) const
+			double Generic::inertia_y(void) const
 			{
-				return m_inercia_y;
+				return m_inertia_y;
 			}
-			double Generic::inercia_z(void) const
+			double Generic::inertia_z(void) const
 			{
-				return m_inercia_z;
+				return m_inertia_z;
 			}
-			double Generic::inercia_w(void) const
+			double Generic::inertia_w(void) const
 			{
-				return m_inercia_y + m_inercia_z - m_inercia_x;
+				return m_inertia_y + m_inertia_z - m_inertia_x;
 			}
 			double Generic::centroid_z(void) const
 			{

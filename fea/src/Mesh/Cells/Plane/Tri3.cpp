@@ -69,6 +69,18 @@ namespace fea
 				B[2 + 3 * 1] = +0.5;
 				return B;
 			}
+			
+			//integration
+			unsigned Tri3::points(void) const
+			{
+				return 1;
+			}
+			double Tri3::point(double* x, unsigned i) const
+			{
+				x[0] = 0;
+				x[1] = 0;
+				return 2;
+			}
 		}
 	}
 }

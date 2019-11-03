@@ -15,8 +15,13 @@ namespace fea
 	{
 		namespace solvers
 		{
+			//static data
+			static unsigned n;
+			static unsigned m;
+			static Assembler* assembler;
+			
 			//constructors
-			Buckling::Buckling(void) : m_scale(1)
+			Buckling::Buckling(void)
 			{
 				return;
 			}
@@ -30,13 +35,11 @@ namespace fea
 			//serialization
 			void Buckling::load(FILE* file)
 			{
-				Solver::load(file);
-				fscanf(file, "%lf", &m_scale);
+				Eigen::load(file);
 			}
 			void Buckling::save(FILE* file) const
 			{
-				Solver::save(file);
-				fprintf(file, "%+.6e", m_scale);
+				Eigen::save(file);
 			}
 
 			//type
@@ -45,16 +48,6 @@ namespace fea
 				return solvers::type::buckling;
 			}
 			
-			//data
-			double Buckling::scale(void) const
-			{
-				return m_scale;
-			}
-			double Buckling::scale(double scale)
-			{
-				return m_scale = scale;
-			}
-
 			//sets
 			unsigned Buckling::state_set(void) const
 			{
@@ -80,7 +73,10 @@ namespace fea
 				//step
 				m_step = 0;
 				//assembler
-				const Assembler* assembler = m_analysis->assembler();
+				assembler = m_analysis->assembler();
+				//dofs
+				m = modes();
+				n = assembler->dof_unknow();
 				//apply
 				assembler->apply_supports();
 				assembler->apply_initials();
@@ -88,20 +84,24 @@ namespace fea
 				assembler->apply_configurations();
 				//stiffness
 				assembler->assembly_stiffness();
-				//record
-				assembler->record();
-				//decomposition
-//				arma::eig_sym(m_k, m_f, arma::mat(m_K));
-				//dofs
-				const unsigned nu = assembler->dof_unknow();
-				//record
-				while(m_step < nu)
+				//solve
+				if(!eigen_std())
 				{
-					mat::mul(m_u, m_f + m_step * nu, nu, m_scale);
+					printf("\tBuckling decomposition failed!\n");
+					return;
+				}
+				//record
+				while(m_step < m)
+				{
+					for(unsigned i = 0; i < n; i++)
+					{
+						m_u[i] = m_scale * m_f[n * m_step + i];
+					}
 					assembler->apply_state();
 					assembler->apply_dependencies();
+					assembler->apply_configurations();
 					assembler->record();
-					printf("mode: %04d stiffness: %+4.2e dof: %+4.2e\n", m_step, m_k[m_step], dof());
+					printf("mode: %04d stiffness: %+.2e dof: %+.2e\n", m_step, m_k[m_step], dof());
 					m_step++;
 				}
 			}
@@ -114,7 +114,7 @@ namespace fea
 			}
 			void Buckling::finish(void) const
 			{
-				const std::string path = m_analysis->model()->folder() + "/Solver/Stiffness.txt";
+				const std::string path = m_analysis->model()->folder() + "/Solver/Load.txt";
 				FILE* file = fopen(path.c_str(), "w");
 				fprintf(file, m_results[0].c_str());
 				fclose(file);

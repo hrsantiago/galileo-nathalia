@@ -112,7 +112,7 @@ namespace fea
 			{
 				printf("\tDead Case: \t%s\n", m_model->boundary()->load_case(m_solver->m_dead_case)->label());
 			}
-			if(m_model->boundary()->load_cases() != 0)
+			if(!m_model->boundary()->load_cases().empty())
 			{
 				printf("\tLoad Case: \t%s\n", m_model->boundary()->load_case(m_solver->m_load_case)->label());
 			}

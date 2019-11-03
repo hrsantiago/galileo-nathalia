@@ -1,7 +1,7 @@
 #compiler
-DEFS = 
+CXX = g++
 INCS = -I inc/ -I ../mat/inc/
-WARS = -Wall -Wformat=0 -Wno-reorder -Wno-unused-result
+WARS = -Wall -Wformat=0 -Wno-reorder -Wno-unused-result -Wno-write-strings
 CXXFLAGS = -m64 -std=c++11 -pipe -pthread -fopenmp -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS) $(WARS)
 
 #mode
@@ -13,44 +13,35 @@ else
 	CXXFLAGS += -Ofast
 endif
 
-#platform
-ifneq ($(t), w)
-	CXX = g++
-	PLA = linux
-else
-	PLA = windows
-	CXX = x86_64-w64-mingw32-g++
-endif
-
 #ouput
-MAT = dist/$(PLA)/$(CONF)/libmat.a
-OUT = dist/$(PLA)/$(CONF)/libfea.a
+MAT = dist/$(CONF)/libmat.a
+OUT = dist/$(CONF)/libfea.a
 
 #sources
 src := $(sort $(shell find -path './src/*.cpp'))
 
 #objects
-obj = $(sort $(subst ./src/, build/$(PLA)/$(CONF)/, $(addsuffix .o, $(basename $(src)))))
+obj = $(sort $(subst ./src/, build/$(CONF)/, $(addsuffix .o, $(basename $(src)))))
 
 #dependencies
 dep = $(subst .o,.d, $(obj))
 
 #rules
 all : mat $(OUT)
-	@echo 'build($(PLA) - $(CONF)): complete!'
+	@echo 'build($(CONF)): complete!'
 
 $(OUT) : ../mat/$(MAT) $(obj)
-	@mkdir -p dist/$(PLA)/$(CONF)
+	@mkdir -p dist/$(CONF)
 	@rm -rf $(OUT)
 	@ar -rv $(OUT) $(obj)
 	@ranlib $(OUT)
-	@echo 'library($(PLA) - $(CONF)): $@'
+	@echo 'library($(CONF)): $@'
 
 mat : 
 	@cd ../mat && make -f Makefile m=$m t=$t
 	
-build/$(PLA)/$(CONF)/%.o : src/%.cpp build/$(PLA)/$(CONF)/%.d
-	@echo 'compiling($(PLA) - $(CONF)): $<'
+build/$(CONF)/%.o : src/%.cpp build/$(CONF)/%.d
+	@echo 'compiling($(CONF)): $<'
 	@mkdir -p $(dir $@) && rm -rf $@
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -59,8 +50,8 @@ $(dep) : ;
 -include $(dep)
 
 clean :
-	@rm -rf dist/$(PLA)/$(CONF) && rm -rf build/$(PLA)/$(CONF)
-	@echo 'clean($(PLA) - $(CONF)): complete!'
+	@rm -rf dist/$(CONF) && rm -rf build/$(CONF)
+	@echo 'clean($(CONF)): complete!'
 
 cleanlib : 
 	@cd ../mat && make -f Makefile m=$m t=$t cleanall

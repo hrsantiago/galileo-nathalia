@@ -107,24 +107,12 @@ namespace fea
 				return J[0] = mat::norm(xj, xi, 3) / 2;
 			}
 
-			//integration
-			unsigned Line::points(void) const
-			{
-				return m_rule;
-			}
-			double Line::point(double* x, unsigned i) const
-			{
-				double w;
-				mat::gauss_point(x[0], w, m_rule, i);
-				return w;
-			}
-
 			//mesh
 			void Line::refine(unsigned index, unsigned n)
 			{
 				//sizes
-				const unsigned nn = m_mesh->nodes();
-				const unsigned ne = m_mesh->elements();
+				const unsigned nn = m_mesh->nodes().size();
+				const unsigned ne = m_mesh->elements().size();
 				//element
 				elements::Element* element = m_mesh->element(index);
 				//coordinates
@@ -168,7 +156,7 @@ namespace fea
 				glLineWidth(2);
 				glColor4dv(color);
 				glBegin(GL_LINE_STRIP);
-				for(unsigned i = 0; i < element->nodes(); i++)
+				for(unsigned i = 0; i < element->nodes().size(); i++)
 				{
 					if(values)
 					{

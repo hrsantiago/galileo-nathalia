@@ -1,8 +1,11 @@
 #pragma once
 
+//std
 #include <cfloat>
 #include <climits>
 
+//fea
+#include "Analysis/Solvers/Eigen.h"
 #include "Analysis/Solvers/Nonlinear.h"
 
 namespace fea
@@ -32,7 +35,7 @@ namespace fea
 			};
 			
 			//class
-			class Static_Nonlinear : public Nonlinear
+			class Static_Nonlinear : public virtual Eigen, public virtual Nonlinear
 			{
 			public:
 				//friends
@@ -57,6 +60,9 @@ namespace fea
 				bool frequencies(bool);
 				bool branch_switch(void) const;
 				bool branch_switch(bool);
+				
+				double tolerance(void) const;
+				double tolerance(double);
 				
 				double load_min(void) const;
 				double load_min(double);
