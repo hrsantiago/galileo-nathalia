@@ -3,24 +3,18 @@ ifneq ($(m), r)
 	m = d
 endif
 
-#platform
-ifneq ($(t), w)
-	t = l
-endif
-
 #rules
-all : 
-	@cd ./ben && make -f Makefile m=$m t=$t
-	@cd ./gui && make -f Makefile m=$m t=$t
+all : run
+
+run : ext ben gui
+
+ext : 
+	@cd ./ext && make -f Makefile m=$m t=$t
 
 ben : 
 	@cd ./ben && make -f Makefile run m=$m t=$t
 	
 gui : 
-	@cd ./gui && make -f Makefile run m=$m t=$t
-
-run : 
-	@cd ./ben && make -f Makefile run m=$m t=$t
 	@cd ./gui && make -f Makefile run m=$m t=$t
 
 clean :
@@ -41,8 +35,8 @@ install :
 	@cp -r gui/rsc/ /usr/share/galileo/
 	@cp install/galileo.jpg /usr/share/icons/
 	@cp install/galileo.desktop /usr/share/applications/
-	@cp ./gui/dist/Linux/release/gui.out ./gui/dist/Linux/release/galileo
-	@mv ./gui/dist/Linux/release/galileo /usr/bin/
+	@cp ./gui/dist/release/gui.out ./gui/dist/release/galileo
+	@mv ./gui/dist/release/galileo /usr/bin/
 	@echo Galileo: Installed!
 	
 .PHONY : all ben gui run clean cleanlib cleanall install

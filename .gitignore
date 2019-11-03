@@ -1,7 +1,7 @@
 Desktop-*/
 build*/
 dist*/
-*.pro.user
+*.pro.user*
 *~
 _current
 _gdb_history
