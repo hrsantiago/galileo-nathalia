@@ -13,8 +13,10 @@ namespace mat
 	void cyclic(unsigned, unsigned&, unsigned&);
 
 	bool bit_set(unsigned, unsigned);
-	unsigned char bit_find(unsigned, unsigned);
-	unsigned bit_find(unsigned, unsigned, unsigned char);
+	unsigned char bit_index(unsigned);
+	unsigned char bit_count(unsigned);
+	unsigned char bit_index(unsigned, unsigned);
+	unsigned char bit_search(unsigned, unsigned char);
 
 	int delta(unsigned, unsigned);
 	int permutation(unsigned, unsigned, unsigned);
@@ -28,13 +30,13 @@ namespace mat
 	double* inv_color(double*, const double*);
 	double* map_color(double*, const double**, double);
 	
-	unsigned log2(unsigned);
-	
 	unsigned* range(unsigned*, unsigned);
 	unsigned* range(unsigned*, unsigned, unsigned);
 	unsigned* range(unsigned*, unsigned, unsigned, unsigned);
 	
 	char* time_break(char*, double);
 	
-	void gauss_point(double&, double&, unsigned, unsigned);
+	const double* gauss_points(unsigned);
+	const double* gauss_weights(unsigned);
+	double gauss_point(double&, unsigned, unsigned);
 }

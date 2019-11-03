@@ -2,7 +2,6 @@
 #include <cmath>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 #include "misc/stress.h"
 
@@ -10,7 +9,7 @@ namespace mat
 {
 	double stress_value(const double* s, unsigned t, unsigned c)
 	{
-		return t & c ? s[bit_find(t, c)] : 0;
+		return t & c ? s[bit_index(t, c)] : 0;
 	}
 	double* stress_vector(double* vp, const double* vc, unsigned t, double p)
 	{
@@ -25,7 +24,7 @@ namespace mat
 	}
 	double* stress_matrix(double* mp, const double* mc, unsigned t, double p)
 	{
-		const unsigned n = bit_find(t, (unsigned) stress::last);
+		const unsigned n = bit_count(t);
 		for(unsigned i = 0, a = 0; i < 6; i++)
 		{
 			if(t & 1 << i)

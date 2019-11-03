@@ -1,62 +1,63 @@
 //std
 #include <cmath>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 //mat
-#include "misc/util.h"
-#include "linear/matrix.h"
+#include "linear/dense.h"
+#include "linear/sparse.h"
+#include "linear/linear.h"
 
 namespace mat
 {
-	void plot(const double* k, const int* r, const int* c, unsigned n, const char* s)
-	{
-		//open file
-		FILE* file = fopen("temp.gnu", "w");
-		//configuration
-		fprintf(file, "unset key\n");
-		fprintf(file, "set view map\n");
-		fprintf(file, "set title '%s'\n", s);
-		fprintf(file, "set ylabel 'rows'\n");
-		fprintf(file, "set xlabel 'columns'\n");
-		fprintf(file, "set xrange [0 : %d]\n", n - 1);
-		fprintf(file, "set yrange [%d : 0]\n", n - 1);
-		fprintf(file, "set palette rgbformula 33, 13, 10\n");
-		fprintf(file, "set style fill transparent solid noborder\n");
-		//plot
-		fprintf(file, "splot '-' using 2 : 1 : 3 with circles lc palette\n");
-		for(unsigned i = 0; i < n; i++)
-		{
-			for(int j = c[i]; j < c[i + 1]; j++)
-			{
-				fprintf(file, "%04d %04d %+.2e\n", r[j], i, k[j]);
-			}
-		}
-		fprintf(file, "e");
-		//close file
-		fclose(file);
-		//call gnuplot
-		system("gnuplot -p 'temp.gnu'");
-		//remove file
-		remove("temp.gnu");
-	}
-	
-	void print(const double* k, const int* r, const int* c, unsigned n, const char* s)
+	//sparse
+	void print(const double* k, const int* r, const int* c, unsigned n, const char* s, bool t)
 	{
 		if(strlen(s) != 0)
 		{
 			printf("%s\n", s);
 		}
-		for(unsigned i = 0; i < n; i++)
+		if(!t)
 		{
-			for(int j = c[i]; j < c[i + 1]; j++)
+			for(unsigned i = 0; i < n; i++)
 			{
-				printf("(%04d, %04d): %+.2e\n", r[j], i, k[j]);
+				for(int j = c[i]; j < c[i + 1]; j++)
+				{
+					printf("(%04d, %04d): %+.2e\n", r[j], i, k[j]);
+				}
+			}
+		}
+		else
+		{
+			for(unsigned i = 0; i < n; i++)
+			{
+				for(unsigned j = 0; j < n; j++)
+				{
+					printf("%+.2e ", value(k, r, c, i, j));
+				}
+				printf("\n");
 			}
 		}
 	}
 	
+	double max(const double* k, const int* r, const int* c, unsigned n)
+	{
+		double v = fabs(k[0]);
+		for(int i = 1; i < c[n]; i++)
+		{
+			v = fmax(fabs(k[i]), v);
+		}
+		return v;
+	}
+	double min(const double* k, const int* r, const int* c, unsigned n)
+	{
+		double v = fabs(k[0]);
+		for(int i = 1; i < c[n]; i++)
+		{
+			v = fmin(fabs(k[i]), v);
+		}
+		return v;
+	}
 	double trace(const double* k, const int* r, const int* c, unsigned n)
 	{
 		double s = 0;
@@ -95,6 +96,96 @@ namespace mat
 			}
 		}
 		return k[0];
+	}
+
+	double* mulvec(double* y, const double* K, const int* r, const int* c, const double* x, unsigned n)
+	{
+		clean(y, n);
+		for(unsigned i = 0; i < n; i++)
+		{
+			for(int j = c[i]; j < c[i + 1]; j++)
+			{
+				y[r[j]] += K[j] * x[i];
+			}
+		}
+		return y;
+	}
+
+	bool eigen(double& v, double* e, const double* K, const int* r, const int* c, unsigned n, bool t)
+	{
+		//setup
+		randu(e, n);
+		normalize(e, n);
+		double s, y[n], q[n];
+		const unsigned m = 2 * n * n;
+		const double k = 1e-5 * max(K, c[n], nullptr, true);
+		//max
+		for(unsigned i = 0; i < m; i++)
+		{
+			if(power_iteration(v, y, q, e, K, r, c, n, 0, k))
+			{
+				break;
+			}
+		}
+		//shift
+		if(t && v < 0 || !t && v > 0)
+		{
+			randu(e, n);
+			normalize(e, n);
+			s = t ? +v : -v;
+			for(unsigned i = 0; i < m; i++)
+			{
+				if(power_iteration(v, y, q, e, K, r, c, n, s, k))
+				{
+					return true;
+				}
+			}
+		}
+		//return
+		return v;
+	}
+	double eigen(double* e, const double* K, const double* M, const int* r, const int* v, unsigned n, bool t)
+	{
+		return 0;
+	}
+	
+	double* eigen(double* v, double* E, const double* K, const int* r, const int* c, unsigned n, unsigned m)
+	{
+		return nullptr;
+	}
+	double* eigen(double* v, double* E, const double* K, const double* M, const int* r, const int* c, unsigned n, unsigned m)
+	{
+		return nullptr;
+	}
+
+	bool power_iteration(double& w, double* y, double* q, double* e, const double* K, const int* r, const int* c, unsigned n, double v, double t)
+	{
+		//multiply
+		mulvec(y, K, r, c, e, n);
+		//shift
+		if(v != 0)
+		{
+			for(unsigned i = 0; i < n; i++)
+			{
+				y[i] += v * e[i];
+			}
+		}
+		//check
+		w = dot(e, y, n);
+		for(unsigned i = 0; i < n; i++)
+		{
+			q[i] = y[i] - w * e[i];
+		}
+		if(norm(q, n) < t)
+		{
+			w -= v;
+			return true;
+		}
+		//update
+		normalize(y, n);
+		memcpy(e, y, n * sizeof(double));
+		//return
+		return false;
 	}
 
 	double* convert(double* m, const double* k, const int* r, const int* c, unsigned n)

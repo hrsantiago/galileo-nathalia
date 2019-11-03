@@ -5,44 +5,11 @@
 #include <cstring>
 
 //mat
-#include "misc/defs.h"
 #include "misc/util.h"
 #include "linear/dense.h"
 
 namespace mat
 {
-	void plot(const double* k, unsigned n, unsigned m, const char* s)
-	{
-		//open file
-		FILE* file = fopen("temp.gnu", "w");
-		//configuration
-		fprintf(file, "unset key\n");
-		fprintf(file, "set view map\n");
-		fprintf(file, "set title '%s'\n", s);
-		fprintf(file, "set ylabel 'rows'\n");
-		fprintf(file, "set xlabel 'columns'\n");
-		fprintf(file, "set xrange [0 : %d]\n", m - 1);
-		fprintf(file, "set yrange [0 : %d]\n", n - 1);
-		fprintf(file, "set palette rgbformula 33, 13, 10\n");
-		//plot
-		fprintf(file, "splot '-' matrix with image\n");
-		for(unsigned i = 0; i < n; i++)
-		{
-			for(unsigned j = 0; j < m; j++)
-			{
-				fprintf(file, "%+.2e ", k[i + n * j]);
-			}
-			fprintf(file, "\n");
-		}
-		fprintf(file, "e");
-		//close file
-		fclose(file);
-		//call gnuplot
-		system("gnuplot -p 'temp.gnu'");
-		//remove file
-		remove("temp.gnu");
-	}
-	
 	void print(const double* x, unsigned n, const char* s)
 	{
 		if(strlen(s) != 0)
@@ -65,73 +32,6 @@ namespace mat
 			for(unsigned j = 0; j < m; j++)
 			{
 				printf("%+.2e ", k[i + n * j]);
-			}
-			printf("\n");
-		}
-	}
-	
-	void print_diag(const double* k, unsigned n, const char* s)
-	{
-		if(strlen(s) != 0)
-		{
-			printf("%s\n", s);
-		}
-		for(unsigned i = 0; i < n; i++)
-		{
-			for(unsigned j = 0; j < n; j++)
-			{
-				if(j != i)
-				{
-					printf("%*s ", 9, "");
-				}
-				else
-				{
-					printf("%+.2e ", k[i + n * j]);
-				}
-			}
-			printf("\n");
-		}
-	}
-	void print_upper(const double* k, unsigned n, const char* s)
-	{
-		if(strlen(s) != 0)
-		{
-			printf("%s\n", s);
-		}
-		for(unsigned i = 0; i < n; i++)
-		{
-			for(unsigned j = 0; j < n; j++)
-			{
-				if(j <= i)
-				{
-					printf("%*s ", 9, "");
-				}
-				else
-				{
-					printf("%+.2e ", k[i + n * j]);
-				}
-			}
-			printf("\n");
-		}
-	}
-	void print_lower(const double* k, unsigned n, const char* s)
-	{
-		if(strlen(s) != 0)
-		{
-			printf("%s\n", s);
-		}
-		for(unsigned i = 0; i < n; i++)
-		{
-			for(unsigned j = 0; j < n; j++)
-			{
-				if(j >= i)
-				{
-					printf("%*s ", 9, "");
-				}
-				else
-				{
-					printf("%+.2e ", k[i + n * j]);
-				}
 			}
 			printf("\n");
 		}
@@ -307,6 +207,15 @@ namespace mat
 	double* clean(double* x, unsigned n)
 	{
 		return (double*) memset(x, 0, n * sizeof(double));
+	}
+
+	double* swap(double* x, double* y, unsigned n)
+	{
+		for(unsigned i = 0; i < n; i++)
+		{
+			swap(x[i], y[i]);
+		}
+		return x;
 	}
 
 	double& index(double* k, unsigned n, unsigned i, unsigned j)

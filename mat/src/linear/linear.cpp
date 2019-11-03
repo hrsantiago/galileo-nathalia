@@ -12,6 +12,7 @@
 
 namespace mat
 {
+	//dense
 	double det_1(const double* k)
 	{
 		return k[0];
@@ -25,51 +26,50 @@ namespace mat
 		return k[0] * (k[4] * k[8] - k[5] * k[7]) - k[3] * (k[1] * k[8] - k[2] * k[7]) + k[6] * (k[1] * k[5] - k[2] * k[4]);
 	}
 	
-	double* inv_1(double* k)
+	double* inv_1(double* f, const double* k)
 	{
-		k[0] = 1 / k[0];
-		return k;
+		f[0] = 1 / k[0];
+		return f;
 	}
-	double* inv_2(double* k)
+	double* inv_2(double* f, const double* k)
 	{
-		double a[4];
 		const double d = det_2(k);
-		memcpy(a, k, 4 * sizeof(double));
-		k[0] = +a[3] / d;
-		k[1] = -a[1] / d;
-		k[2] = -a[2] / d;
-		k[3] = +a[0] / d;
-		return k;
+		f[0] = +k[3] / d;
+		f[1] = -k[1] / d;
+		f[2] = -k[2] / d;
+		f[3] = +k[0] / d;
+		return f;
 	}
-	double* inv_3(double* k)
+	double* inv_3(double* f, const double* k)
 	{
-		double a[9];
 		const double d = det_3(k);
-		memcpy(a, k, 9 * sizeof(double));
-		k[0] = (a[4] * a[8] - a[5] * a[7]) / d;
-		k[1] = (a[2] * a[7] - a[1] * a[8]) / d;
-		k[2] = (a[1] * a[5] - a[2] * a[4]) / d;
-		k[3] = (a[5] * a[6] - a[3] * a[8]) / d;
-		k[4] = (a[0] * a[8] - a[2] * a[6]) / d;
-		k[5] = (a[2] * a[3] - a[0] * a[5]) / d;
-		k[6] = (a[3] * a[7] - a[4] * a[6]) / d;
-		k[7] = (a[6] * a[1] - a[0] * a[7]) / d;
-		k[8] = (a[0] * a[4] - a[1] * a[3]) / d;
-		return k;
+		f[0] = (k[4] * k[8] - k[5] * k[7]) / d;
+		f[1] = (k[2] * k[7] - k[1] * k[8]) / d;
+		f[2] = (k[1] * k[5] - k[2] * k[4]) / d;
+		f[3] = (k[5] * k[6] - k[3] * k[8]) / d;
+		f[4] = (k[0] * k[8] - k[2] * k[6]) / d;
+		f[5] = (k[2] * k[3] - k[0] * k[5]) / d;
+		f[6] = (k[3] * k[7] - k[4] * k[6]) / d;
+		f[7] = (k[6] * k[1] - k[0] * k[7]) / d;
+		f[8] = (k[0] * k[4] - k[1] * k[3]) / d;
+		return f;
 	}
 
-	double det(double* K, unsigned n)
+	double determinant(const double* A, unsigned n)
 	{
 		//size
 		if(n < 4)
 		{
 			switch(n)
 			{
-				case 1: return det_1(K);
-				case 2: return det_2(K);
-				case 3: return det_3(K);
+				case 1: return det_1(A);
+				case 2: return det_2(A);
+				case 3: return det_3(A);
 			}
 		}
+		//data
+		double K[n * n];
+		memcpy(K, A, n * n * sizeof(double));
 		//tolerance
 		const double t = 1e-5 * norm(K, n * n);
 		//factorization
@@ -115,135 +115,98 @@ namespace mat
 		//return 
 		return d;
 	}
-	double det(double* k, const double* a, unsigned n)
-	{
-		return det((double*) memcpy(k, a, n * n * sizeof(double)), n);
-	}
 
-	double* inv(double* k, unsigned n)
+	double* inverse(double* A, unsigned n)
+	{
+		double B[n * n];
+		return inverse(A, set(B, A, n * n), n);
+	}
+	double* inverse(double* A, const double* B, unsigned n)
 	{
 		//size
 		if(n < 4)
 		{
 			switch(n)
 			{
-				case 1: return inv_1(k);
-				case 2: return inv_2(k);
-				case 3: return inv_3(k);
+				case 1: return inv_1(A, B);
+				case 2: return inv_2(A, B);
+				case 3: return inv_3(A, B);
 			}
 		}
 		//decompose
-		double* a = new double[n * n];
-		solve(k, (double*) memcpy(a, k, n * n * sizeof(double)), eye(k, n), n, n);
-		//delete
-		delete[] a;
+		double I[n * n];
+		solve(A, B, eye(I, n), n, n);
 		//return
-		return k;
-	}
-	double* inv(double* k, double* a, unsigned n)
-	{
-		return solve(k, a, eye(k, n), n, n);
+		return A;
 	}
 
-	double* eigen(double* A, double* f, unsigned n, double* E)
+	double* eigen(double* K, double* v, double* E, unsigned n, double tol)
 	{
-		if(E)
-		{
-			eye(E, n);
-		}
-		const unsigned sm = 20;
-		const double w = norm(A, n * n);
-		for(unsigned s = 0; s < sm; s++)
+		//data
+		bool t;
+		double d;
+		unsigned a, b;
+		const double w = norm(K, n * n);
+		const unsigned m = 200 * n * (n - 1);
+		//setup
+		eye(E, n);
+		double* q = new double[n - 1];
+		unsigned* p = new unsigned[n - 1];
+		//sweep
+		offdiag(K, q, p, n);
+		offdiag_find(d, a, b, q, p, n);
+		for(unsigned s = 0; s < m; s++)
 		{
 			//check
-			double d = 0;
-			for(unsigned i = 0; i < n; i++)
-			{
-				for(unsigned j = i + 1; j < n; j++)
-				{
-					d = std::max(d, fabs(A[i + n * j]));
-				}
-			}
-			if(d < 1e-5 * w)
+			if(t = d < tol * w)
 			{
 				for(unsigned i = 0; i < n; i++)
 				{
-					f[i] = A[i + n * i];
+					v[i] = K[i + n * i];
 				}
-				return f;
+				break;
 			}
-			//sweep
-			for(unsigned i = 0; i < n; i++)
-			{
-				for(unsigned j = i + 1; j < n; j++)
-				{
-					const double x = A[i + n * i];
-					const double y = A[j + n * j];
-					const double z = A[i + n * j];
-					const double t = atan(2 * z / (y - x)) / 2;
-					givens(E, n, i, j, t, 1);
-					givens(A, n, i, j, t, 2);
-				}
-			}
+			//rotate
+			const double x = K[a + n * a];
+			const double y = K[b + n * b];
+			const double z = K[a + n * b];
+			const double t = atan2(2 * z, x - y) / 2;
+			givens(E, n, a, b, -t, 1);
+			givens(K, n, a, b, +t, 2);
+			//update
+			offdiag_row(K, q, p, a, n);
+			offdiag_row(K, q, p, b, n);
+			offdiag_col(K, q, p, a, n);
+			offdiag_col(K, q, p, b, n);
+			offdiag_find(d, a, b, q, p, n);
 		}
+		delete[] p;
+		delete[] q;
 		//return
-		return nullptr;
+		return t ? v : nullptr;
 	}
 
 	double* solve(double* x, const double* K, const double* f, unsigned n, unsigned m)
 	{
 		//data
-		double d;
 		unsigned i, j, k, p;
-		//copy
-		double a[n * n];
-		double b[n * m];
+		double* a = new double[n * n];
 		memcpy(a, K, n * n * sizeof(double));
-		memcpy(b, f, n * m * sizeof(double));
-		//tolerance
+		memcpy(x, f, n * m * sizeof(double));
 		const double t = 1e-5 * norm(a, n * n);
-		//factorization
+		//decompose
 		for(i = 0; i < n; i++)
 		{
-			//pivot
-			for(j = i + 1, k = i; j < n; j++)
+			if(pivot(a, x, t, i, n, m))
 			{
-				if(fabs(a[j + n * i]) > fabs(a[k + n * i]))
-				{
-					k = j;
-				}
+				gauss(a, x, i, n, m);
 			}
-			if(fabs(a[k + n * i]) <= t)
+			else
 			{
 				return nullptr;
 			}
-			if(k != i)
-			{
-				for(j = i; j < n; j++)
-				{
-					swap(a[i + n * j], a[k + n * j]);
-				}
-				for(j = 0; j < m; j++)
-				{
-					swap(b[i + n * j], b[k + n * j]);
-				}
-			}
-			//decompose
-			for(j = i + 1; j < n; j++)
-			{
-				d = a[j + n * i] / a[i + n * i];
-				for(k = i + 1; k < n; k++)
-				{
-					a[j + n * k] -= d * a[i + n * k];
-				}
-				for(k = 0; k < m; k++)
-				{
-					b[j + n * k] -= d * b[i + n * k];
-				}
-			}
 		}
 		//solve
-		memcpy(x, b, n * m * sizeof(double));
 		for(i = 0; i < n; i++)
 		{
 			p = n - 1 - i;
@@ -256,62 +219,154 @@ namespace mat
 				x[p + n * k] /= a[p + n * p];
 			}
 		}
+		//delete
+		delete[] a;
 		//return
 		return x;
 	}
 	
 	double* givens(double* A, unsigned n, unsigned i, unsigned j, double t, unsigned q)
 	{
-		double x, y, z;
-		const double c = cos(t);
-		const double s = sin(t);
-		for(unsigned k = 0; k < n; k++)
+		//rotate
+		switch(q)
 		{
-			switch(q)
+			case 0:
 			{
-				case 0:
+				double x, y;
+				const double c = cos(t);
+				const double s = sin(t);
+				for(unsigned k = 0; k < n; k++)
 				{
-					//old state
 					x = A[i + n * k];
 					y = A[j + n * k];
-					//new state
-					A[i + n * k] = c * x - s * y;
-					A[j + n * k] = c * y + s * x;
-					break;
+					A[i + n * k] = c * x + s * y;
+					A[j + n * k] = c * y - s * x;
 				}
-				case 1:
+				break;
+			}
+			case 1:
+			{
+				double x, y;
+				const double c = cos(t);
+				const double s = sin(t);
+				for(unsigned k = 0; k < n; k++)
 				{
-					//old state
 					x = A[k + n * i];
 					y = A[k + n * j];
-					//new state
 					A[k + n * i] = c * x - s * y;
 					A[k + n * j] = c * y + s * x;
-					break;
 				}
-				case 2:
+				break;
+			}
+			case 2:
+			{
+				givens(A, n, i, j, +t, 0);
+				givens(A, n, i, j, -t, 1);
+			}
+		}
+		return A;
+	}
+	
+	void gauss(double* a, double* x, unsigned i, unsigned n, unsigned m)
+	{
+		double d;
+		unsigned j, k;
+		for(j = i + 1; j < n; j++)
+		{
+			d = a[j + n * i] / a[i + n * i];
+			for(k = i + 1; k < n; k++)
+			{
+				a[j + n * k] -= d * a[i + n * k];
+			}
+			for(k = 0; k < m; k++)
+			{
+				x[j + n * k] -= d * x[i + n * k];
+			}
+		}
+	}
+	bool pivot(double* a, double* b, double t, unsigned i, unsigned n, unsigned m)
+	{
+		unsigned j, k;
+		for(j = i + 1, k = i; j < n; j++)
+		{
+			if(fabs(a[j + n * i]) > fabs(a[k + n * i]))
+			{
+				k = j;
+			}
+		}
+		if(fabs(a[k + n * i]) <= t)
+		{
+			return false;
+		}
+		if(k != i)
+		{
+			for(j = i; j < n; j++)
+			{
+				swap(a[i + n * j], a[k + n * j]);
+			}
+			for(j = 0; j < m; j++)
+			{
+				swap(b[i + n * j], b[k + n * j]);
+			}
+		}
+		return true;
+	}
+	
+	void offdiag(const double* K, double* q, unsigned* p, unsigned n)
+	{
+		for(unsigned i = 1; i < n; i++)
+		{
+			p[i - 1] = 0;
+			q[i - 1] = fabs(K[i]);
+			for(unsigned j = 1; j < i; j++)
+			{
+				if(q[i - 1] < fabs(K[i + n * j]))
 				{
-					//old state
-					x = i < k ? A[i + n * k] : A[k + n * i];
-					y = j < k ? A[j + n * k] : A[k + n * j];
-					//new state
-					if(k != i && k != j)
-					{
-						(i < k ? A[i + n * k] : A[k + n * i]) = c * x - s * y;
-						(j < k ? A[j + n * k] : A[k + n * j]) = c * y + s * x;
-					}
+					p[i - 1] = j;
+					q[i - 1] = fabs(K[i + n * j]);
 				}
 			}
 		}
-		if(q == 2)
+	}
+	void offdiag_row(const double* K, double* q, unsigned* p, unsigned a, unsigned n)
+	{
+		if(a != 0)
 		{
-			x = A[i + n * i];
-			y = A[j + n * j];
-			z = A[i + n * j];
-			A[i + n * j] = (c * c - s * s) * z + s * c * (x - y);
-			A[i + n * i] = c * c * x + s * s * y - 2 * s * c * z;
-			A[j + n * j] = c * c * y + s * s * x + 2 * s * c * z;
+			p[a - 1] = 0;
+			q[a - 1] = fabs(K[a]);
+			for(unsigned i = 1; i < a; i++)
+			{
+				if(q[a - 1] < fabs(K[a + n * i]))
+				{
+					p[a - 1] = i;
+					q[a - 1] = fabs(K[a + n * i]);
+				}
+			}
 		}
-		return A;
+	}
+	void offdiag_col(const double* K, double* q, unsigned* p, unsigned a, unsigned n)
+	{
+		for(unsigned i = a + 1; i < n; i++)
+		{
+			if(q[i - 1] < fabs(K[i + n * a]))
+			{
+				p[i - 1] = a;
+				q[i - 1] = fabs(K[i + n * a]);
+			}
+		}
+	}
+	void offdiag_find(double& d, unsigned& a, unsigned& b, const double* q, const unsigned* p, unsigned n)
+	{
+		d = q[0];
+		a = 1, b = 0;
+		for(unsigned i = 1; i < n - 1; i++)
+		{
+			if(d < q[i])
+			{
+				d = q[i];
+				b = p[i];
+				a = i + 1;
+			}
+		}	
 	}
 }

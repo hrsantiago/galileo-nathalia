@@ -10,7 +10,7 @@ namespace mat
 	namespace solvers
 	{
 		//constructors
-		runge_kutta::runge_kutta(bool m_type, bool mem) : m_mem(mem), m_type(m_type), m_nd(1), m_ns(100), m_T(100)
+		runge_kutta::runge_kutta(bool m_type, bool mem, unsigned nd) : m_mem(mem), m_type(m_type), m_nd(nd), m_ns(100), m_T(100)
 		{
 			m_x = m_mem ? new double[m_nd] : nullptr;
 			m_v = m_mem ? new double[m_nd] : nullptr;
@@ -134,14 +134,13 @@ namespace mat
 		}
 		void runge_kutta::serialize(void)
 		{
-			printf("%04d ", m_s);
+			m_s++;
 			printf("%+.6e ", m_t);
 			for(unsigned i = 0; i < m_nd; i++)
 			{
 				printf("%+.6e %+.6e %+.6e ", m_x[i], m_v[i], m_a[i]);
 			}
 			printf("\n");
-			m_s++;
 		}
 		
 		//solve

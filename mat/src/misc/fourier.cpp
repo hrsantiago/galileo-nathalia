@@ -3,7 +3,6 @@
 #include <cstdio>
 
 //mat
-#include "misc/defs.h"
 #include "misc/fourier.h"
 
 namespace mat

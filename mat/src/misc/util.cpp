@@ -2,33 +2,36 @@
 #include <cmath>
 #include <cstdio>
 
+//quadrule
+#include <quadrule.h>
+
 //mat
 #include "misc/util.h"
 
-const static double x1[] = { +0.00000000 };
-const static double w1[] = { +2.00000000 };
-const static double x2[] = { -0.57735027, +0.57735027 };
-const static double w2[] = { +1.00000000, +1.00000000 };
-const static double x3[] = { -0.77459667, +0.00000000, +0.77459667 };
-const static double w3[] = { +0.55555556, +0.88888889, +0.55555556 };
-const static double x4[] = { -0.86113631, -0.33998104, +0.33998104, +0.86113631 }; 
-const static double w4[] = { +0.34785485, +0.65214516, +0.65214515, +0.34785485 };
-const static double x5[] = { -0.90617985, -0.53846931, +0.00000000, +0.53846931, +0.90617985 };
-const static double w5[] = { +0.23692689, +0.47862867, +0.56888889, +0.47862867, +0.23692689 };
-const static double x6[] = { -0.93246951, -0.66120939, -0.23861919, +0.23861919, +0.66120939, +0.93246951 };
-const static double w6[] = { +0.17132449, +0.36076157, +0.46791393, +0.46791393, +0.36076157, +0.17132449 };
-const static double x7[] = { -0.94910791, -0.74153119, -0.40584515, +0.00000000, +0.40584515, +0.74153119, +0.94910791 };
-const static double w7[] = { +0.12948497, +0.27970539, +0.38183005, +0.41795918, +0.38183005, +0.27970539, +0.12948497 };
-const static double x8[] = { -0.96028986, -0.79666648, -0.52553241, -0.18343464, +0.18343464, +0.52553241, +0.79666648, +0.96028986 };
-const static double w8[] = { +0.10122854, +0.22238103, +0.31370665, +0.36268378, +0.36268378, +0.31370665, +0.22238103, +0.10122854 };
-const static double x9[] = { -0.96816024, -0.83603111, -0.61337143, -0.32425342, +0.00000000, +0.32425342, +0.61337143, +0.83603111, +0.96816024 };
-const static double w9[] = { +0.08127439, +0.18064816, +0.26061070, +0.31234708, +0.33023936, +0.31234708, +0.26061070, +0.18064816, +0.08127439 };
-
-const static double* xn[] = { x1, x2, x3, x4, x5, x6, x7, x8, x9 };
-const static double* wn[] = { w1, w2, w3, w4, w5, w6, w7, w8, w9 };
-
 namespace mat
 {
+	const static double x1[] = {+0.00000000};
+	const static double w1[] = {+2.00000000};
+	const static double x2[] = {-0.57735027, +0.57735027};
+	const static double w2[] = {+1.00000000, +1.00000000};
+	const static double x3[] = {-0.77459667, +0.00000000, +0.77459667};
+	const static double w3[] = {+0.55555555, +0.88888888, +0.55555555};
+	const static double x4[] = {-0.86113631, -0.33998104, +0.33998104, +0.86113631};
+	const static double w4[] = {+0.34785485, +0.65214516, +0.65214516, +0.34785485};
+	const static double x5[] = {-0.90617985, -0.53846931, +0.00000000, +0.53846931, +0.90617985};
+	const static double w5[] = {+0.23692689, +0.47862867, +0.56888889, +0.47862867, +0.23692689};
+	const static double x6[] = {-0.93246951, -0.66120939, -0.23861919, +0.23861919, +0.66120939, +0.93246951};
+	const static double w6[] = {+0.17132449, +0.36076157, +0.46791393, +0.46791393, +0.36076157, +0.17132449};
+	const static double x7[] = {-0.94910791, -0.74153119, -0.40584515, +0.00000000, +0.40584515, +0.74153119, +0.94910791};
+	const static double w7[] = {+0.12948497, +0.27970539, +0.38183005, +0.41795918, +0.38183005, +0.27970539, +0.12948497};
+	const static double x8[] = {-0.96028986, -0.79666648, -0.52553241, -0.18343464, +0.18343464, +0.52553241, +0.79666648, +0.96028986};
+	const static double w8[] = {+0.10122854, +0.22238103, +0.31370665, +0.36268378, +0.36268378, +0.31370665, +0.22238103, +0.10122854};
+	const static double x9[] = {-0.96816024, -0.83603111, -0.61337143, -0.32425342, +0.00000000, +0.32425342, +0.61337143, +0.83603111, +0.96816024};
+	const static double w9[] = {+0.08127439, +0.18064816, +0.26061070, +0.31234708, +0.33023936, +0.31234708, +0.26061070, +0.18064816, +0.08127439};
+	
+	const static double* xg[] = {x1, x2, x3, x4, x5, x6, x7, x8, x9};
+	const static double* wg[] = {w1, w2, w3, w4, w5, w6, w7, w8, w9};
+	
 	int sign(int x)
 	{
 		return x == 0 ? 0 : x < 0 ? -1 : +1;
@@ -78,35 +81,51 @@ namespace mat
 		}
 	}
 	
-	bool bit_set(unsigned a, unsigned b)
+	bool bit_set(unsigned m, unsigned b)
 	{
-		return a == 2 * b - 3;
+		return m == 2 * b - 3;
 	}
-	unsigned char bit_find(unsigned a, unsigned b)
+	unsigned char bit_index(unsigned m)
 	{
-		unsigned char p = 0;
-		for(unsigned i = 1; i < b; i <<= 1)
+		//counter
+		unsigned char c = 0;
+		//bits
+		while(m >>= 1)
 		{
-			if(a & i)
-			{
-				p++;
-			}
+			c++;
 		}
-		return p;
+		//return
+		return c;
 	}
-	unsigned bit_find(unsigned a, unsigned b, unsigned char p)
+	unsigned char bit_count(unsigned m)
 	{
-		for(unsigned i = 1, c = 0; i < b; i <<= 1)
+		//counter
+		unsigned char c = 0;
+		//bits
+		while(m)
 		{
-			if(a & i)
-			{
-				if(p == c++)
-				{
-					return i;
-				}
-			}
+			c++;
+			m &= ~(m & -m);
 		}
-		return 0;
+		//return
+		return c;
+	}
+	unsigned char bit_index(unsigned m, unsigned b)
+	{
+		return bit_count(m & (b - 1));
+	}
+	unsigned char bit_search(unsigned m, unsigned char k)
+	{
+		//counter
+		unsigned char c = 0;
+		//bits
+		while(c < k)
+		{
+			c++;
+			m &= ~(m & -m);
+		}
+		//return
+		return bit_index(m & -m);
 	}
 	
 	int delta(unsigned i, unsigned j)
@@ -164,16 +183,6 @@ namespace mat
 		return c;
 	}
 	
-	unsigned log2(unsigned a)
-	{
-		unsigned v = 0;
-		while(a >>= 1)
-		{
-			v++;
-		}
-		return v;
-	}
-	
 	unsigned* range(unsigned* list, unsigned a)
 	{
 		for(unsigned i = 0; i < a; i++)
@@ -207,9 +216,17 @@ namespace mat
 		return p;
 	}
 	
-	void gauss_point(double& x, double& w, unsigned n, unsigned i)
+	const double* gauss_points(unsigned i)
 	{
-		x = xn[n - 1][i];
-		w = wn[n - 1][i];
+		return xg[i];
+	}
+	const double* gauss_weights(unsigned i)
+	{
+		return wg[i];
+	}
+	double gauss_point(double& x, unsigned i, unsigned n)
+	{
+		x = xg[n][i];
+		return wg[n][i];
 	}
 }

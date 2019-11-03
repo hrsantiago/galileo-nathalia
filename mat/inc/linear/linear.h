@@ -2,20 +2,23 @@
 
 namespace mat
 {
-	double det(double*, unsigned);
+	//dense
+	double determinant(const double*, unsigned);
 	
-	double* inv(double*, unsigned);
-	double* inv(double*, double*, unsigned);
+	double* inverse(double*, unsigned);
+	double* inverse(double*, const double*, unsigned);
 	
-	double* eigen(double*, double*, unsigned, double* = nullptr);
+	double* eigen(double*, double*, double*, unsigned, double);
 	
 	double* solve(double*, const double*, const double*, unsigned, unsigned = 1);
 	
 	double* givens(double*, unsigned, unsigned, unsigned, double, unsigned);
 
-	bool positive_definite(const double*, unsigned);
-	bool positive_definite(const double*, const int*, const int*, unsigned);
-	
-	bool diagonally_dominant(const double*, unsigned);
-	bool diagonally_dominant(const double*, const int*, const int*, unsigned);
+	void gauss(double*, double*, unsigned, unsigned, unsigned);
+	bool pivot(double*, double*, double, unsigned, unsigned, unsigned);
+
+	void offdiag(const double*, double*, unsigned*, unsigned);
+	void offdiag_row(const double*, double*, unsigned*, unsigned, unsigned);
+	void offdiag_col(const double*, double*, unsigned*, unsigned, unsigned);
+	void offdiag_find(double&, unsigned&, unsigned&, const double*, const unsigned*, unsigned);
 }

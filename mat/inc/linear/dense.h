@@ -2,14 +2,8 @@
 
 namespace mat
 {
-	void plot(const double*, unsigned, unsigned, const char* = "");
-	
 	void print(const double*, unsigned, const char* = "");
 	void print(const double*, unsigned, unsigned, const char* = "");
-	
-	void print_diag(const double*, unsigned, const char* = "");
-	void print_upper(const double*, unsigned, const char* = "");
-	void print_lower(const double*, unsigned, const char* = "");
 	
 	void triad_form(const double*, double*, double*, double = 0);
 	bool triad_test(const double*, const double*, const double*);
@@ -32,6 +26,8 @@ namespace mat
 	double* eye(double*, unsigned);
 	
 	double* clean(double*, unsigned);
+
+	double* swap(double*, double*, unsigned);
 	
 	double& index(double*, unsigned, unsigned, unsigned);
 	

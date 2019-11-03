@@ -8,7 +8,7 @@ namespace mat
 		{
 		public:
 			//constructors
-			runge_kutta(bool = true, bool = true);
+			runge_kutta(bool = true, bool = true, unsigned = 1);
 			
 			//destructor
 			virtual ~runge_kutta(void);
