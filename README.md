@@ -2,8 +2,6 @@
 
 GALILEO is a finite element software for the static and dynamic nonlinear analysis of structures
 
-Teste
-
 ### Author
 
 - Murillo Vinicius Bento Santana (DEC - PUC - Rio)
