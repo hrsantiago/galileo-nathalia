@@ -76,10 +76,17 @@ namespace gui
 			virtual void setup(void);
 			virtual void draw_axis(void);
 			virtual void draw_axes(void);
+			virtual void draw_axes_text(void);
+			virtual void draw_text(double x, double y, double z, const QString& text, Qt::GlobalColor color);
 			virtual void draw_scale(void);
+			virtual void draw_nodes_text(void);
 			virtual void draw_model(void);
 			virtual void draw_plots(void);
 			virtual void draw_paths(void);
+
+			// text
+			GLint project(GLdouble objx, GLdouble objy, GLdouble objz, const GLdouble model[16], const GLdouble proj[16], const GLint viewport[4], GLdouble * winx, GLdouble * winy, GLdouble * winz);
+			void transformPoint(GLdouble out[4], const GLdouble m[16], const GLdouble in[4]);
 		
 			//events
 			virtual void wheelEvent(QWheelEvent*) override;

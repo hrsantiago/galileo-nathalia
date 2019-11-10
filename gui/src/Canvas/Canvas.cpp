@@ -9,6 +9,7 @@
 #include <QThread>
 #include <QStatusBar>
 #include <QWheelEvent>
+#include <QPainter>
 
 //mat
 #include "misc/util.h"
@@ -17,6 +18,8 @@
 
 //fea
 #include "Model/Model.h"
+#include "Mesh/Mesh.h"
+#include "Mesh/Nodes/Node.h"
 
 #include "Plot/Plot.h"
 #include "Plot/What.h"
@@ -123,11 +126,13 @@ namespace gui
 			glCallList(m_list + 3);
 			glCallList(m_list + 4);
 			glCallList(m_list + 5);
+			draw_nodes_text();
 			glPopMatrix();
 			//draw axes
 			if(m_model->plot()->what()->axes())
 			{
 				glCallList(m_list + 1);
+				draw_axes_text();
 			}
 			//draw scale
 			if(m_model->plot()->what()->scale() && (m_node[m_type] || m_element))
@@ -219,6 +224,70 @@ namespace gui
 				glPopMatrix();
 			glEndList();
 		}
+		void Canvas::draw_axes_text(void)
+		{
+			const double s = 0.2;
+			draw_text(0 + s, 0, 0, "X", Qt::red);
+			draw_text(0, 0 + s, 0, "Y", Qt::green);
+			draw_text(0, 0, 0 + s, "Z", Qt::blue);
+		}
+		void Canvas::draw_text(double x, double y, double z, const QString& text, Qt::GlobalColor color)
+		{
+			//https://stackoverflow.com/questions/28216001/how-to-render-text-with-qopenglwidget
+			int height = this->height();
+
+			GLdouble model[4][4], proj[4][4];
+			GLint view[4];
+			glGetDoublev(GL_MODELVIEW_MATRIX, &model[0][0]);
+			glGetDoublev(GL_PROJECTION_MATRIX, &proj[0][0]);
+			glGetIntegerv(GL_VIEWPORT, &view[0]);
+
+			GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
+			project(x, y, z, &model[0][0], &proj[0][0], &view[0], &textPosX, &textPosY, &textPosZ);
+
+			textPosY = height - textPosY; // y is inverted
+
+			QPainter painter(this);
+			painter.setPen(color);
+			painter.setFont(QFont("Helvetica", 10));
+			painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+			painter.drawText(static_cast<int>(textPosX), static_cast<int>(textPosY), text);
+			painter.end();
+
+			resizeGL(this->width(), this->height());
+		}
+		GLint Canvas::project(GLdouble objx, GLdouble objy, GLdouble objz, const GLdouble model[16], const GLdouble proj[16], const GLint viewport[4], GLdouble * winx, GLdouble * winy, GLdouble * winz)
+		{
+			GLdouble in[4], out[4];
+
+			in[0] = objx;
+			in[1] = objy;
+			in[2] = objz;
+			in[3] = 1.0;
+			transformPoint(out, model, in);
+			transformPoint(in, proj, out);
+
+			if(in[3] == 0.0)
+				return GL_FALSE;
+
+			in[0] /= in[3];
+			in[1] /= in[3];
+			in[2] /= in[3];
+
+			*winx = viewport[0] + (1 + in[0]) * viewport[2] / 2;
+			*winy = viewport[1] + (1 + in[1]) * viewport[3] / 2;
+
+			*winz = (1 + in[2]) / 2;
+			return GL_TRUE;
+		}
+
+		void Canvas::transformPoint(GLdouble out[4], const GLdouble m[16], const GLdouble in[4])
+		{
+			out[0] = m[0*4+0] * in[0] + m[1*4+0] * in[1] + m[2*4+0] * in[2] + m[3*4+0] * in[3];
+			out[1] = m[0*4+1] * in[0] + m[1*4+1] * in[1] + m[2*4+1] * in[2] + m[3*4+1] * in[3];
+			out[2] = m[0*4+2] * in[0] + m[1*4+2] * in[1] + m[2*4+2] * in[2] + m[3*4+2] * in[3];
+			out[3] = m[0*4+3] * in[0] + m[1*4+3] * in[1] + m[2*4+3] * in[2] + m[3*4+3] * in[3];
+		}
 		void Canvas::draw_scale(void)
 		{
 			//gradient
@@ -264,6 +333,19 @@ namespace gui
 					glVertex3dv(q[5]);
 				glEnd();
 			glEndList();
+		}
+		void Canvas::draw_nodes_text(void)
+		{
+			if(m_model->plot()->what()->nodes())
+			{
+				fea::mesh::Mesh *mesh = m_model->mesh();
+				for(unsigned int i = 0; i < mesh->nodes().size(); ++i)
+				{
+					fea::mesh::nodes::Node *node = mesh->node(i);
+					const double *p = node->coordinates();
+					draw_text(p[0], p[1], p[2], QString::number(i), Qt::white);
+				}
+			}
 		}
 		void Canvas::draw_model(void)
 		{
