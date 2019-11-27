@@ -1,7 +1,7 @@
 #compiler
 CXX = g++
 INCS = -I inc/ -I ../mat/inc/ -I ../fea/inc/
-LIBS = -l GL -l boost_system -l boost_filesystem -l umfpack
+LIBS = -l GL -l boost_system -l boost_filesystem -l umfpack -l lapack
 WARS = -Wall -Wno-unused-variable -Wno-unused-variable -Wno-format-security -Wno-return-type -Wno-unused-function -Wformat-overflow=0
 CXXFLAGS = -m64 -std=c++11 -pipe -pthread -fopenmp -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS) $(WARS)
 

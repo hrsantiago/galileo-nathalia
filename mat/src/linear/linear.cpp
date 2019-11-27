@@ -119,7 +119,7 @@ namespace mat
 	double* inverse(double* A, unsigned n)
 	{
 		double B[n * n];
-		return inverse(A, set(B, A, n * n), n);
+		return inverse(A, copy(B, A, n * n), n);
 	}
 	double* inverse(double* A, const double* B, unsigned n)
 	{
@@ -137,6 +137,77 @@ namespace mat
 		double I[n * n];
 		solve(A, B, eye(I, n), n, n);
 		//return
+		return A;
+	}
+	
+	double* inverse_lower(double* L, unsigned n)
+	{
+		for(unsigned i = 0; i < n; i++)
+		{
+			L[i + n * i] = 1 / L[i + n * i];
+			for(unsigned j = 0; j < i; j++)
+			{
+				L[i + n * j] *= L[j + n * j];
+				for(unsigned k = j + 1; k < i; k++)
+				{
+					L[i + n * j] += L[i + n * k] * L[k + n * j];
+				}
+				L[i + n * j] *= -L[i + n * i];
+			}
+		}
+		return L;
+	}
+	double* inverse_upper(double* U, unsigned n)
+	{
+		return U;
+	}
+	double* inverse_lower(double* Q, const double* L, unsigned n)
+	{
+		double f[n];
+		for(unsigned i = 0; i < n; i++)
+		{
+			for(unsigned j = 0; j < n; j++)
+			{
+				f[j] = i == j ? 1 : 0;
+			}
+			solve_lower(Q + i * n, L, f, n);
+		}
+		return Q;
+	}
+	double* inverse_upper(double* Q, const double* U, unsigned n)
+	{
+		double f[n];
+		for(unsigned i = 0; i < n; i++)
+		{
+			for(unsigned j = 0; j < n; j++)
+			{
+				f[j] = i == j ? 1 : 0;
+			}
+			solve_upper(Q + i * n, U, f, n);
+		}
+		return Q;
+	}
+	
+	double* cholesky(double* A, unsigned n)
+	{
+		for(unsigned i = 0; i < n; i++)
+		{
+			//diagonal
+			for(unsigned k = 0; k < i; k++)
+			{
+				A[i + n * i] -= A[i + n * k] * A[i + n * k];
+			}
+			A[i + n * i] = sqrt(A[i + n * i]);
+			//off diagonal
+			for(unsigned j = i + 1; j < n; j++)
+			{
+				for(unsigned k = 0; k < i; k++)
+				{
+					A[j + n * i] -= A[j + n * k] * A[i + n * k];
+				}
+				A[i + n * j] = A[j + n * i] /= A[i + n *  i];
+			}
+		}
 		return A;
 	}
 
@@ -185,6 +256,16 @@ namespace mat
 		//return
 		return t ? v : nullptr;
 	}
+	double* eigen(double* K, double* M, double* v, double* E, unsigned n, double tol)
+	{
+		//decompose
+		if(!cholesky(M, n))
+		{
+			return nullptr;
+		}
+		//invert
+		return M;
+	}
 
 	double* solve(double* x, const double* K, const double* f, unsigned n, unsigned m)
 	{
@@ -222,6 +303,39 @@ namespace mat
 		//delete
 		delete[] a;
 		//return
+		return x;
+	}
+	double* solve_lower(double* x, const double* K, const double* f, unsigned n, unsigned m)
+	{
+		for(unsigned i = 0; i < n; i++)
+		{
+			for(unsigned p = 0; p < m; p++)
+			{
+				x[i + n * p] = f[i + n * p];
+				for(unsigned j = 0; j < i; j++)
+				{
+					x[i + n * p] -= K[i + n * j] * x[j + n * p];
+				}
+				x[i + n * p] /= K[i + n * i];
+			}
+		}
+		return x;
+	}
+	double* solve_upper(double* x, const double* K, const double* f, unsigned n, unsigned m)
+	{
+		for(unsigned i = 0; i < n; i++)
+		{
+			unsigned q = n - 1 - i;
+			for(unsigned p = 0; p < m; p++)
+			{
+				x[q + n * p] = f[q + n * p];
+				for(unsigned j = q + 1; j < n; j++)
+				{
+					x[q + n * p] -= K[q + n * j] * x[j + n * p];
+				}
+				x[q + n * p] /= K[q + n * q];
+			}
+		}
 		return x;
 	}
 	

@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <umfpack.h>
 
 //mat
 #include "linear/dense.h"
@@ -98,14 +99,32 @@ namespace mat
 		return k[0];
 	}
 
-	double* mulvec(double* y, const double* K, const int* r, const int* c, const double* x, unsigned n)
+	double* solve(double* x, const double* K, const int* r, const int* c, const double* f, unsigned n)
+	{
+		void *sym, *num;
+		bool test = false;
+		if(umfpack_di_symbolic(n, n, c, r, K, &sym, nullptr, nullptr) == UMFPACK_OK)
+		{
+			if(umfpack_di_numeric(c, r, K, sym, &num, nullptr, nullptr) == UMFPACK_OK)
+			{
+				test = umfpack_di_solve(UMFPACK_A, c, r, K, x, f, num, nullptr, nullptr) == UMFPACK_OK;
+			}
+		}
+		//free memory
+		umfpack_di_free_numeric(&num);
+		umfpack_di_free_symbolic(&sym);
+		//return
+		return test ? x : nullptr;
+	}
+
+	double* mulvec(double* y, const double* K, const int* r, const int* c, const double* x, unsigned n, bool trans)
 	{
 		clean(y, n);
 		for(unsigned i = 0; i < n; i++)
 		{
 			for(int j = c[i]; j < c[i + 1]; j++)
 			{
-				y[r[j]] += K[j] * x[i];
+				y[trans ? i : r[j]] += K[j] * x[trans ? r[j] : i];
 			}
 		}
 		return y;
@@ -113,16 +132,20 @@ namespace mat
 
 	bool eigen(double& v, double* e, const double* K, const int* r, const int* c, unsigned n, bool t)
 	{
+		return eigen(v, e, K, nullptr, r, c, n, t);
+	}
+	bool eigen(double& v, double* e, const double* K, const double* M, const int* r, const int* c, unsigned n, bool t)
+	{
 		//setup
 		randu(e, n);
 		normalize(e, n);
-		double s, y[n], q[n];
+		double y[n], q[n];
 		const unsigned m = 2 * n * n;
 		const double k = 1e-5 * max(K, c[n], nullptr, true);
 		//max
 		for(unsigned i = 0; i < m; i++)
 		{
-			if(power_iteration(v, y, q, e, K, r, c, n, 0, k))
+			if(power_iteration(v, y, q, e, K, M, r, c, n, 0, k))
 			{
 				break;
 			}
@@ -132,10 +155,10 @@ namespace mat
 		{
 			randu(e, n);
 			normalize(e, n);
-			s = t ? +v : -v;
+			const double s = t ? +v : -v;
 			for(unsigned i = 0; i < m; i++)
 			{
-				if(power_iteration(v, y, q, e, K, r, c, n, s, k))
+				if(power_iteration(v, y, q, e, K, M, r, c, n, s, k))
 				{
 					return true;
 				}
@@ -144,24 +167,17 @@ namespace mat
 		//return
 		return v;
 	}
-	double eigen(double* e, const double* K, const double* M, const int* r, const int* v, unsigned n, bool t)
-	{
-		return 0;
-	}
 	
-	double* eigen(double* v, double* E, const double* K, const int* r, const int* c, unsigned n, unsigned m)
-	{
-		return nullptr;
-	}
-	double* eigen(double* v, double* E, const double* K, const double* M, const int* r, const int* c, unsigned n, unsigned m)
-	{
-		return nullptr;
-	}
-
-	bool power_iteration(double& w, double* y, double* q, double* e, const double* K, const int* r, const int* c, unsigned n, double v, double t)
+	bool power_iteration(double& w, double* y, double* q, double* e, const double* K, const double* M, const int* r, const int* c, unsigned n, double v, double t)
 	{
 		//multiply
 		mulvec(y, K, r, c, e, n);
+		//solve
+		if(M)
+		{
+			copy(q, y, n);
+			solve(y, M, r, c, q, n);
+		}
 		//shift
 		if(v != 0)
 		{
@@ -182,8 +198,7 @@ namespace mat
 			return true;
 		}
 		//update
-		normalize(y, n);
-		memcpy(e, y, n * sizeof(double));
+		copy(e, normalize(y, n), n);
 		//return
 		return false;
 	}

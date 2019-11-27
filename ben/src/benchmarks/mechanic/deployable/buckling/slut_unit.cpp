@@ -325,9 +325,9 @@ static void create_supports(fea::models::Model* model)
 static void create_solver(fea::models::Model* model)
 {
 	model->analysis()->solver(fea::analysis::solvers::type::buckling);
-	model->analysis()->solver()->watch_dof(1, fea::mesh::nodes::dof::translation_z);
 	dynamic_cast<fea::analysis::solvers::Buckling*>(model->analysis()->solver())->scale(0.5);
 	dynamic_cast<fea::analysis::solvers::Buckling*>(model->analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
+	dynamic_cast<fea::analysis::solvers::Buckling*>(model->analysis()->solver())->watch_dof(1, fea::mesh::nodes::dof::translation_z);
 	model->analysis()->solve();
 }
 

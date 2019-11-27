@@ -59,12 +59,12 @@ void tests::beam::buckling::column_buckling(void)
 	fea::mesh::cells::Line::refine(0, 10);
 
 	//supports
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_x);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_y);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_z);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
-	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_z);
+//	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_x);
+//	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_y);
+//	model.boundary()->add_support(0, fea::mesh::nodes::dof::rotation_z);
+//	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
+//	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
+//	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_z);
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::buckling);

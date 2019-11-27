@@ -57,13 +57,13 @@ namespace fea
 				{
 					a = a_old;
 					mat::clean(C, n * n);
-					mat::set(ep, ep_old, n);
+					mat::copy(ep, ep_old, n);
 					st = points::state::rupture;
 					return mat::clean(s, n);
 				}
 				//predictor
 				a = a_old;
-				mat::set(ep, ep_old, n);
+				mat::copy(ep, ep_old, n);
 				mat::sub(ee, e, ep, n);
 				mat::multiply(se, C, ee, n, n);
 				mat::add(s, se, sr, n);

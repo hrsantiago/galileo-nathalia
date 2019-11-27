@@ -149,7 +149,8 @@ void tests::cable::modal::mixed(void)
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::modal);
-	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->tolerance(1e-4);
+//	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->tolerance(1e-4);
+dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
 	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->watch_dof(18 + n / 2, fea::mesh::nodes::dof::translation_z);
 
 	//solve

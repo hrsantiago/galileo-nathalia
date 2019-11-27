@@ -61,9 +61,6 @@ namespace fea
 				bool branch_switch(void) const;
 				bool branch_switch(bool);
 				
-				double tolerance(void) const;
-				double tolerance(double);
-				
 				double load_min(void) const;
 				double load_min(double);
 				double load_max(void) const;

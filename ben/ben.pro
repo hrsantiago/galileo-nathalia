@@ -13,6 +13,7 @@ HEADERS = \
     inc/benchmarks/mechanic/tensegrity.h \
     inc/benchmarks/mechanic/solid.h \
     inc/benchmarks/mechanic/plane.h \
+    inc/course/course.h \
     inc/equations/projectile.h \
     inc/equations/tent.h \
     inc/equations/gravity.h \
@@ -151,6 +152,12 @@ SOURCES = \
     src/benchmarks/mechanic/bar/buckling/single_bar.cpp \
     src/benchmarks/mechanic/bar/buckling/von_mises_truss_2D.cpp \
     src/benchmarks/mechanic/plane/static/linear/axial.cpp \
+    src/course/dynamic_linear/frame.cpp \
+    src/course/dynamic_linear/truss.cpp \
+    src/course/modal/frame.cpp \
+    src/course/modal/truss.cpp \
+    src/course/static_linear/frame.cpp \
+    src/course/static_linear/truss.cpp \
     src/equations/gravity.cpp \
     src/equations/projectile.cpp \
     src/equations/electromag.cpp \
@@ -167,4 +174,5 @@ LIBS += \
     -lmat \
     -lboost_system \
     -lboost_filesystem \
-    -lumfpack
+    -lumfpack \
+    -llapack

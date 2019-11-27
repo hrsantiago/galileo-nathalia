@@ -178,7 +178,7 @@ namespace mat
 		return k[i + n * j];
 	}
 
-	double* set(double* y, const double* x, unsigned n, double s)
+	double* copy(double* y, const double* x, unsigned n, double s)
 	{
 		if(s == 1)
 		{

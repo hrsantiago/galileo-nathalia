@@ -13,7 +13,7 @@ namespace fea
 		namespace solvers
 		{
 			//static data
-			static unsigned n;
+			static unsigned n, m;
 			static Assembler* assembler;
 			
 			//constructors
@@ -72,6 +72,7 @@ namespace fea
 				//assembler
 				assembler = m_analysis->assembler();
 				//dofs
+				m = modes();
 				n = assembler->dof_unknow();
 				//apply
 				assembler->apply_supports();
@@ -88,17 +89,17 @@ namespace fea
 					return;
 				}
 				//record
-				while(m_step < n)
+				while(m_step < m)
 				{
 					for(unsigned i = 0; i <  n; i++)
 					{
-						m_u[i] = m_scale * m_f[n * m_step + i];
+						m_u[i] = m_scale * m_k[n * m_step + i];
 					}
 					assembler->apply_state();
 					assembler->apply_dependencies();
 					assembler->apply_configurations();
 					assembler->record();
-					printf("mode: %04d frequency: %+.2e dof: %+.2e\n", m_step, m_k[m_step], dof());
+					printf("mode: %04d frequency: %+.2e dof: %+.2e\n", m_step, m_e[m_step], dof());
 					m_step++;
 				}
 			}
@@ -106,7 +107,7 @@ namespace fea
 			void Modal::record(void)
 			{
 				char formatter[200];
-				sprintf(formatter, "%+.6e\n", m_k[m_step]);
+				sprintf(formatter, "%+.6e\n", m_e[m_step]);
 				m_results[0] += formatter;
 			}
 			void Modal::finish(void) const

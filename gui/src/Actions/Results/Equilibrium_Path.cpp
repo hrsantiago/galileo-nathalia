@@ -506,7 +506,7 @@ namespace gui
 				vl[i].resize(sj - si + 1);
 				dl[i][0] = ll[i + 0]->text().toDouble();
 				dl[i][1] = ll[i + 2]->text().toDouble();
-				mat::set(vl[i].data(), current_data(i) + si, sj - si + 1, bl[i]->isChecked() ? -1 : +1);
+				mat::copy(vl[i].data(), current_data(i) + si, sj - si + 1, bl[i]->isChecked() ? -1 : +1);
 			}
 			//axis
 			m_ui->canvas->xAxis->setRange(dl[0][0], dl[0][1]);

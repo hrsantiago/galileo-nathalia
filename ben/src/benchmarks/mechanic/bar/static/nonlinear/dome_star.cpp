@@ -100,12 +100,14 @@ void tests::bar::static_nonlinear::dome_star(void)
 
 	//solver
 	fea::mesh::elements::Mechanic::geometric(true);
-	fea::mesh::elements::Mechanic::inelastic(true);
+	fea::mesh::elements::Mechanic::inelastic(false);
 	model.analysis()->solver(fea::analysis::solvers::type::static_nonlinear);
-	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_max(1e3);
+	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_max(200);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->step_max(2000);
+	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->dof_min(-2 * H);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->frequencies(true);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_predictor(1.50);
+	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->watch_dof(0, fea::mesh::nodes::dof::translation_z);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->strategy(fea::analysis::strategies::type::arc_length_cylindric);
 

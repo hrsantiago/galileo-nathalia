@@ -111,6 +111,8 @@ void tests::cable::modal::tower(void)
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::modal);
+	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->scale(1e1);
+	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
 	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->watch_dof(0, fea::mesh::nodes::dof::translation_x);
 
 	//solve

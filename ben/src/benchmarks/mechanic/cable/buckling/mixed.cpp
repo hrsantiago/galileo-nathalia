@@ -144,7 +144,6 @@ void tests::cable::buckling::mixed(void)
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::buckling);
-	dynamic_cast<fea::analysis::solvers::Buckling*>(model.analysis()->solver())->tolerance(1e-8);
 	dynamic_cast<fea::analysis::solvers::Buckling*>(model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
 	dynamic_cast<fea::analysis::solvers::Buckling*>(model.analysis()->solver())->watch_dof(18 + n / 2, fea::mesh::nodes::dof::translation_z);
 

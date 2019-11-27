@@ -27,27 +27,19 @@ namespace fea
 				double scale(void) const;
 				double scale(double);
 				
-				double tolerance(void) const;
-				double tolerance(double);
-
-				unsigned modes(void) const;
-				unsigned modes(unsigned);
-				
 				solvers::spectre spectre(void) const;
 				solvers::spectre spectre(solvers::spectre);
+
+				unsigned modes(void) const;
 				
 			protected:
 				//solve
-				void sort(void) const;
 				bool eigen_std(void) const;
 				bool eigen_gen(void) const;
 				
 				//attributes
 				double m_scale;
-				unsigned m_modes;
 				solvers::spectre m_spectre;
-				
-				double m_tolerance;
 			};
 		}
 	}

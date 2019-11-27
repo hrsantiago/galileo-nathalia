@@ -48,10 +48,10 @@ namespace fea
 				m_time_min(0), m_time_max(1), m_time_increment_max(DBL_MAX),
 				m_t(0), m_dt(1e-2),
 				m_l(0), m_dl(1e-2), m_dl0(0), m_ddl(0),
-				m_f(nullptr), m_K(nullptr), m_C(nullptr), m_M(nullptr),
 				m_u(nullptr), m_v(nullptr), m_a(nullptr), m_du(nullptr), 
 				m_dv(nullptr), m_da(nullptr), m_dut(nullptr), m_ddu(nullptr), 
-				m_ddur(nullptr), m_ddut(nullptr),m_r(nullptr), m_R(nullptr), m_k(nullptr), 
+				m_K(nullptr), m_C(nullptr), m_M(nullptr), m_k(nullptr), m_m(nullptr),
+				m_ddur(nullptr), m_ddut(nullptr),m_r(nullptr), m_R(nullptr), m_e(nullptr),
 				m_Fiu(nullptr), m_Fik(nullptr), m_Fnu(nullptr), m_Fnk(nullptr), m_Feu(nullptr), 
 				m_Fek(nullptr), m_Fru(nullptr), m_Frk(nullptr), m_Fdu(nullptr), m_Fdk(nullptr),
 				m_watch_dof(new Watch_Dof)
@@ -62,16 +62,17 @@ namespace fea
 			//destructor
 			Solver::~Solver(void)
 			{
-				delete[] m_f;
+				delete[] m_k;
+				delete[] m_m;
 				delete[] m_K;
 				delete[] m_C;
 				delete[] m_M;
 				delete[] m_u;
 				delete[] m_v;
 				delete[] m_a;
+				delete[] m_e;
 				delete[] m_r;
 				delete[] m_R;
-				delete[] m_k;
 				delete[] m_du;
 				delete[] m_dv;
 				delete[] m_da;

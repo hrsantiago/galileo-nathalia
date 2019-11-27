@@ -31,7 +31,7 @@ namespace fea
 				m_frequencies(false), m_load_adjust(false), m_branch_switch(false), 
 				m_load_min(-DBL_MAX), m_load_max(+DBL_MAX), m_load_factor(1), m_mode_injection(1e2), 
 				m_load_increment_min(0), m_load_increment_max(DBL_MAX),
-				m_state_increment_min(0), m_state_increment_max(1e100),
+				m_state_increment_min(0), m_state_increment_max(DBL_MAX),
 				m_bifurcation_count(0U), m_bifurcation_track(1U),
 				m_strategy(new strategies::Arc_Length_Cylindric)
 			{
@@ -106,15 +106,6 @@ namespace fea
 			bool Static_Nonlinear::branch_switch(bool branch_switch) 
 			{
 				return m_branch_switch = branch_switch;
-			}
-			
-			double Static_Nonlinear::tolerance(void) const
-			{
-				return Nonlinear::m_tolerance;
-			}
-			double Static_Nonlinear::tolerance(double tolerance)
-			{
-				return Nonlinear::m_tolerance = Eigen::m_tolerance = tolerance;
 			}
 			
 			double Static_Nonlinear::load_min(void) const 
@@ -347,11 +338,9 @@ namespace fea
 			{
 				if(m_frequencies)
 				{
-//					assembler->assembly_inertia();
-//					assembler->assembly_stiffness();
-//					eigen_gen();
+					assembler->assembly_inertia();
 					assembler->assembly_stiffness();
-					eigen_std();
+					eigen_gen();
 				}
 			}
 			void Static_Nonlinear::run_branch_switch(void) 
@@ -359,12 +348,12 @@ namespace fea
 				if(m_branch_switch && m_bifurcation_count < m_bifurcation_track)
 				{
 					eigen_std();
-					if(m_k[0] < 0)
+					if(m_e[0] < 0)
 					{
 						m_bifurcation_count++;
 						for(unsigned i = 0; i < n; i++)
 						{
-							m_du[i] += m_mode_injection * m_f[i];
+							m_du[i] += m_mode_injection * m_k[i];
 						}
 						printf("\tBifurcation point founded: Following secondary path!\n");
 					}
@@ -409,10 +398,10 @@ namespace fea
 				//record frequencies
 				if(m_frequencies)
 				{
-					n = assembler->dof_unknow();
-					for(unsigned i = 0; i < n; i++)
+					const unsigned m = modes();
+					for(unsigned i = 0; i < m; i++)
 					{
-						sprintf(formatter, "%+.6e ", m_k[i]);
+						sprintf(formatter, "%+.6e ", m_e[i]);
 						m_results[1] += formatter;
 					}
 					m_results[1] += "\n";
@@ -481,14 +470,14 @@ namespace fea
 				m_dl = m_dl0 = mat::sign(m_dl) * std::min(fabs(m_dl), m_step ? m_state_increment_max / fabs(m_dut[d]) : fabs(m_dl));
 				//state increment
 				n = assembler->dof_unknow();
-				mat::set(m_du, m_dut, n, m_dl);
+				mat::copy(m_du, m_dut, n, m_dl);
 				if(m_mode == solvers::mode::full)
 				{
 					lindel();
 				}
 				else
 				{
-					mat::set(m_ddut, m_dut, n);
+					mat::copy(m_ddut, m_dut, n);
 				}
 				//branch switch
 				run_branch_switch();

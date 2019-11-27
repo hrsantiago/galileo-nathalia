@@ -174,8 +174,8 @@ void equations::gravity::orbity_newmark(const double* m, const double* x0, const
 	//results
 	std::string results;
 	//initial data
-	mat::set(x, x0, 3 * n);
-	mat::set(v, v0, 3 * n);
+	mat::copy(x, x0, 3 * n);
+	mat::copy(v, v0, 3 * n);
 	acceleration(a, m, x, n);
 	//tolerance
 	const double f = tolerance(m, a, n);
@@ -243,8 +243,8 @@ void equations::gravity::orbity_runge_kutta(const double* m, const double* x0, c
 	std::string results;
 	char formatter[200];
 	//initial data
-	mat::set(x_1, x0, 3 * n);
-	mat::set(v_1, v0, 3 * n);
+	mat::copy(x_1, x0, 3 * n);
+	mat::copy(v_1, v0, 3 * n);
 	acceleration(a_1, m, x_1, n);
 	//time loop
 	while(step < s)

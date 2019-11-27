@@ -295,7 +295,7 @@ namespace fea
 			}
 			if(sf & (unsigned) solvers::force::k)
 			{
-				solver->m_k = new double[nu];
+				solver->m_e = new double[nu];
 			}
 			if(sf & (unsigned) solvers::force::Fi)
 			{
@@ -325,7 +325,8 @@ namespace fea
 			//tangent
 			if(st & (unsigned) solvers::tangent::f)
 			{
-				solver->m_f = new double[nu * nu];
+				solver->m_k = new double[nu * nu];
+				solver->m_m = new double[nu * nu];
 			}
 			if(st & (unsigned) solvers::tangent::K)
 			{

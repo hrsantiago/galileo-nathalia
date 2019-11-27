@@ -95,7 +95,7 @@ namespace fea
 				{
 					for(unsigned i = 0; i < n; i++)
 					{
-						m_u[i] = m_scale * m_f[n * m_step + i];
+						m_u[i] = m_scale * m_k[n * m_step + i];
 					}
 					assembler->apply_state();
 					assembler->apply_dependencies();

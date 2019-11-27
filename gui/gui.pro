@@ -98,7 +98,8 @@ LIBS += \
     -lGLU \
     -lboost_system \
     -lboost_filesystem \
-    -lumfpack
+    -lumfpack \
+    -llapack
 
 FORMS += \
     ui/Galileo/Galileo.ui \

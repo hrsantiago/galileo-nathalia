@@ -346,8 +346,8 @@ namespace fea
 					un = new double[n];
 					vn = new double[n];
 					//set old state
-					mat::set(un, m_u, n);
-					mat::set(vn, m_v, n);
+					mat::copy(un, m_u, n);
+					mat::copy(vn, m_v, n);
 				}
 			}
 			void Dynamic_Nonlinear::compute_residue(void)

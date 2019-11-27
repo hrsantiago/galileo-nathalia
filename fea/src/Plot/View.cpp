@@ -79,7 +79,7 @@ namespace fea
 		{
 			if(!increment)
 			{
-				return mat::set(m_pan, pan, 3);
+				return mat::copy(m_pan, pan, 3);
 			}
 			else
 			{
@@ -96,11 +96,11 @@ namespace fea
 			double r0[16];
 			if(!increment)
 			{
-				return mat::set(m_rotation, rotation, 16);
+				return mat::copy(m_rotation, rotation, 16);
 			}
 			else
 			{
-				return mat::multiply(m_rotation, mat::set(r0, m_rotation, 16), rotation, 4, 4, 4);
+				return mat::multiply(m_rotation, mat::copy(r0, m_rotation, 16), rotation, 4, 4, 4);
 			}
 		}
 		

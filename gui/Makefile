@@ -8,7 +8,7 @@ qde = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 CXX = g++
 WARS = -Wno-reorder -Wformat=0  -Wno-return-type
 LIBS += -l pthread -l GL -l GLU -l boost_system -l boost_filesystem -l qcustomplot
-LIBS += -l Qt5Core -l Qt5Gui -l Qt5Widgets -l Qt5OpenGL -l Qt5PrintSupport -l umfpack
+LIBS += -l Qt5Core -l Qt5Gui -l Qt5Widgets -l Qt5OpenGL -l Qt5PrintSupport -l umfpack -l lapack
 DEFS = -D QT_CORE_LIB -D QT_GUI_LIB -D QT_WIDGETS_LIB -D QT_SHARED -D QT_OPENGL_LIB -D QT_CONSOLE -D QT_PRINTSUPPORT_LIB
 INCS = -I $(qde) -I $(qin) -I $(qin)/QtCore -I $(qin)/QtGui -I $(qin)/QtWidgets -I $(qin)/QtOpenGL -I inc/ -I build/ -I ../mat/inc/ -I ../fea/inc/
 CXXFLAGS = -m64 -fPIC -std=c++11 -pipe -pthread -fopenmp -MT $@ -MMD -MP -MF $(subst .o,.d, $@) $(DEFS) $(INCS) $(WARS)

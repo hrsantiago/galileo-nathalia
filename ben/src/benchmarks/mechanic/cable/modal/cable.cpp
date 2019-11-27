@@ -75,7 +75,8 @@ void tests::cable::modal::cable(void)
 
 	//solver
 	model.analysis()->solver(fea::analysis::solvers::type::modal);
-	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->watch_dof(n / 2, fea::mesh::nodes::dof::translation_x);
+	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
+	dynamic_cast<fea::analysis::solvers::Modal*>(model.analysis()->solver())->watch_dof(n / 2, fea::mesh::nodes::dof::translation_y);
 
 	//solve
 	model.analysis()->solve();

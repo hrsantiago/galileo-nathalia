@@ -21,7 +21,7 @@ namespace mat
 	double trace(const double*, unsigned);
 	double value(const double*, unsigned, unsigned, unsigned);
 	
-	double* set(double*, const double*, unsigned, double = 1);
+	double* copy(double*, const double*, unsigned, double = 1);
 	
 	double* eye(double*, unsigned);
 	

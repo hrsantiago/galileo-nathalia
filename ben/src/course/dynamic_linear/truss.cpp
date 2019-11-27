@@ -1,52 +1,51 @@
 //std
 #include <cmath>
 
+//course
+#include "course/course.h"
+
 //fea
 #include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Cells/Types.h"
+#include "Mesh/Sections/Ring.h"
 #include "Mesh/Sections/Types.h"
 #include "Mesh/Elements/Types.h"
 #include "Mesh/Cells/Line/Line.h"
 #include "Mesh/Materials/Types.h"
-#include "Mesh/Sections/Generic.h"
 #include "Mesh/Elements/Mechanic/Mechanic.h"
-#include "Mesh/Elements/Mechanic/Frame/Bar.h"
 #include "Mesh/Materials/Mechanic/Associative/Steel.h"
 
 #include "Boundary/Boundary.h"
 #include "Boundary/Cases/Load_Case.h"
-#include "Boundary/Dependencies/Dependency.h"
 
 #include "Analysis/Analysis.h"
 #include "Analysis/Solvers/Types.h"
-#include "Analysis/Strategies/Types.h"
-#include "Analysis/Solvers/Static_Nonlinear.h"
+#include "Analysis/Solvers/Modal.h"
 
-//ben
-#include "benchmarks/mechanic/bar.h"
-
-void tests::bar::static_linear::truss_carol(void)
+void course::dynamic_linear::truss(void)
 {
-	
 	//parameters
-	const unsigned n = 2;
-	const double w = 4.00;
-	const double h = 3.00;
-	
+	const unsigned n = 5;
+	const double d = 1.00e-01;
+	const double t = 1.00e-02;
+	const double w = 4.00e+00;
+	const double h = 3.00e+00;
+	const double E = 2.00e+11;
+
 	//model
-	fea::models::Model model("truss carol", "benchmarks/bar/static/linear");
+	fea::models::Model model("truss", "course/dynamic_linear");
 
 	//nodes
 	for(unsigned i = 0; i <= n; i++)
 	{
-		model.mesh()->add_node(w * i, 0, 0);
+		model.mesh()->add_node(i * w, 0, 0);
 	}
 	for(unsigned i = 0; i < n; i++)
 	{
-		model.mesh()->add_node(w * i + w / 2, h, 0);
+		model.mesh()->add_node(i * w + w / 2, h, 0);
 	}
 
 	//cells
@@ -54,10 +53,12 @@ void tests::bar::static_linear::truss_carol(void)
 
 	//materials
 	model.mesh()->add_material(fea::mesh::materials::type::steel);
+	((fea::mesh::materials::Steel*) model.mesh()->material(0))->elastic_modulus(E);
 
 	//sections
-	model.mesh()->add_section(fea::mesh::sections::type::generic);
-	((fea::mesh::sections::Generic*) model.mesh()->section(0))->area(0.01);
+	model.mesh()->add_section(fea::mesh::sections::type::ring);
+	((fea::mesh::sections::Ring*) model.mesh()->section(0))->diameter(d);
+	((fea::mesh::sections::Ring*) model.mesh()->section(0))->thickness(t);
 
 	//elements
 	for(unsigned i = 0; i < n; i++)
@@ -80,27 +81,34 @@ void tests::bar::static_linear::truss_carol(void)
 	//supports
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(0, fea::mesh::nodes::dof::translation_y);
-//	model.boundary()->add_support(n, fea::mesh::nodes::dof::translation_x);
+	model.boundary()->add_support(n, fea::mesh::nodes::dof::translation_x);
 	model.boundary()->add_support(n, fea::mesh::nodes::dof::translation_y);
 	for(unsigned i = 0; i < 2 * n + 1; i++)
 	{
 		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_z);
+	}
+	for(unsigned i = 1; i < n; i++)
+	{
+		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_y, 0, 4e2, 0);
 	}
 	
 	//loads
 	model.boundary()->add_load_case();
 	for(unsigned i = 1; i < n; i++)
 	{
-		model.boundary()->load_case(0)->add_load_node(i, fea::mesh::nodes::dof::translation_y, -1e3);
+		model.boundary()->load_case(0)->add_load_node(i, fea::mesh::nodes::dof::translation_y, -1e6, [] (double t) { return sin(72.8 * t); });
 	}
 
 	//solver
-	model.analysis()->solver(fea::analysis::solvers::type::static_linear);
+	model.analysis()->solver(fea::analysis::solvers::type::dynamic_linear);
+	
+	model.analysis()->solver()->time_max(1.0);
+	model.analysis()->solver()->step_max(2000);
 	model.analysis()->solver()->watch_dof(n / 2, fea::mesh::nodes::dof::translation_y);
 
 	//solve
 	model.analysis()->solve();
-
+	
 	//save
 	model.save();
 }

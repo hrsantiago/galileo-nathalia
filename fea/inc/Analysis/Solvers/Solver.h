@@ -201,9 +201,9 @@ namespace fea
 				double m_t, m_dt;
 				double m_l, m_dl, m_dl0, m_ddl;
 
-				double *m_f, *m_K, *m_C, *m_M;
-				double *m_u, *m_v, *m_a, *m_du, *m_dv, *m_da, *m_dut, *m_ddu, *m_ddur, *m_ddut;
-				double *m_r, *m_R, *m_k, *m_Fiu, *m_Fik, *m_Fnu, *m_Fnk, *m_Feu, *m_Fek, *m_Fru, *m_Frk, *m_Fdu, *m_Fdk;
+				double *m_K, *m_C, *m_M, *m_k, *m_m;
+				double *m_u, *m_v, *m_a, *m_e, *m_du, *m_dv, *m_da, *m_dut, *m_ddu, *m_ddur, *m_ddut;
+				double *m_r, *m_R, *m_Fiu, *m_Fik, *m_Fnu, *m_Fnk, *m_Feu, *m_Fek, *m_Fru, *m_Frk, *m_Fdu, *m_Fdk;
 
 				Watch_Dof* m_watch_dof;
 

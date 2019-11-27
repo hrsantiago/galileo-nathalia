@@ -10,7 +10,6 @@ namespace fea
 			{
 				min,
 				max,
-				part,
 				full
 			};
 		}

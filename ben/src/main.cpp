@@ -6,16 +6,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
-//#include <armadillo>
 
-#include "misc/util.h"
-#include "linear/dense.h"
-#include "linear/sparse.h"
-#include "linear/matrix.h"
-#include "linear/linear.h"
-#include "misc/rotation.h"
-#include "solvers/runge_kutta.h"
-
+#include "course/course.h"
 #include "equations/equations.h"
 #include "benchmarks/benchmarks.h"
 
@@ -81,7 +73,7 @@ int main(int argc, char* argv[])
 //	tests::deployable::modal::slut_unit();
 //	tests::deployable::state::slut_grid();
 //	tests::deployable::state::arch_polar();
-	tests::deployable::buckling::slut_unit();
+//	tests::deployable::buckling::slut_unit();
 //	tests::deployable::static_linear::arch_polar();
 //	tests::deployable::static_linear::arch_trans();
 //	tests::deployable::dynamic_linear::slut_unit();
@@ -90,7 +82,7 @@ int main(int argc, char* argv[])
 //	tests::deployable::static_nonlinear::slut_fric();
 //	tests::deployable::static_nonlinear::slut_mult();
 //	tests::deployable::static_nonlinear::slut_beam();
-//	tests::deployable::static_nonlinear::slut_unit();
+	tests::deployable::static_nonlinear::slut_unit();
 //	tests::deployable::static_nonlinear::slut_line();
 //	tests::deployable::static_nonlinear::slut_wall();
 //	tests::deployable::static_nonlinear::slut_roof();
@@ -105,10 +97,21 @@ int main(int argc, char* argv[])
 //	tests::solid::static_linear::axial();
 //	tests::solid::static_linear::hinge();
 
+	//equations
 //	equations::tent::dynamic::vertical::frequency();
 
 //	equations::electromag::solve();
 //	equations::pendulum::double_2D::newmark();
+
+	//course
+//	course::modal::truss();
+//	course::modal::frame();
+
+//	course::static_linear::truss();
+//	course::static_linear::frame();
+
+//	course::dynamic_linear::truss();
+//	course::dynamic_linear::frame();
 
 	//return
 	return 0;

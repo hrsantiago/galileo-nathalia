@@ -10,15 +10,14 @@ namespace mat
 	
 	double& index(double*, const int*, const int*, unsigned, unsigned);
 	
-	double* mulvec(double*, const double*, const int*, const int*, const double*, unsigned);
+	double* solve(double*, const double*, const int*, const int*, const double*, unsigned);
+	
+	double* mulvec(double*, const double*, const int*, const int*, const double*, unsigned, bool = false);
 	
 	bool eigen(double&, double*, const double*, const int*, const int*, unsigned, bool = true);
 	bool eigen(double&, double*, const double*, const double*, const int*, const int*, unsigned, bool = true);
 	
-	double* eigen(double*, double*, const double*, const int*, const int*, unsigned, unsigned);
-	double* eigen(double*, double*, const double*, const double*, const int*, const int*, unsigned, unsigned);
-	
-	bool power_iteration(double&, double*, double*, double* e, const double*, const int*, const int*, unsigned, double, double);
+	bool power_iteration(double&, double*, double*, double*, const double*, const double*, const int*, const int*, unsigned, double, double);
 	
 	double* convert(double*, const double*, const int*, const int*, unsigned);
 	double* convert(double*, const int*, const int*, const double*, unsigned);

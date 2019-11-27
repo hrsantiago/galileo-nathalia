@@ -15,6 +15,18 @@
 #include "Analysis/Solvers/Eigen.h"
 #include "Analysis/Assembler/Assembler.h"
 
+
+//lapack
+extern "C"
+{
+	void dsyev_(const char*, const char*, unsigned*, double*, unsigned*, double*, double*, unsigned*, int*);
+	void dsygv_(unsigned*, const char*, const char*, unsigned*, double*, unsigned*, double*, unsigned*, double*, double*, unsigned*, int*);
+	void dsyevx_(const char*, const char*, const char*, unsigned*, double*, unsigned*, double*, double*, unsigned*, unsigned*, double*, unsigned*, double*, 
+		double*, unsigned*, double*, int*, unsigned*, unsigned*, int*);
+	void dsygvx_(unsigned*, const char*, const char*, const char*, unsigned*, double*, unsigned*, double*, unsigned*, double*, double*, unsigned*, unsigned*,
+		double*, unsigned*, double*, double*, unsigned*, double*, int*, unsigned*, unsigned*, int*);
+}
+
 namespace fea
 {
 	namespace analysis
@@ -22,7 +34,7 @@ namespace fea
 		namespace solvers
 		{
 			//constructors
-			Eigen::Eigen(void) : m_spectre(spectre::min), m_scale(1), m_modes(1), m_tolerance(1e-5)
+			Eigen::Eigen(void) : m_spectre(spectre::min), m_scale(1)
 			{
 				return;
 			}
@@ -37,12 +49,12 @@ namespace fea
 			void Eigen::load(FILE* file)
 			{
 				Solver::load(file);
-				fscanf(file, "%d %lf %d %lf", &m_spectre, &m_scale, &m_modes, &m_tolerance);
+				fscanf(file, "%d %lf", &m_spectre, &m_scale);
 			}
 			void Eigen::save(FILE* file) const
 			{
 				Solver::save(file);
-				fprintf(file, "%d %+.2e %02d %+.2e ", m_spectre, m_scale, m_modes, m_tolerance);
+				fprintf(file, "%d %+.2e ", m_spectre, m_scale);
 			}
 
 			//data
@@ -55,36 +67,6 @@ namespace fea
 				return m_scale = scale;
 			}
 			
-			double Eigen::tolerance(void) const
-			{
-				return m_tolerance;
-			}
-			double Eigen::tolerance(double tolerance)
-			{
-				return m_tolerance = tolerance;
-			}
-			
-			unsigned Eigen::modes(void) const
-			{
-				switch(m_spectre)
-				{
-					case spectre::min:
-						return 1;
-					case spectre::max:
-						return 1;
-					case spectre::part:
-						return m_modes;
-					case spectre::full:
-						return m_analysis->assembler()->dof_unknow();
-					default:
-						return 0;
-				}
-			}
-			unsigned Eigen::modes(unsigned modes)
-			{
-				return m_modes = modes;
-			}
-			
 			solvers::spectre Eigen::spectre(void) const
 			{
 				return m_spectre;
@@ -94,68 +76,107 @@ namespace fea
 				return m_spectre = spectre;
 			}
 			
-			//eigen
-			void Eigen::sort(void) const
+			unsigned Eigen::modes(void) const
 			{
-				//dofs
-				const unsigned m = modes();
-				const unsigned n = m_analysis->assembler()->dof_unknow();
-				//sort
-				for(unsigned i = 0; i < m; i++)
-				{
-					unsigned p = i;
-					for(unsigned j = i + 1; j < m; j++)
-					{
-						if(m_k[j] < m_k[p])
-						{
-							p = j;
-						}
-					}
-					if(p != i)
-					{
-						mat::swap(m_k[i], m_k[p]);
-						mat::swap(m_f + n * i, m_f + n * p, n);
-					}
-				}
+				return m_spectre == spectre::full ? m_analysis->assembler()->dof_unknow() : 1;
 			}
+			
+			//eigen
 			bool Eigen::eigen_std(void) const
 			{
 				//data
 				const int* c = m_analysis->assembler()->col_map();
 				const int* r = m_analysis->assembler()->row_map();
-				const unsigned n = m_analysis->assembler()->dof_unknow();
+				unsigned n = m_analysis->assembler()->dof_unknow();
 				//solve
 				switch(m_spectre)
 				{
 					case spectre::max:
-						return mat::eigen(m_k[0], m_f, m_K, r, c, n, true);
+					{
+						int status;
+						int m = 8 * n;
+						unsigned p = 1;
+						double a = 0, w[m];
+						unsigned il = n, iu = n;
+						unsigned  q[5 * n], u[n];
+						mat::convert(m_k, m_K, r, c, n);
+						dsyevx_("N", "I", "L", &n, m_k, &n, nullptr, nullptr, &il, &iu, &a, &p, m_e, nullptr, &n, w, &m, q, u, &status);
+						return status == 0;
+					}
 					case spectre::min:
-						return mat::eigen(m_k[0], m_f, m_K, r, c, n, false);
+					{
+						int status;
+						int m = 8 * n;
+						unsigned p = 1;
+						double a = 0, w[m];
+						unsigned il = 1, iu = 1;
+						unsigned  q[5 * n], u[n];
+						mat::convert(m_k, m_K, r, c, n);
+						dsyevx_("N", "I", "L", &n, m_k, &n, nullptr, nullptr, &il, &iu, &a, &p, m_e, nullptr, &n, w, &m, q, u, &status);
+						return status == 0;
+					}
 					case spectre::full:
 					{
-						//decompose
-						double* A = new double[n * n];
-						mat::convert(A, m_K, r, c, n);
-						const bool test = mat::eigen(A, m_k, m_f, n, m_tolerance);
-						//sort
-						if(test)
-						{
-							sort();
-						}
-						//delete
-						delete[] A;
-						//return
-						return test;
+						int status;
+						double w[3 * n - 1];
+						unsigned m = 3 * n - 1;
+						mat::convert(m_k, m_K, r, c, n);
+						dsyev_("V", "L", &n, m_k, &n, m_e, w, &m, &status);
+						return status == 0;
 					}
-					case spectre::part:
-						return false;
 					default:
 						return false;
 				}
 			}
 			bool Eigen::eigen_gen(void) const
 			{
-				return false;
+				//data
+				const int* c = m_analysis->assembler()->col_map();
+				const int* r = m_analysis->assembler()->row_map();
+				unsigned n = m_analysis->assembler()->dof_unknow();
+				//solve
+				switch(m_spectre)
+				{
+					case spectre::max:
+					{
+						int status;
+						int m = 8 * n;
+						double a = 0, w[m];
+						unsigned t = 1, p = 1;
+						unsigned il = n, iu = n;
+						unsigned  q[5 * n], u[n];
+						mat::convert(m_k, m_K, r, c, n);
+						mat::convert(m_m, m_M, r, c, n);
+						dsygvx_(&t, "N", "I", "L", &n, m_k, &n, m_m, &n, nullptr, nullptr, &il, &iu, &a, &p, m_e, nullptr, &n, w, &m, q, u, &status);
+						return status == 0;
+					}
+					case spectre::min:
+					{
+						int status;
+						int m = 8 * n;
+						double a = 0, w[m];
+						unsigned t = 1, p = 1;
+						unsigned il = 1, iu = 1;
+						unsigned  q[5 * n], u[n];
+						mat::convert(m_k, m_K, r, c, n);
+						mat::convert(m_m, m_M, r, c, n);
+						dsygvx_(&t, "N", "I", "L", &n, m_k, &n, m_m, &n, nullptr, nullptr, &il, &iu, &a, &p, m_e, nullptr, &n, w, &m, q, u, &status);
+						return status == 0;
+					}
+					case spectre::full:
+					{
+						int status;
+						unsigned type = 1;
+						double w[3 * n - 1];
+						unsigned m = 3 * n - 1;
+						mat::convert(m_k, m_K, r, c, n);
+						mat::convert(m_m, m_M, r, c, n);
+						dsygv_(&type, "V", "L", &n, m_k, &n, m_m, &n, m_e, w, &m, &status);
+						return status == 0;
+					}
+					default:
+						return false;
+				}
 			}
 		}
 	}
