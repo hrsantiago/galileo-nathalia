@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 //	tests::deployable::static_nonlinear::slut_fric();
 //	tests::deployable::static_nonlinear::slut_mult();
 //	tests::deployable::static_nonlinear::slut_beam();
-	tests::deployable::static_nonlinear::slut_unit();
+//	tests::deployable::static_nonlinear::slut_unit();
 //	tests::deployable::static_nonlinear::slut_line();
 //	tests::deployable::static_nonlinear::slut_wall();
 //	tests::deployable::static_nonlinear::slut_roof();
@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
 //	tests::deployable::static_nonlinear::arch_trans();
 
 //	tests::tensegrity::static_nonlinear::pentagon();
+	tests::tensegrity::modal::pentagon();
 
 //	tests::plane::static_linear::axial(); 
 

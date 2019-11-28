@@ -126,6 +126,7 @@ SOURCES = \
     src/benchmarks/mechanic/deployable/state/slut_unit.cpp \
     src/benchmarks/mechanic/deployable/state/slut_roof.cpp \
     src/benchmarks/mechanic/deployable/state/slut_grid.cpp \
+    src/benchmarks/mechanic/tensegrity/modal/pentagon.cpp \
     src/benchmarks/mechanic/tensegrity/static/nonlinear/pentagon.cpp \
     src/benchmarks/mechanic/bar/dynamic/nonlinear/single_pendulum_3D.cpp \
     src/benchmarks/mechanic/bar/dynamic/nonlinear/tent_unit.cpp \

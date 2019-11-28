@@ -35,8 +35,8 @@
 void tests::tensegrity::modal::pentagon(void)
 {
 	//data
-	//const double s0 = 0.05 * 580e6;	//residual stress 5% of 580 MPa
-	const double s0 = 12.5e6;	//residual stress 5% of 250 MPa
+	const double s0 = 0.05 * 580e6;	//residual stress 5% of 580 MPa
+	//const double s0 = 12.5e6;	//residual stress 5% of 250 MPa
 	
 	//model
 	fea::models::Model model("pentagon", "benchmarks/tensegrity/modal");

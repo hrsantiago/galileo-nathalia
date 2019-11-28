@@ -8,5 +8,9 @@ namespace tests
 		{
 			void pentagon(void);
 		}
+		namespace modal
+		{
+			void pentagon(void);
+		}
 	}
 }
