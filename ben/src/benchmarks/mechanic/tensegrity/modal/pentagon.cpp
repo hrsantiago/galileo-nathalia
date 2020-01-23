@@ -35,7 +35,7 @@
 void tests::tensegrity::modal::pentagon(void)
 {
 	//data
-	const double s0 = 0.05 * 580e6;	//residual stress 5% of 580 MPa
+	const double s0 = 0.025 * 85e6;	//residual stress 5% of 85 MPa
 	//const double s0 = 12.5e6;	//residual stress 5% of 250 MPa
 	
 	//model
@@ -43,7 +43,7 @@ void tests::tensegrity::modal::pentagon(void)
 	fea::mesh::Mesh *mesh = model.mesh();
 	
 	int nModules = 1;
-	double scale = 1.2 / 5.0; // Coordinates here have a segment length of 5m. The real model has a segment length of 1.2m.
+	double scale = 1.2 / 6.778496; // Coordinates here have a segment length of 6.78m. The real model has a segment length of 1.2m.
 	//nodes
 	for(int i = 0; i < nModules; i++) {
 		double x = (i * 5) * scale;
@@ -71,31 +71,31 @@ void tests::tensegrity::modal::pentagon(void)
 	//cableMaterial->elastic_modulus(115e9); // steel
 
 	// sisal
-	cableMaterial->elastic_modulus(30e9);
-	cableMaterial->break_stress(580e06);
-	cableMaterial->break_strain(0.3);
-	cableMaterial->yield_stress(580e06);
+	cableMaterial->elastic_modulus(1.421e9);
+	cableMaterial->break_stress(85e06);
+	cableMaterial->break_strain(0.16);
+	cableMaterial->yield_stress(85e06);
 	cableMaterial->poisson_ratio(0.25);
-	cableMaterial->specific_mass(1320);
+	cableMaterial->specific_mass(983);
 
 	fea::mesh::materials::Steel* strutMaterial = (fea::mesh::materials::Steel*)mesh->add_material(fea::mesh::materials::type::steel);
 	//strutMaterial->elastic_modulus(210e9); // steel
 
 	// bamboo
-	strutMaterial->elastic_modulus(11.1e9);
-	strutMaterial->break_stress(104e06);
+	strutMaterial->elastic_modulus(19.41e9);
+	strutMaterial->break_stress(64.45e06);
 	strutMaterial->break_strain(0.075);
-	strutMaterial->yield_stress(104e06);
+	strutMaterial->yield_stress(64.45e06);
 	strutMaterial->poisson_ratio(0.3);
-	strutMaterial->specific_mass(700);
+	strutMaterial->specific_mass(840.15);
 
 //	//sections
 	fea::mesh::sections::Circle *cableSection = (fea::mesh::sections::Circle*)mesh->add_section(fea::mesh::sections::type::circle);
 	cableSection->diameter(6./1000);
 
 	fea::mesh::sections::Ring *strutSection = (fea::mesh::sections::Ring*)mesh->add_section(fea::mesh::sections::type::ring); // bamboo strut
-	strutSection->diameter(30./1000);
-	strutSection->thickness(3./1000);
+	strutSection->diameter(29.3/1000);
+	strutSection->thickness(3.8/1000);
 
 //	fea::mesh::sections::Circle *cableSection = (fea::mesh::sections::Circle*)mesh->add_section(fea::mesh::sections::type::circle);
 //	cableSection->diameter(2 * sqrt(1.5e-04 / 3.141592)); // steel
@@ -115,18 +115,18 @@ void tests::tensegrity::modal::pentagon(void)
 		// cables
 		if(i == 0) {
 			mesh->add_element(fea::mesh::elements::type::bar, { 0,  1}, 0, 0);
-			mesh->add_element(fea::mesh::elements::type::bar, { 1,  2}, 0, 0);
+			mesh->add_element(fea::mesh::elements::type::bar, { 1,  2}, 0, 0); // 2,3 - 1
 			mesh->add_element(fea::mesh::elements::type::bar, { 2,  3}, 0, 0);
-			mesh->add_element(fea::mesh::elements::type::bar, { 3,  4}, 0, 0);
+			mesh->add_element(fea::mesh::elements::type::bar, { 3,  4}, 0, 0); // 4,5 - 3
 			mesh->add_element(fea::mesh::elements::type::bar, { 4,  0}, 0, 0);
 		}
 		mesh->add_element(fea::mesh::elements::type::bar, {10+n, 11+n}, 0, 0);
-		mesh->add_element(fea::mesh::elements::type::bar, {11+n, 12+n}, 0, 0);
+		mesh->add_element(fea::mesh::elements::type::bar, {11+n, 12+n}, 0, 0); // 12,13 - 6
 		mesh->add_element(fea::mesh::elements::type::bar, {12+n, 13+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, {13+n, 14+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, {14+n, 10+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, { 0+n,  8+n}, 0, 0);
-		mesh->add_element(fea::mesh::elements::type::bar, { 1+n,  8+n}, 0, 0);
+		mesh->add_element(fea::mesh::elements::type::bar, { 1+n,  8+n}, 0, 0); // 2,9 - 11
 		mesh->add_element(fea::mesh::elements::type::bar, {10+n,  8+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, {11+n,  8+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, { 1+n,  9+n}, 0, 0);
@@ -134,7 +134,7 @@ void tests::tensegrity::modal::pentagon(void)
 		mesh->add_element(fea::mesh::elements::type::bar, {11+n,  9+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, {12+n,  9+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, { 2+n,  5+n}, 0, 0);
-		mesh->add_element(fea::mesh::elements::type::bar, { 3+n,  5+n}, 0, 0);
+		mesh->add_element(fea::mesh::elements::type::bar, { 3+n,  5+n}, 0, 0); // 6,4 - 19
 		mesh->add_element(fea::mesh::elements::type::bar, {12+n,  5+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, {13+n,  5+n}, 0, 0);
 		mesh->add_element(fea::mesh::elements::type::bar, { 3+n,  6+n}, 0, 0);
@@ -150,6 +150,12 @@ void tests::tensegrity::modal::pentagon(void)
 			((fea::mesh::elements::Bar*) mesh->element(j))->cable(true);
 			((fea::mesh::elements::Bar*) mesh->element(j))->residual_stress(s0);
 		}
+
+		((fea::mesh::elements::Bar*) mesh->element(1))->residual_stress(s0 / 10.);
+		((fea::mesh::elements::Bar*) mesh->element(3))->residual_stress(s0 / 10.);
+		((fea::mesh::elements::Bar*) mesh->element(6))->residual_stress(s0 / 10.);
+		((fea::mesh::elements::Bar*) mesh->element(11))->residual_stress(s0 / 10.);
+		((fea::mesh::elements::Bar*) mesh->element(19))->residual_stress(s0 / 10.);
 
 		// struts
 		mesh->add_element(fea::mesh::elements::type::bar, { 0+n, 11+n}, 1, 1);
@@ -169,14 +175,15 @@ void tests::tensegrity::modal::pentagon(void)
 		mesh->add_element(fea::mesh::elements::type::bar, { 7+n,  1+n}, 1, 1);
 	}
 
-	int option = 2;
+	//supports
+	int option = 1;
 	if(option == 1) {
 		model.boundary()->add_support(5, fea::mesh::nodes::dof::translation_x);
 		model.boundary()->add_support(5, fea::mesh::nodes::dof::translation_y);
 		model.boundary()->add_support(5, fea::mesh::nodes::dof::translation_z);
 	}
 	else if(option == 2) {
-		model.mesh()->add_node(+2.500 * scale, +0.000 * scale, (-3.894 - 0.15) * scale);//nó 5 para cima 15 cm
+		model.mesh()->add_node(+2.500 * scale, +0.000 * scale, -3.894 * scale - 0.15);//nó 5 para cima 15 cm
 		unsigned int lastNodeIndex = model.mesh()->nodes().size() - 1;
 
 		// On the lab, the structure is held only by node 5 (or 5+1=6 there).
@@ -186,12 +193,11 @@ void tests::tensegrity::modal::pentagon(void)
 
 		mesh->add_element(fea::mesh::elements::type::bar, {5, lastNodeIndex}, 1, 1);
 
-		unsigned int lastElementIndex = mesh->elements().size() - 1;
-		((fea::mesh::elements::Bar*) mesh->element(lastElementIndex))->cable(true);
-		((fea::mesh::elements::Bar*) mesh->element(lastElementIndex))->residual_stress(s0);
+		//unsigned int lastElementIndex = mesh->elements().size() - 1;
+		//((fea::mesh::elements::Bar*) mesh->element(lastElementIndex))->cable(true);
+		//((fea::mesh::elements::Bar*) mesh->element(lastElementIndex))->residual_stress(s0);
 	}
 
-	//supports
 //	for(int i = 0; i < 5; ++i) {
 //		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_x);
 //		model.boundary()->add_support(i, fea::mesh::nodes::dof::translation_y);
@@ -208,8 +214,13 @@ void tests::tensegrity::modal::pentagon(void)
 	fea::mesh::elements::Mechanic::geometric(true);
 	model.analysis()->solver(fea::analysis::solvers::type::modal);
 	model.analysis()->solver()->watch_dof(10, fea::mesh::nodes::dof::translation_z);
+	dynamic_cast<fea::analysis::solvers::Modal*> (model.analysis()->solver())->scale(scale);
 	dynamic_cast<fea::analysis::solvers::Modal*> (model.analysis()->solver())->spectre(fea::analysis::solvers::spectre::full);
 	model.analysis()->solve();
+
+	for(int i = 0; i < mesh->nodes().size(); ++i) {
+		fea::mesh::nodes::Node *node = mesh->node(i);
+	}
 
 	//save
 	model.save();
