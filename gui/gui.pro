@@ -134,3 +134,14 @@ FORMS += \
     ui/Results/Nodal.ui \
     ui/Results/Paths.ui \
     ui/Results/Plots.ui \
+
+win32-g++:EXT = a
+else:win32:!win32-g++:EXT = lib
+else:EXT = a
+
+win32-g++:PRE = lib
+else:win32:!win32-g++:
+else:PRE = lib
+
+PRE_TARGETDEPS += $$OUT_PWD/../libs/$${PRE}fea.$${EXT}
+PRE_TARGETDEPS += $$OUT_PWD/../libs/$${PRE}mat.$${EXT}

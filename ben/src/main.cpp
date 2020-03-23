@@ -90,7 +90,12 @@ int main(int argc, char* argv[])
 //	tests::deployable::static_nonlinear::arch_polar();
 //	tests::deployable::static_nonlinear::arch_trans();
 
-//	tests::tensegrity::static_nonlinear::pentagon();
+	//std::vector<double> pretensions = {0.05, 0.10, 0.25, 0.5, 0.75, 1};
+//	std::vector<double> pretensions = {0.05};
+//	for(double pretension : pretensions)
+//		tests::tensegrity::static_nonlinear::pentagon(pretension);
+//	for(double pretension = 0.015; pretension <= 1; pretension += 0.01)
+//		tests::tensegrity::static_nonlinear::pentagon(pretension);
 	tests::tensegrity::modal::pentagon();
 
 //	tests::plane::static_linear::axial(); 

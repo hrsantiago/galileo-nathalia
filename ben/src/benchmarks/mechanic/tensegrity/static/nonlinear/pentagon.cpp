@@ -5,6 +5,7 @@
 #include "Model/Model.h"
 
 #include "Mesh/Mesh.h"
+#include "Mesh/Nodes/Node.h"
 #include "Mesh/Nodes/Dofs.h"
 #include "Mesh/Cells/Types.h"
 #include "Mesh/Joints/Types.h"
@@ -28,14 +29,24 @@
 #include "Analysis/Strategies/Types.h"
 #include "Analysis/Solvers/Static_Nonlinear.h"
 
+#include "linear/vec3.h"
+
 //ben
 #include "benchmarks/mechanic/tensegrity.h"
 
+double tetrahedronVolume(const mat::vec3& a, const mat::vec3& b, const mat::vec3& c, const mat::vec3& d)
+{
+	mat::vec3 v1 = a - d;
+	mat::vec3 v2 = b - d;
+	mat::vec3 v3 = c - d;
+	return std::abs(v1.dot(v2.cross(v3))) / 6.;
+}
+
 //model
-void tests::tensegrity::static_nonlinear::pentagon(void)
+void tests::tensegrity::static_nonlinear::pentagon(double pretension)
 {
 	//data
-	const double s0 = 0.30 * 85e6;	//residual stress 5% of 85 MPa
+	const double s0 = pretension * 85e6;	//residual stress 5% of 85 MPa
 
 	//model
 	fea::models::Model model("pentagon", "benchmarks/tensegrity/static/nonlinear");
@@ -247,6 +258,78 @@ void tests::tensegrity::static_nonlinear::pentagon(void)
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->load_predictor(0.05);
 	dynamic_cast<fea::analysis::solvers::Static_Nonlinear*> (model.analysis()->solver())->strategy(fea::analysis::strategies::type::control_load);
 	model.analysis()->solve();
+
+
+	mat::vec3 na = scale * mat::vec3(0.0, 0, 0);
+	mat::vec3 nb = scale * mat::vec3(2.5, 0, 0);
+	mat::vec3 nc = scale * mat::vec3(5.0, 0, 0);
+	//std::vector<std::vector<mat::vec3>> nodes;
+
+
+	std::vector<mat::vec3> vectorNodes;
+	for(int i = 0; i < mesh->nodes().size(); ++i) {
+		fea::mesh::nodes::Node *node = mesh->node(i);
+		double dx = node->state(fea::mesh::nodes::dof::translation_x, 1);
+		double dy = node->state(fea::mesh::nodes::dof::translation_y, 1);
+		double dz = node->state(fea::mesh::nodes::dof::translation_z, 1);
+		double x = node->coordinates()[0] + dx;
+		double y = node->coordinates()[1] + dy;
+		double z = node->coordinates()[2] + dz;
+		vectorNodes.push_back(mat::vec3(x, y, z));
+
+	}
+
+	double volume = 0;
+	volume += tetrahedronVolume(vectorNodes[0], vectorNodes[1], na, nb);
+	volume += tetrahedronVolume(vectorNodes[1], vectorNodes[2], na, nb);
+	volume += tetrahedronVolume(vectorNodes[2], vectorNodes[3], na, nb);
+	volume += tetrahedronVolume(vectorNodes[3], vectorNodes[4], na, nb);
+	volume += tetrahedronVolume(vectorNodes[4], vectorNodes[0], na, nb);
+	volume += tetrahedronVolume(vectorNodes[0], vectorNodes[1], vectorNodes[8], nb);
+	volume += tetrahedronVolume(vectorNodes[1], vectorNodes[2], vectorNodes[9], nb);
+	volume += tetrahedronVolume(vectorNodes[2], vectorNodes[3], vectorNodes[5], nb);
+	volume += tetrahedronVolume(vectorNodes[3], vectorNodes[4], vectorNodes[6], nb);
+	volume += tetrahedronVolume(vectorNodes[4], vectorNodes[0], vectorNodes[7], nb);
+	volume += tetrahedronVolume(vectorNodes[0], vectorNodes[7], vectorNodes[8], nb);
+	volume += tetrahedronVolume(vectorNodes[1], vectorNodes[8], vectorNodes[9], nb);
+	volume += tetrahedronVolume(vectorNodes[2], vectorNodes[9], vectorNodes[5], nb);
+	volume += tetrahedronVolume(vectorNodes[3], vectorNodes[5], vectorNodes[6], nb);
+	volume += tetrahedronVolume(vectorNodes[4], vectorNodes[6], vectorNodes[7], nb);
+	volume += tetrahedronVolume(vectorNodes[10], vectorNodes[11], vectorNodes[8], nb);
+	volume += tetrahedronVolume(vectorNodes[11], vectorNodes[12], vectorNodes[9], nb);
+	volume += tetrahedronVolume(vectorNodes[12], vectorNodes[13], vectorNodes[5], nb);
+	volume += tetrahedronVolume(vectorNodes[13], vectorNodes[14], vectorNodes[6], nb);
+	volume += tetrahedronVolume(vectorNodes[14], vectorNodes[10], vectorNodes[7], nb);
+	volume += tetrahedronVolume(vectorNodes[10], vectorNodes[11], nc, nb);
+	volume += tetrahedronVolume(vectorNodes[11], vectorNodes[12], nc, nb);
+	volume += tetrahedronVolume(vectorNodes[12], vectorNodes[13], nc, nb);
+	volume += tetrahedronVolume(vectorNodes[13], vectorNodes[14], nc, nb);
+	volume += tetrahedronVolume(vectorNodes[14], vectorNodes[10], nc, nb);
+	volume += tetrahedronVolume(vectorNodes[10], vectorNodes[7], vectorNodes[8], nb);
+	volume += tetrahedronVolume(vectorNodes[11], vectorNodes[8], vectorNodes[9], nb);
+	volume += tetrahedronVolume(vectorNodes[12], vectorNodes[9], vectorNodes[5], nb);
+	volume += tetrahedronVolume(vectorNodes[13], vectorNodes[5], vectorNodes[6], nb);
+	volume += tetrahedronVolume(vectorNodes[14], vectorNodes[6], vectorNodes[7], nb);
+
+	//FILE *file = stdout;
+	printf("volume: %.6f\n", volume);
+	FILE *file = fopen("/home/henrique/pretensions.txt", "a");
+	if(file) {
+		//fprintf(file, "pretension = %.2f\n", pretension * 100);
+		//fprintf(file, "volume = %.6f\n", volume);
+
+
+		fprintf(file, "%.2f\t%.6f\n", pretension, volume);
+		for(int i = 0; i < mesh->nodes().size(); ++i) {
+			fea::mesh::nodes::Node *node = mesh->node(i);
+			double dx = node->state(fea::mesh::nodes::dof::translation_x, 0);
+			double dy = node->state(fea::mesh::nodes::dof::translation_y, 0);
+			double dz = node->state(fea::mesh::nodes::dof::translation_z, 0);
+			//fprintf(file, "n%d += [%+4.6e, %+4.6e, %+4.6e];\n", i, dx, dy, dz);
+		}
+		//fprintf(file, "\n");
+		fclose(file);
+	}
 
 	//save
 	model.save();

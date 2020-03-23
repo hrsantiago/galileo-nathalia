@@ -350,11 +350,17 @@ namespace gui
 		void Canvas::draw_model(void)
 		{
 			//data
+			const double** vp0 = m_position ? m_position[0] : nullptr;
+			const double** ve0 = m_element ? m_element[0][m_state] : nullptr;
+			const double* vn0 = m_node[m_type] ? m_node[m_type][0][m_dof] : nullptr;
+
 			const double** vp = m_position ? m_position[m_step] : nullptr;
 			const double** ve = m_element ? m_element[m_step][m_state] : nullptr;
 			const double* vn = m_node[m_type] ? m_node[m_type][m_step][m_dof] : nullptr;
 			//draw
 			glNewList(m_list + 3, GL_COMPILE);
+			m_model->plot(m_bound.size(), nullptr, nullptr, nullptr);
+
 			m_model->plot(m_bound.size(), vp, vn, ve);
 			glEndList();
 		}

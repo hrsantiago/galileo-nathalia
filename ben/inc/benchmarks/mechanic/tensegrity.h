@@ -6,7 +6,7 @@ namespace tests
 	{
 		namespace static_nonlinear
 		{
-			void pentagon(void);
+			void pentagon(double pretension);
 		}
 		namespace modal
 		{

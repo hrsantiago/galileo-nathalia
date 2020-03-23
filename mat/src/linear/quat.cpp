@@ -113,11 +113,11 @@ namespace mat
 	//views
 	quat& quat::view_x(void)
 	{
-		return *this = quat(-M_PI / 2, 2) * quat(-M_PI / 2, 1);
+		return *this = quat(M_PI / 2, 2) * quat(-M_PI / 2, 1);
 	}
 	quat& quat::view_y(void)
 	{
-		return *this = quat(+M_PI / 2, 2) * quat(+M_PI / 2, 0);
+		return *this = quat(-M_PI, 2) * quat(-M_PI / 2, 0);
 	}
 	quat& quat::view_z(void)
 	{

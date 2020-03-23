@@ -35,7 +35,7 @@
 void tests::tensegrity::modal::pentagon(void)
 {
 	//data
-	const double s0 = 0.025 * 85e6;	//residual stress 5% of 85 MPa
+	const double s0 = 0.05 * 85e6;	//residual stress 5% of 85 MPa
 	//const double s0 = 12.5e6;	//residual stress 5% of 250 MPa
 	
 	//model
@@ -151,11 +151,11 @@ void tests::tensegrity::modal::pentagon(void)
 			((fea::mesh::elements::Bar*) mesh->element(j))->residual_stress(s0);
 		}
 
-		((fea::mesh::elements::Bar*) mesh->element(1))->residual_stress(s0 / 10.);
-		((fea::mesh::elements::Bar*) mesh->element(3))->residual_stress(s0 / 10.);
-		((fea::mesh::elements::Bar*) mesh->element(6))->residual_stress(s0 / 10.);
-		((fea::mesh::elements::Bar*) mesh->element(11))->residual_stress(s0 / 10.);
-		((fea::mesh::elements::Bar*) mesh->element(19))->residual_stress(s0 / 10.);
+//		((fea::mesh::elements::Bar*) mesh->element(1))->residual_stress(s0 / 10.);
+//		((fea::mesh::elements::Bar*) mesh->element(3))->residual_stress(s0 / 10.);
+//		((fea::mesh::elements::Bar*) mesh->element(6))->residual_stress(s0 / 10.);
+//		((fea::mesh::elements::Bar*) mesh->element(11))->residual_stress(s0 / 10.);
+//		((fea::mesh::elements::Bar*) mesh->element(19))->residual_stress(s0 / 10.);
 
 		// struts
 		mesh->add_element(fea::mesh::elements::type::bar, { 0+n, 11+n}, 1, 1);
